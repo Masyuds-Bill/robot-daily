@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>机器人课程目录</title>
+<style>
+/* Layout: a lab notebook spine — progress strip on top, then dated entries in one column, morning/evening as two coloured margins */
+:root{
+  --bg:#f6f7f9; --paper:#ffffff; --fg:#1b2230; --muted:#5d6676; --line:#dfe3ea;
+  --am:#b4620f; --am-soft:#fbefe1; --pm:#3446a8; --pm-soft:#e8ebfa; --done:#1b2230;
+  --display:"Songti SC","STSong","Noto Serif SC","SimSun",serif;
+  --body:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151c; --paper:#1a1e27; --fg:#e7eaf0; --muted:#9aa3b3; --line:#2c3240;
+  --am:#f0a256; --am-soft:#2e2318; --pm:#93a2ff; --pm-soft:#1f2440; --done:#e7eaf0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151c; --paper:#1a1e27; --fg:#e7eaf0; --muted:#9aa3b3; --line:#2c3240;
+  --am:#f0a256; --am-soft:#2e2318; --pm:#93a2ff; --pm-soft:#1f2440; --done:#e7eaf0; color-scheme:dark}
+html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:28px 48px;display:flex;flex-direction:column;gap:28px}
+h1{font-family:var(--display);font-size:1.75rem;line-height:1.25;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.label{font-size:.75rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-family:var(--mono)}
+
+/* progress */
+.prog{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.prog-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.prog-now{font-family:var(--display);font-size:1.1rem}
+.weeks{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.wk{height:28px;border-radius:4px;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.wk.past{background:var(--done);border-color:var(--done);color:var(--paper)}
+.wk.now{border:2px solid var(--am);color:var(--am);font-weight:500}
+.topic{font-size:.9rem;color:var(--muted)}
+
+/* latest */
+.latest{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.latest{grid-template-columns:1fr}}
+.card{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:10px;text-decoration:none;color:var(--fg);min-width:0;border:1px solid var(--line);background:var(--paper)}
+.card.am{background:var(--am-soft);border-color:transparent}
+.card.pm{background:var(--pm-soft);border-color:transparent}
+.card .kind{font-size:.78rem;font-weight:600;letter-spacing:.04em}
+.card.am .kind{color:var(--am)} .card.pm .kind{color:var(--pm)}
+.card .t{font-family:var(--display);font-size:1.05rem;line-height:1.4}
+.card .d{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.card.empty{color:var(--muted);font-size:.9rem}
+a.card:focus-visible,a.row:focus-visible,button:focus-visible{outline:2px solid var(--pm);outline-offset:2px}
+
+/* filter */
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{font:inherit;font-size:.85rem;border:0;background:transparent;color:var(--muted);padding:4px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--fg);color:var(--paper)}
+
+/* list */
+.day{display:flex;flex-direction:column;gap:6px}
+.day-h{font-family:var(--mono);font-size:.78rem;color:var(--muted);padding-bottom:4px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 4px;text-decoration:none;color:var(--fg);border-radius:6px}
+.row:hover{background:var(--paper)}
+.tag{font-size:.75rem;font-weight:600;align-self:start;margin-top:3px;text-align:center;border-radius:4px;padding:1px 0}
+.tag.am{color:var(--am);background:var(--am-soft)} .tag.pm{color:var(--pm);background:var(--pm-soft)}
+.row .t{font-weight:600;line-height:1.45;min-width:0}
+.row .s{color:var(--muted);font-size:.88rem;margin-top:2px;min-width:0}
+.note{color:var(--muted);font-size:.9rem;padding:16px;border:1px dashed var(--line);border-radius:10px}
+footer{color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>机器人课程目录</h1>
+    <p class="sub">工作日 8:00 早课 · 18:30 晚报，每期发布后自动登记在这里。</p>
+  </header>
+
+  <section class="prog" aria-label="课程进度">
+    <div class="prog-head">
+      <span class="label">12 单元课程进度（每单元 4 课 + 1 次复盘）</span>
+      <span class="prog-now" id="now"></span>
+    </div>
+    <div class="weeks" id="weeks"></div>
+    <div class="topic" id="topic"></div>
+  </section>
+
+  <section aria-label="最新两期">
+    <div class="label" style="margin-bottom:10px">最新</div>
+    <div class="latest" id="latest">
+      <div class="card empty">正在载入目录…</div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:18px" aria-label="全部期数">
+    <div class="bar">
+      <span class="label">全部</span>
+      <div class="tabs" role="group" aria-label="筛选">
+        <button id="f-all" aria-pressed="true" data-f="all">全部</button>
+        <button id="f-am" aria-pressed="false" data-f="am">早课</button>
+        <button id="f-pm" aria-pressed="false" data-f="pm">晚报</button>
+      </div>
+    </div>
+    <div id="list" style="display:flex;flex-direction:column;gap:20px"></div>
+  </section>
+
+  <footer>课程从 2026 年 10 月 14 日开始，每 5 个工作日为一个单元。节假日照常推送，暂停需另行设置。</footer>
+</div>
+
+<script>
+const TOPICS=["电机基础","减速与传动","传感与驱动器","关节控制","热与选型","运动学","动力学","平衡与行走","全身控制与操作","强化学习","具身智能","行业全景"];
+const START=new Date("2026-10-14T00:00:00+08:00");
+const KIND={am:"早课",pm:"晚报"};
+let items=[],filter="all";
+
+function shanghaiToday(){
+  const s=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Shanghai"});
+  return new Date(s+"T00:00:00+08:00");
+}
+function renderProgress(){
+  const today=shanghaiToday();
+  const days=Math.floor((today-START)/86400000);
+  let d=0;
+  for(let t=new Date(START);t<=today;t=new Date(t.getTime()+86400000)){const wd=new Date(t.getTime()+8*3600000).getUTCDay();if(wd>0&&wd<6)d++;}
+  const n=Math.max(1,Math.ceil(d/5));
+  const w=document.getElementById("weeks");w.innerHTML="";
+  for(let i=1;i<=12;i++){
+    const d=document.createElement("div");
+    d.className="wk"+(i<n?" past":"")+(i===n?" now":"");
+    d.textContent="W"+i;d.title="W"+i+" "+TOPICS[i-1];
+    w.appendChild(d);
+  }
+  const now=document.getElementById("now"),topic=document.getElementById("topic");
+  if(days<0){now.textContent="尚未开课";topic.textContent="第 1 周：电机基础";}
+  else if(n>12){now.textContent="主线已完成";topic.textContent="之后为进阶专题";}
+  else{now.textContent="第 "+n+" 单元";topic.textContent="本单元："+TOPICS[n-1]+" · 下一单元："+(TOPICS[n]||"进阶专题");}
+}
+function fmtDate(s){
+  const wd=["周日","周一","周二","周三","周四","周五","周六"][new Date(s+"T12:00:00Z").getUTCDay()];
+  const [y,m,dd]=s.split("-");return Number(m)+"月"+Number(dd)+"日 "+wd;
+}
+function safeUrl(u){return typeof u==="string"&&/^(am|pm)\/\d{4}-\d{2}-\d{2}\.html$/.test(u)?u:null}
+function card(it,kind){
+  if(!it){const e=document.createElement("div");e.className="card empty";e.textContent=KIND[kind]+"：还没有新一期";return e;}
+  const url=safeUrl(it.url);
+  const a=document.createElement(url?"a":"div");a.className="card "+kind;if(url){a.href=url;}
+  const k=document.createElement("span");k.className="kind";k.textContent=KIND[kind];
+  const t=document.createElement("span");t.className="t";t.textContent=it.title||"(无标题)";
+  const d=document.createElement("span");d.className="d";d.textContent=fmtDate(it.date);
+  a.append(k,t,d);return a;
+}
+function render(){
+  const latest=document.getElementById("latest");latest.innerHTML="";
+  latest.append(card(items.find(i=>i.kind==="am"),"am"),card(items.find(i=>i.kind==="pm"),"pm"));
+  const list=document.getElementById("list");list.innerHTML="";
+  const shown=items.filter(i=>filter==="all"||i.kind===filter);
+  if(!shown.length){const n=document.createElement("div");n.className="note";n.textContent=items.length?"这个分类下还没有内容。":"还没有登记的期数。每期发布后会自动出现在这里。";list.append(n);return;}
+  const byDate=new Map();
+  for(const it of shown){if(!byDate.has(it.date))byDate.set(it.date,[]);byDate.get(it.date).push(it);}
+  for(const [date,arr] of byDate){
+    arr.sort((a,b)=>a.kind<b.kind?-1:1);
+    const sec=document.createElement("div");sec.className="day";
+    const h=document.createElement("div");h.className="day-h";h.textContent=fmtDate(date);sec.append(h);
+    for(const it of arr){
+      const url=safeUrl(it.url);
+      const r=document.createElement(url?"a":"div");r.className="row";if(url){r.href=url;}
+      const tag=document.createElement("span");tag.className="tag "+it.kind;tag.textContent=KIND[it.kind]||"";
+      const box=document.createElement("div");box.style.minWidth="0";
+      const t=document.createElement("div");t.className="t";t.textContent=it.title||"(无标题)";box.append(t);
+      if(it.summary){const s=document.createElement("div");s.className="s";s.textContent=it.summary;box.append(s);}
+      r.append(tag,box);sec.append(r);
+    }
+    list.append(sec);
+  }
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+  filter=b.dataset.f;
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  try{localStorage.setItem("filter",filter)}catch(e){}
+  render();
+}));
+try{const f=localStorage.getItem("filter");if(f&&KIND[f]||f==="all"){filter=f;document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.f===f)));}}catch(e){}
+renderProgress();
+
+fetch("issues.json?t="+Date.now()).then(r=>r.json()).then(list=>{
+  items=(Array.isArray(list)?list:[]).filter(x=>x&&x.date&&(x.kind==="am"||x.kind==="pm"));
+  items.sort((a,b)=>a.date===b.date?(a.kind<b.kind?1:-1):(a.date<b.date?1:-1));
+  render();
+}).catch(()=>{document.getElementById("latest").innerHTML='<div class="card empty">目录载入失败，请刷新页面。</div>';});
+</script>
+
+</body>
+</html>
