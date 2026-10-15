@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W1-3｜Kt、Kv 与反电动势</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 1 单元「电机基础」· 第 3 课</div>
+<h1>早课 W1-3｜K<sub>t</sub>、K<sub>v</sub> 与反电动势</h1>
+<p class="sub">一根接错的电缆、一颗被“短路”的电机，和规格书上两个其实是同一个的数字。约 18 分钟。</p>
+
+<div class="lead">
+<p>昨天的结尾留了个小实验：一台没通电的无刷电机，用手拧，很轻；把三根相线拧在一起短接，再拧——突然变“粘”，像在搅蜂蜜。电机里没有电池，那股阻力从哪来？</p>
+<p>答案，一百五十年前有人在一场世博会上撞见过。1873 年维也纳世界博览会，比利时人格拉姆（Zénobe Gramme）带去了他的直流发电机——在当时，这是第一种真正能在工厂里用的发电机。按国际展览局（BIE）官方博客流传最广的说法，他的合伙人方丹（Hippolyte Fontaine）把一台运转中的发电机，用铜电缆接到了大约 500 米外的<strong>另一台</strong>同型号机器上——据说是接错了。结果，那台本该“发电”的机器自己转了起来，后来还被用来带动一台水泵。</p>
+<p>这件事的分量在于：在那之前，人们心目中的电动机是靠电池驱动的小玩意，发电机是另一种机器。维也纳那根电缆说明，<strong>它们是同一台机器的两种用法</strong>。电可以在一个地方产生，跑到 500 米外再变回力气——这正是后来工厂、电车、今天的机器人关节的起点。</p>
+<p>今天沿着这根电缆往下走，回答三个问题：拧短接的电机为什么粘手？电机为什么有“极速”？规格书上的 K<sub>v</sub> 和 K<sub>t</sub> 到底是什么关系？</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 680 270" role="img" aria-label="1873 年维也纳：蒸汽机带动发电机，经 500 米电缆驱动另一台同型机器带水泵">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--soft2)"/><stop offset="1" stop-color="var(--bg2)"/></linearGradient>
+  </defs>
+  <rect x="0" y="0" width="680" height="270" fill="url(#sky)"/>
+  <rect x="0" y="215" width="680" height="55" class="s-bg"/>
+  <line x1="0" y1="215" x2="680" y2="215" class="st-ink2" stroke-width="1"/>
+  <!-- steam engine -->
+  <g transform="translate(30,110)">
+    <rect x="0" y="40" width="70" height="65" rx="6" class="s-can"/>
+    <rect x="18" y="-10" width="16" height="52" class="s-steel"/>
+    <circle cx="26" cy="-22" r="10" class="s-bg2" opacity=".9"/><circle cx="40" cy="-38" r="13" class="s-bg2" opacity=".7"/><circle cx="58" cy="-56" r="16" class="s-bg2" opacity=".5"/>
+    <circle cx="100" cy="70" r="30" class="nofill st-ink2" stroke-width="5"/>
+    <line x1="100" y1="70" x2="122" y2="52" class="st-ink2" stroke-width="3"/>
+    <text x="35" y="125" text-anchor="middle" font-size="13" class="s-ink2">蒸汽机</text>
+  </g>
+  <!-- belt -->
+  <path d="M130 150 L185 152 M130 210 L185 196" class="st-ink2" stroke-width="2"/>
+  <!-- gramme 1 -->
+  <g transform="translate(215,175)">
+    <rect x="-42" y="28" width="84" height="12" class="s-wood"/>
+    <rect x="-38" y="-48" width="14" height="78" class="s-N"/><rect x="24" y="-48" width="14" height="78" class="s-S"/>
+    <circle r="22" class="s-cu"/><circle r="11" class="s-bg2"/>
+    <circle r="22" class="nofill st-ink" stroke-dasharray="2 3" stroke-width="2" opacity=".5"/>
+    <text y="62" text-anchor="middle" font-size="13" class="s-ink">格拉姆机①（发电）</text>
+  </g>
+  <!-- cable -->
+  <path d="M240 160 C 300 60, 400 60, 460 160" class="nofill st-acc" stroke-width="3"/>
+  <path d="M240 170 C 300 80, 400 80, 460 170" class="nofill st-blue" stroke-width="3"/>
+  <rect x="300" y="52" width="100" height="26" rx="13" class="s-bg2" stroke="var(--line)"/>
+  <text x="350" y="70" text-anchor="middle" font-size="14" font-weight="700" class="s-acc">约 500 米</text>
+  <circle r="5" class="s-acc"><animateMotion dur="2.4s" repeatCount="indefinite" path="M240 160 C 300 60, 400 60, 460 160"/></circle>
+  <!-- gramme 2 -->
+  <g transform="translate(485,175)">
+    <rect x="-42" y="28" width="84" height="12" class="s-wood"/>
+    <rect x="-38" y="-48" width="14" height="78" class="s-N"/><rect x="24" y="-48" width="14" height="78" class="s-S"/>
+    <circle r="22" class="s-cu"/><circle r="11" class="s-bg2"/>
+    <g><path d="M0 -22 A22 22 0 0 1 22 0" class="nofill st-acc2" stroke-width="3"/><path d="M22 0 l-6 -5 l8 -2z" class="s-acc2"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/></g>
+    <text y="62" text-anchor="middle" font-size="13" class="s-ink">格拉姆机②（自己转了）</text>
+  </g>
+  <!-- pump & fountain -->
+  <path d="M510 170 L585 170" class="st-ink2" stroke-width="3"/>
+  <rect x="585" y="150" width="34" height="40" rx="5" class="s-steel"/>
+  <path d="M602 150 L602 108" class="st-water" stroke-width="5"/>
+  <path d="M602 108 q -18 -22 -34 6 M602 108 q 18 -22 34 6 M602 108 q 0 -26 0 -30" class="nofill st-water" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="602" cy="212" rx="44" ry="6" class="s-water" opacity=".5"/>
+  <text x="602" y="238" text-anchor="middle" font-size="13" class="s-ink2">水泵</text>
+</svg>
+<figcaption><b>看图要看什么：</b>左右两台是<strong>完全一样</strong>的格拉姆机。左边被蒸汽机拖着转，在发电；右边收到电，在出力。同一种机器，“被拧”就发电，“被喂电”就转——今天的全部内容都从这个对称性里长出来。（示意图，非按实物比例。）</figcaption>
+</figure>
+
+<p>在维也纳之前，电动机长什么样？下面这台是美国史密森尼博物馆收藏的，博物馆推测它是美国发明家戴文波特（Thomas Davenport）和合作者在 1836—37 年冬天做的电动小火车模型：两个电磁铁、一个换向器，驱动它的是一组<strong>三杯式电池</strong>。在那个年代，电动机的电只能从电池里来。</p>
+
+<figure class="photo">
+<img src="https://ids.si.edu/ids/deliveryService?id=NMAH-RWS2023-00340&amp;max_w=800" loading="lazy" referrerpolicy="no-referrer" alt="约 1837 年戴文波特电动机模型：环形轨道上的小车，红色线圈、黄色框架" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.si.edu/object/nmah_705561">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>红色的是线圈（电磁铁），小车在圆轨道上跑，电从轨道旁的电池送进来。它能转，但能量来源是电池——这正是维也纳那根电缆改变的东西。<br>图：Smithsonian National Museum of American History / <a href="https://www.si.edu/object/nmah_705561">Electric Motor, c1837（nmah_705561）</a>，CC0</figcaption>
+</figure>
+
+<h2><span class="n">01</span>一颗没通电的电机，凭什么能“顶”你的手？</h2>
+<p>要回到 1831 年。法拉第发现：<strong>导线在磁场里移动，导线两端就会出现电压</strong>——这就是电磁感应。动得越快、磁场越强、导线越长，电压越大。</p>
+<p class="say">人话：在磁场里“切”得越快，挤出来的电压越高。</p>
+<div class="formula">E = B · L · v<small>E 感应电压（V），B 磁场强度（T），L 在磁场里的导线长度（m），v 导线切过磁场的速度（m/s）</small></div>
+<p>电机里塞满了导线（绕组），转子上贴着磁铁。只要轴在转，绕组就在“切”磁场，三根相线上就有电压。这个电压有个名字：<strong>反电动势</strong>（back-EMF）。“反”字的来历后面会讲。</p>
+<p>开路的时候，电压有了，但电流没有路可走——就像水压有了、水龙头关着，你拧起来很轻。把三根线短接，等于把水龙头拧开：电流哗地流起来。而电流在磁场里会受力（这就是电机本来的工作原理），这个力的方向，恰好<strong>和你拧的方向相反</strong>。物理学管这叫楞次定律：感应电流总是去阻碍引起它的那个运动。你拧得越快，电压越高，电流越大，阻力越大——这就是“搅蜂蜜”的手感。</p>
+
+<figure>
+<svg viewBox="0 0 680 250" role="img" aria-label="一根导线在两块磁铁间运动：既会感应电压，通电时也会受力">
+  <rect x="40" y="40" width="250" height="34" rx="6" class="s-N"/><text x="165" y="63" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">N</text>
+  <rect x="40" y="176" width="250" height="34" rx="6" class="s-S"/><text x="165" y="199" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">S</text>
+  <g class="st-ink2" stroke-width="1" stroke-dasharray="3 4" opacity=".6"><line x1="80" y1="74" x2="80" y2="176"/><line x1="125" y1="74" x2="125" y2="176"/><line x1="170" y1="74" x2="170" y2="176"/><line x1="215" y1="74" x2="215" y2="176"/><line x1="260" y1="74" x2="260" y2="176"/></g>
+  <circle cx="165" cy="125" r="16" class="s-cu"/><circle cx="165" cy="125" r="4" class="s-ink"/>
+  <path d="M190 125 h60" class="st-acc" stroke-width="4"/><path d="M262 125 l-14 -8 v16z" class="s-acc"/>
+  <text x="222" y="114" text-anchor="middle" font-size="13" class="s-acc">v 被拧着动</text>
+  <text x="165" y="232" text-anchor="middle" font-size="14" class="s-ink">发电机视角：动 → 出电压 E = BLv</text>
+  <g transform="translate(350,0)">
+    <rect x="40" y="40" width="250" height="34" rx="6" class="s-N"/><text x="165" y="63" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">N</text>
+    <rect x="40" y="176" width="250" height="34" rx="6" class="s-S"/><text x="165" y="199" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">S</text>
+    <g class="st-ink2" stroke-width="1" stroke-dasharray="3 4" opacity=".6"><line x1="80" y1="74" x2="80" y2="176"/><line x1="125" y1="74" x2="125" y2="176"/><line x1="170" y1="74" x2="170" y2="176"/><line x1="215" y1="74" x2="215" y2="176"/><line x1="260" y1="74" x2="260" y2="176"/></g>
+    <circle cx="165" cy="125" r="16" class="s-cu"/><circle cx="165" cy="125" r="4" class="s-ink"/>
+    <path d="M140 125 h-60" class="st-acc2" stroke-width="4"/><path d="M68 125 l14 -8 v16z" class="s-acc2"/>
+    <text x="108" y="114" text-anchor="middle" font-size="13" class="s-acc2">F 推回来</text>
+    <text x="165" y="232" text-anchor="middle" font-size="14" class="s-ink">电动机视角：通电流 → 受力 F = BIL</text>
+  </g>
+  <line x1="340" y1="40" x2="340" y2="210" class="s-line" stroke="var(--line)" stroke-width="2"/>
+</svg>
+<figcaption><b>看图要看什么：</b>同一根铜线（截面画成圆点）、同一个磁场、同一个 B·L。左边你推它，它出电压；右边你给它电流，它出力。两个公式里共用的那一项 B·L，就是今天要讲的“电机常数”的原型。短接时两边同时发生：你推（左），电压产生电流，电流又产生一个反向的力（右）。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比①：老式自行车上的摩擦发电机</div>
+<p>小时候有些自行车在后轮边上装一个小“瓶子”发电机，贴着轮胎转，给车灯供电。拨下来不接灯，蹬起来没感觉；一接上灯，你会明显觉得腿上多了一点阻力，骑得越快灯越亮、阻力也越大。灯越亮，说明你的腿上有越多力气被变成了电。短接电机，相当于把“车灯”换成一根导线——电阻几乎为零，电流最大，阻力最大。</p>
+<p class="off">哪里不准：自行车发电机那点阻力很小，大部分感觉还是来自路面和风；而一颗短接的低内阻电机，阻力可以大到让你明显拧不动，后面马上算给你看。</p></div>
+
+<p>下面这张图用一颗真实的无人机电机来算：T-Motor 的 MN4012 KV340，官方标注内阻 133 mΩ。拖动转速，切换三种接法，看手上的阻力怎么变。</p>
+
+<figure>
+<svg id="f1" viewBox="0 0 680 300" role="img" aria-label="可交互：手拧电机，开路、接灯泡、短接三种情况下的电压、电流和阻力">
+  <g transform="translate(150,150)">
+    <circle r="112" class="s-steel"/>
+    <circle r="104" class="s-can"/>
+    <g id="f1rot">
+      <circle r="96" class="s-steel"/>
+      <g id="f1mags"></g>
+      <circle r="62" class="s-bg2"/>
+      <path d="M0 -94 l7 12 h-14z" class="s-ink"/>
+    </g>
+    <g id="f1teeth"></g>
+    <circle r="18" class="s-can"/><circle r="5" class="s-ink"/>
+    <path id="f1drag" d="M-80 -130 A150 150 0 0 1 80 -130" class="nofill st-acc2" stroke-width="6" stroke-linecap="round" opacity="0"/>
+    <text id="f1dragT" x="0" y="-136" text-anchor="middle" font-size="13" class="s-acc2" opacity="0">反向阻力</text>
+  </g>
+  <!-- wires -->
+  <path d="M262 120 H380 M262 150 H380 M262 180 H380" class="st-cu" stroke-width="4"/>
+  <text x="270" y="110" font-size="12" class="s-ink2">A</text><text x="270" y="142" font-size="12" class="s-ink2">B</text><text x="270" y="172" font-size="12" class="s-ink2">C</text>
+  <g id="f1open"><circle cx="388" cy="120" r="5" class="s-cu"/><circle cx="388" cy="150" r="5" class="s-cu"/><circle cx="388" cy="180" r="5" class="s-cu"/><text x="402" y="155" font-size="14" class="s-ink2">三根线悬空</text></g>
+  <g id="f1short" style="display:none"><path d="M380 120 H420 V180 H380 M380 150 H420" class="nofill st-cu" stroke-width="5"/><text x="432" y="155" font-size="14" class="s-ink2">拧在一起</text></g>
+  <g id="f1lamp" style="display:none">
+    <path d="M380 120 H430 M380 150 H430 M380 180 H430" class="st-cu" stroke-width="3"/>
+    <circle id="f1halo" cx="470" cy="150" r="46" fill="var(--glow)" opacity="0"/>
+    <path d="M430 120 L455 140 M430 150 H452 M430 180 L455 160" class="st-ink2" stroke-width="2"/>
+    <circle cx="470" cy="150" r="22" class="s-bg2" stroke="var(--ink2)" stroke-width="2"/>
+    <path d="M460 150 q5 -10 10 0 q5 10 10 0" class="nofill st-acc" stroke-width="2"/>
+    <text x="470" y="200" text-anchor="middle" font-size="13" class="s-ink2">小灯泡（教学假设 1 Ω）</text>
+  </g>
+  <text x="560" y="40" text-anchor="middle" font-size="13" class="s-ink2">手上的阻力</text>
+  <rect x="540" y="50" width="40" height="200" rx="8" class="s-bg" stroke="var(--line)"/>
+  <rect id="f1bar" x="540" y="250" width="40" height="0" rx="8" class="s-acc"/>
+  <text id="f1barT" x="560" y="272" text-anchor="middle" font-size="14" font-weight="700" class="s-ink">0</text>
+  <text x="560" y="290" text-anchor="middle" font-size="12" class="s-ink2">N·m</text>
+</svg>
+<div class="seg" role="group" aria-label="接法">
+  <button id="m1open" class="on">开路</button><button id="m1lamp">接小灯泡</button><button id="m1short">三相短接</button>
+  <button id="p1play">▶ 转起来</button>
+</div>
+<div class="ctrl"><label for="r1">拧的转速</label><input id="r1" type="range" min="0" max="1500" step="10" value="600"><output id="o1">600 rpm</output></div>
+<div class="readout">
+  <div>反电动势 E<b id="e1">—</b></div><div>电流 I<b id="i1">—</b></div><div>阻力 T<b id="t1">—</b></div><div>变成热的功率<b id="w1">—</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>开路时电压照样有，但电流和阻力都是 0；一短接，电流能到十几安。对一颗外径约 45 mm 的电机，0.4 N·m 相当于在它外壳边缘施加接近 2 公斤的力——难怪“粘手”。这是忽略电感的粗模型（K<sub>e</sub> 取 1/KV 换算成 SI 单位，R 用官方 133 mΩ），转速越高越会高估电流，只用来看趋势。</figcaption>
+</figure>
+
+<p>这个现象在工程里有正经名字：<strong>短接制动 / 能耗制动</strong>（dynamic braking）。不少伺服驱动器都提供这种功能：需要时把电机三相短接，让轴不至于“自由落体”。你手上的“粘”，就是它的刹车效果。</p>
+
+<div class="box cold">
+<div class="t">冷知识｜法拉第先造出了电动机，十年后才造出发电机</div>
+<p>按美国物理学会（APS）的整理，1821 年 9 月法拉第在英国皇家研究院的地下室里做出了“电磁旋转”——通电导线绕着磁铁转，这是电动机的原理；直到 1831 年 8 月他才发现电磁感应，随后用一块在磁极间旋转的铜盘发出了电，这是发电机的原理。同一个人，用了十年才把这枚硬币翻到另一面。又过了四十多年，方丹的那根电缆才让工业界真正意识到：硬币只有一枚。</p>
+</div>
+
+<h2><span class="n">02</span>转速表里藏着一个电压表：K<sub>e</sub> 与 K<sub>v</sub></h2>
+<p>回到 E = B·L·v。对一颗具体的电机来说，磁铁、导线长度、匝数、尺寸都是做好就定死的，唯一会变的是转速。于是可以把那一堆东西打包成一个常数：</p>
+<p class="say">人话：这颗电机每转快一点，就多“吐”出多少伏。</p>
+<div class="formula">E = K<sub>e</sub> · ω<small>K<sub>e</sub> 反电动势常数（V·s/rad），ω 角速度（rad/s）</small></div>
+<p>航模和无人机圈子更习惯把它倒过来写，叫 <strong>K<sub>v</sub></strong>（speed constant，速度常数），单位 rpm/V：<strong>每加 1 伏电压，空载时能多转多少圈每分钟</strong>。所以那颗 MN4012 叫“KV340”，意思是喂它 1 V，它空载大约跑 340 rpm；反过来，你用手把它拧到 340 rpm，三根线上就会冒出大约 1 V。两种写法是同一个东西的正反面：</p>
+<div class="formula">K<sub>e</sub> ≈ 60 ÷ (2π · K<sub>v</sub>) ≈ 9.55 ÷ K<sub>v</sub><small>K<sub>v</sub> 用 rpm/V 时；60/(2π) 只是把 rpm 换成 rad/s</small></div>
+<p>KV340 代进去：K<sub>e</sub> ≈ 0.028 V·s/rad。这个小数字，马上要以另一个身份再出场一次。</p>
+
+<h2><span class="n">03</span>电机为什么有“极速”？因为它自带一个越转越紧的刹车</h2>
+<p>现在把电机接上电池。电池电压 V 往绕组里推电流，而电机一转起来，绕组自己又冒出反电动势 E——方向正好跟电池对着干。这就是“反”字的来历。真正能推动电流的，只剩两者的差：</p>
+<p class="say">人话：电池的电压，先要“抵掉”电机自己顶回来的那部分，剩下的才去推电流。</p>
+<div class="formula">I = (V − K<sub>e</sub>·ω) ÷ R<small>V 电源电压，R 绕组电阻；忽略电感和驱动器损耗</small></div>
+<p>刚通电时 ω = 0，没有反电动势，电流只被那点小电阻限制，非常大，所以起步力气最足。越转越快，E 越来越接近 V，电流越来越小，推力越来越弱——最后 E ≈ V，电流只够克服摩擦，速度就“顶”住了。这就是<strong>空载转速</strong>（no-load speed），约等于 K<sub>v</sub> × V。</p>
+
+<div class="analogy"><div class="t">类比②：顺风骑车</div>
+<p>假设身后刮着 20 km/h 的风，你不蹬，只靠风推。刚起步，风和你的速度差最大，推得最猛；你越骑越快，风“追”你追得越来越吃力；车速一接近 20 km/h，风就几乎推不动你了。电源电压就是风速，反电动势就是你自己的车速，两者的差才是推力。</p>
+<p class="off">哪里不准：风的推力和速度差大致是平方关系，电机里电流和电压差是线性的；而且电机可以靠后面会讲的“弱磁”等技巧稍微突破这个天花板，风可不会帮你。</p></div>
+
+<figure>
+<svg id="f2" viewBox="0 0 680 290" role="img" aria-label="可交互：通电后电机加速，反电动势逐渐逼近电源电压">
+  <g transform="translate(120,140)">
+    <circle r="92" class="s-steel"/><circle r="84" class="s-can"/>
+    <g id="f2rot"><circle r="76" class="s-steel"/><g id="f2mags"></g><circle r="50" class="s-bg2"/><circle r="14" class="s-can"/><path d="M0 -66 l7 12 h-14z" class="s-ink"/></g>
+    <text id="f2rpm" y="128" text-anchor="middle" font-size="16" font-weight="700" class="s-ink">0 rpm</text>
+  </g>
+  <!-- voltage bars -->
+  <line x1="290" y1="250" x2="660" y2="250" class="st-ink2" stroke-width="1"/>
+  <text x="290" y="272" font-size="12" class="s-ink2">0 V</text>
+  <rect x="320" y="56" width="70" height="194" rx="6" class="s-acc" opacity=".85"/>
+  <text x="355" y="46" text-anchor="middle" font-size="13" class="s-ink">电源 V</text>
+  <text x="355" y="160" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">22.2 V</text>
+  <rect id="f2E" x="430" y="250" width="70" height="0" rx="6" class="s-acc2" opacity=".85"/>
+  <text x="465" y="46" text-anchor="middle" font-size="13" class="s-ink">反电动势 E</text>
+  <text id="f2Et" x="465" y="242" text-anchor="middle" font-size="14" font-weight="700" class="s-ink">0 V</text>
+  <line x1="420" y1="56" x2="660" y2="56" class="st-acc" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect id="f2gap" x="540" y="56" width="70" height="194" rx="6" fill="var(--glow)" opacity=".8"/>
+  <text x="575" y="46" text-anchor="middle" font-size="13" class="s-ink">差值 → 电流</text>
+  <text id="f2It" x="575" y="275" text-anchor="middle" font-size="14" font-weight="700" class="s-ink">—</text>
+</svg>
+<div class="seg"><button id="p2play">▶ 通电</button><button id="p2reset">复位</button></div>
+<div class="ctrl"><label for="r2">负载力矩</label><input id="r2" type="range" min="0" max="0.5" step="0.01" value="0"><output id="o2">0.00 N·m</output></div>
+<div class="readout"><div>稳态转速<b id="s2">—</b></div><div>稳态电流<b id="c2">—</b></div><div>反电动势<b id="e2">—</b></div></div>
+<figcaption><b>看图要看什么：</b>点“通电”，盯着中间那根绿柱往上长、右边黄柱（差值）往下缩：电流是被转速自己“吃掉”的。再拖负载力矩：负载越大，电机需要更多电流，就必须留出更大的电压差，于是稳态转速往下掉——这条“力矩越大、转速越低”的直线，就是明天要讲的力矩-转速曲线。参数取 MN4012 KV340、22.2 V、133 mΩ 的理想模型，起步时按真实驱动器的做法把电流限在 60 A（教学假设）；为了看清楚，转子画面的转速被大幅放慢。</figcaption>
+</figure>
+
+<p>用真实数据对一下账。MN4012 KV340 的官方测试表里有一行：22.2 V 电池，装 16×5.4 英寸桨，满油门时 13.4 A、5400 rpm。理想空载转速是 340 × 22.2 ≈ 7550 rpm，装上桨掉到 5400 rpm。按 K<sub>v</sub> 算，5400 rpm 时反电动势约 5400 ÷ 340 ≈ 15.9 V；13.4 A 流过 0.133 Ω 只“吃掉”约 1.8 V。加起来 17.7 V，离 22.2 V 还差 4 V 多——它们花在了电调、电池内阻和导线上，而且电池输出端测到的直流电流，本来就不等于电机绕组里的相电流。<strong>这种粗算能告诉你方向和量级，告诉不了你精确值</strong>，这也是规格书上最大转速总要写明条件的原因。</p>
+
+<h2><span class="n">04</span>K<sub>t</sub>：每一安培能换多少力？它和 K<sub>e</sub> 是同一个数</h2>
+<p>反过来看电动机这一面。电流越大，导线受力越大，输出力矩越大，也是一个常数打包的事：</p>
+<p class="say">人话：喂它 1 安培，它就使出多少牛·米。</p>
+<div class="formula">T = K<sub>t</sub> · I<small>K<sub>t</sub> 力矩常数（torque constant，N·m/A），I 电流（A）</small></div>
+<p>神奇的地方来了。电机把电变成机械功时，若不计损耗，输入的电功率（反电动势 × 电流）应该等于输出的机械功率（力矩 × 角速度）——第一课讲过的 P = T·ω：</p>
+<div class="formula">K<sub>e</sub>·ω·I = K<sub>t</sub>·I·ω &nbsp;⇒&nbsp; K<sub>t</sub> = K<sub>e</sub><small>在 SI 单位下：N·m/A 与 V·s/rad 是同一个单位</small></div>
+<p class="say">人话：电机“每转快一点吐多少伏”和“每喂一安使多大劲”，是同一个数——能量守恒不允许它们不一样。</p>
+<p>所以 KV340 那颗电机，K<sub>t</sub> 也约等于 0.028 N·m/A。最大持续电流 22 A 时，力矩约 0.6 N·m（推算，理想换算）。注意：<strong>K<sub>v</sub> 高，K<sub>t</sub> 就低</strong>。转得快和使得上劲，在同一个常数上此消彼长。</p>
+
+<div class="analogy"><div class="t">类比③：骑车上坡换挡</div>
+<p>自行车的齿比同时决定两件事：踩一圈轮子转多远（速度），以及脚上的力被放大多少（力气）。挂低挡上坡，脚下轻松但车慢；挂高挡平路，车快但每一脚都沉。你没法只改其中一个，因为它们是同一个齿比的两面。K<sub>t</sub> 和 K<sub>v</sub> 也是这样：在电机里“挂挡”的不是齿轮，而是绕组的匝数。</p>
+<p class="off">哪里不准：换挡是骑行中随时能换的，电机的绕法出厂就定死了；另外齿轮传动有摩擦损耗，而 K<sub>t</sub> = K<sub>e</sub> 是理想状态下的严格相等——实际电机在大电流下铁芯会饱和，测到的 K<sub>t</sub> 会比小电流时略低。</p></div>
+
+<h2><span class="n">05</span>KV 越高就越猛吗？同一个身体，三种绕法</h2>
+<p>无人机圈子里流传一个误解：“KV 越高，电机越猛。”T-Motor 官方商城恰好给了一组完美的反例：MN4012 有 KV340、KV400、KV480 三个版本，<strong>定子尺寸完全一样</strong>（直径 40 mm、高 12 mm），重量一样，只是绕组不同。点下面的按钮比一比。</p>
+
+<figure>
+<svg id="f3" viewBox="0 0 680 260" role="img" aria-label="可交互：同一定子三种绕法的匝数、电阻、力矩常数与最大力矩对比">
+  <g transform="translate(130,128)">
+    <rect x="-70" y="-90" width="140" height="180" rx="14" class="s-can"/>
+    <rect x="-40" y="-90" width="80" height="180" class="s-steel"/>
+    <g id="f3coil"></g>
+    <text y="115" text-anchor="middle" font-size="13" class="s-ink2">一颗定子齿上的绕组（示意）</text>
+  </g>
+  <g id="f3bars" transform="translate(290,20)"></g>
+</svg>
+<div class="seg"><button data-k="0" class="on">KV340</button><button data-k="1">KV400</button><button data-k="2">KV480</button></div>
+<figcaption><b>看图要看什么：</b>KV 越低，匝数越多、线越细，所以电阻越大（133 → 75 → 57 mΩ）、K<sub>t</sub> 越大；但电阻大了能承受的电流就小（22 → 25 → 29 A）。最后一行把两者相乘：三种绕法的最大持续力矩几乎一样，都在 0.6 N·m 左右。<strong>力矩的“天花板”由电机的个头（铜和磁铁有多少）决定，K<sub>v</sub> 只决定你用“高电压小电流”还是“低电压大电流”去够它。</strong>电阻、电流、功率为 T-Motor 官方数据；K<sub>t</sub> 和力矩按 9.55/K<sub>v</sub> 推算。线圈匝数为示意，并非真实圈数。</figcaption>
+</figure>
+
+<p>道理很简单：多绕一倍的匝数，每一圈都在“切”磁场，电压叠加，K<sub>e</sub>（也就是 K<sub>t</sub>）翻倍；但槽里的空间是固定的，匝数翻倍，导线就只能细一半截面、长一倍，电阻变成约 4 倍。力矩翻倍了，可允许的电流也跟着少了。所以选 K<sub>v</sub> 的真正问题是：<strong>你的电源是多少伏？你要的最高转速是多少？</strong>选一个让两者匹配的绕法而已。</p>
+
+<div class="box fail">
+<div class="t">翻车现场｜机器人被人推一把，实验室电源跳了</div>
+<p>这是机器人实验室的经典翻车：用一台普通开关电源给关节供电，有人用手快速扳动机械臂，或者腿着地时被冲击“倒拖”——电机瞬间变成发电机，电流<strong>倒灌</strong>回电源线，母线电压往上冲。很多开关电源只会“出”电不会“吃”电，轻则保护关机，重则损坏。</p>
+<p>这不是传说。电机驱动器厂商 ODrive 的官方文档专门写道：有些 AC/DC 电源只要遇到任何回馈电能就会关断；驱动器要设置回馈电流上限和过压保护，目的就是防止损坏电源，必要时还要外接刹车电阻把多余能量烧掉。Westwood 自己的《BEAR-Product-Manual-1.3.0-EN》第 2.2 节也有一条 CAUTION：带着大惯量负载做动态运动时，外部冲击或突然的倒拖会产生显著的反电动势，强烈建议使用高倍率锂聚合物电池，或加装带大电容的反电动势吸收电路，以保护供电线路。</p>
+</div>
+
+<div class="analogy"><div class="t">类比④：会“发电”的电梯和高铁</div>
+<p>满载的轿厢往下走、空轿厢往上走时，电梯的电机其实是在被重力拖着转——有些电梯装了能量回馈装置，把这部分电送回楼里的电网；高铁和地铁刹车时，也会让牵引电机发电（再生制动），把动能还回电网。它们都有一个“能吃电”的去处。实验室里的开关电源没有，所以反电动势只能把电压顶高。</p>
+<p class="off">哪里不准：电梯、列车有专门的回馈变流器和电网兜底，机器人关节回馈的能量小得多，但时间极短、峰值很尖，电源一样可能顶不住。</p></div>
+
+<p>说回维也纳。几年后，爱迪生的电灯照明系统里，关键部件之一是这样一台“长腿”直流发电机：额定 110 V、52 A，能点亮 60 盏灯。它和那台被接错线的格拉姆机，原理上都是一回事——谁拧它，它就发电；谁喂它电，它就转。</p>
+
+<figure class="photo">
+<img src="https://ids.si.edu/ids/deliveryService?id=NMAH-JN2026-00329&amp;max_w=800" loading="lazy" referrerpolicy="no-referrer" alt="约 1881 年爱迪生 Z 型直流发电机，两根高高竖起的磁极" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.si.edu/object/nmah_1287625">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>两根高高竖起的“腿”是励磁线圈（造磁场用），底下横着的圆筒是转子。它的额定值 110 V、52 A，乘起来约 5.7 kW。把它的轴接到另一台通电的同类机器上，它一样会被“拧”着发电；给它通电，它也一样会转。<br>图：Smithsonian National Museum of American History / <a href="https://www.si.edu/object/nmah_1287625">Edison Type "Z" Dynamo（nmah_1287625）</a>，CC0</figcaption>
+</figure>
+
+<h2><span class="n">06</span>工作里会在哪遇到</h2>
+<div class="box work">
+<p><strong>规格书上：</strong>《BEAR-Product-Manual-1.3.0-EN》Table 1 里有两行 —— Speed Constant K<sub>V</sub>（RPM/V）和 Torque Constant K<sub>T</sub>（Nm/A）。例如 KB02：23.63 RPM/V、0.35 Nm/A；KBMB02：8.19 RPM/V、1.17 Nm/A。这些数值远低于无人机电机的几百 rpm/V，因为它们是<strong>整个执行器</strong>的常数，减速器把转速除下来、把力矩乘上去了（这一点是按量级的推算，具体口径以工程确认为准）。</p>
+<p><strong>估力矩：</strong>《BEAR-SDK-Manual-EN》Torque Mode 一节给出 T = iq × K<sub>T</sub>，并说明这是“粗略估计”。比如 KB02 给 10 A 的 iq，粗估约 3.5 N·m（推算）。</p>
+<p><strong>估最高转速：</strong>同一手册在 Velocity Mode 下写明，实际最大转速受供电电压和负载限制。按 K<sub>V</sub> 粗算，KB02 在 24 V 时理论空载上限约 23.63 × 24 ≈ 567 rpm（推算，带载会更低，不能当规格报给客户）。</p>
+<p><strong>一个值得留意的细节（推算）：</strong>Table 1 里多数型号满足 K<sub>T</sub> ≈ 8.27 ÷ K<sub>V</sub>（KB02：8.27 ÷ 23.63 ≈ 0.35），而 KBMB02 更接近 9.55 ÷ K<sub>V</sub>（≈ 1.17）。9.55 和 8.27 差一个 √3/2，通常来自三相电机里“K<sub>v</sub> 按线电压量、K<sub>t</sub> 按相电流算”的口径差。手册没有说明各型号用的口径，客户若拿这两个数互相换算，建议先找工程团队确认 [待技术确认]。</p>
+<p><strong>客户邮件常见问法：</strong></p>
+<p class="en">“What is the maximum speed at 24 V?” / “Can I estimate output torque from the current reading?” / “We plan to power the actuators from a bench power supply — any concerns?”</p>
+<p>第三个问题可以直接引用手册的 CAUTION 来答：</p>
+<p class="en">When the actuator is back-driven or hit by external impacts while driving large inertial loads, it generates significant back EMF. We recommend using a high-rate Li-Po battery, or adding a back-EMF absorbing circuit with sufficient capacitance to protect the power supply line.</p>
+</div>
+
+<h2><span class="n">07</span>自测：三个真实场景</h2>
+<p class="q">1. 展会上，一位客户指着 KB02 规格表说：“K<sub>V</sub> 是 23.63 RPM/V，那我用 33.6 V 供电，它就能稳定跑 794 rpm 对吧？”你怎么回答？</p>
+<details><summary>看答案</summary><p>794 rpm 是按 K<sub>V</sub> × 电压算出来的<strong>理论空载上限</strong>：此时反电动势几乎等于电源电压，没有余量推电流，所以一带负载就会掉速，而且驱动器自身也有电压损耗和速度限制。可以说：“That's a theoretical no-load figure; the achievable speed under your load will be lower. If you share the load profile, we can check it with our engineering team.”（具体转速能力以工程确认为准。）</p></details>
+<p class="q">2. 一封邮件写着：“Our test rig uses a 30 A lab power supply. Operators will move the robot arm by hand during teaching.” 你第一反应应该提醒什么？</p>
+<details><summary>看答案</summary><p>人手拖动 = 电机被倒拖 = 电机在发电，电流会倒灌回电源，普通实验室电源可能保护关机甚至损坏。按《BEAR-Product-Manual-1.3.0-EN》第 2.2 节的 CAUTION，建议使用高倍率锂电池或加装带大电容的反电动势吸收电路。</p></details>
+<p class="q">3. 客户问：“能不能把电机绕组改成更高的 KV，让关节转得更快，同时峰值力矩不变？”从今天学的物理出发，这个要求的代价在哪？</p>
+<details><summary>看答案</summary><p>K<sub>v</sub> 提高，K<sub>t</sub> 就按比例降低；要保持同样力矩，就需要按比例更大的电流，驱动器、线缆、电源都得跟着扛，发热分布也会变（明天会讲）。所以这不是“改个绕组”的小事，而是系统层面的取舍。对外不要做承诺，可以说：“Raising the speed constant lowers the torque constant, so the same torque would require proportionally higher current. We'll need our engineering team to evaluate this at the system level.” [待技术确认]</p></details>
+
+<h2>术语对照</h2>
+<table class="terms">
+<tr><td>反电动势</td><td>Back-EMF (back electromotive force)</td></tr>
+<tr><td>电磁感应</td><td>Electromagnetic induction</td></tr>
+<tr><td>反电动势常数</td><td>Back-EMF constant K<sub>e</sub> (V·s/rad)</td></tr>
+<tr><td>速度常数</td><td>Speed / velocity constant K<sub>v</sub> (rpm/V)</td></tr>
+<tr><td>力矩常数</td><td>Torque constant K<sub>t</sub> (N·m/A)</td></tr>
+<tr><td>空载转速</td><td>No-load speed</td></tr>
+<tr><td>绕组 / 匝数</td><td>Winding / Number of turns</td></tr>
+<tr><td>相电阻 / 内阻</td><td>Phase resistance / Internal resistance</td></tr>
+<tr><td>短接制动</td><td>Dynamic braking</td></tr>
+<tr><td>再生制动 / 能量回馈</td><td>Regenerative braking / Regeneration</td></tr>
+<tr><td>倒拖 / 反驱</td><td>Back-drive</td></tr>
+<tr><td>母线电压</td><td>Bus voltage (DC bus)</td></tr>
+</table>
+
+<div class="tease">下一课预告：那颗 KV340 电机，规格写着“最大持续电流 22 A（180 秒）”。如果把轴卡死、硬灌 22 A，它能使出约 0.6 N·m——可为什么只敢写 180 秒？BEAR 手册里同一台执行器，1.5 秒能给的力矩为什么是 15 秒的三倍？答案不在磁铁里，在热里。明天，W1-4：铜损、铁损与力矩-转速曲线。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>Bureau International des Expositions, “Zénobe Gramme’s electrifying discovery at Expo 1873 Vienna”（方丹约 500 米接线、第二台机器转动并带水泵）：<a href="https://bie-paris.org/site/en/latest/blog/entry/zenobe-gramme-s-electrifying-discovery-at-expo-1873-vienna">bie-paris.org</a></li>
+<li>National MagLab, “Gramme Dynamo – 1871”（格拉姆与方丹合办工厂、第一种工业发电机）：<a href="https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/gramme-dynamo-1871/">nationalmaglab.org</a></li>
+<li>Smithsonian NMAH, Electric Motor, c1837（戴文波特电动小火车、三杯式电池供电）：<a href="https://www.si.edu/object/nmah_705561">si.edu</a></li>
+<li>Smithsonian NMAH, Edison Type "Z" Dynamo（110 V、52 A、60 盏灯）：<a href="https://www.si.edu/object/nmah_1287625">si.edu</a></li>
+<li>APS News, “This Month in Physics History: Faraday and electromagnetic rotation”（1821 电磁旋转、1831 电磁感应与铜盘）：<a href="https://www.aps.org/apsnews/2001/08/faraday-electromagnetism">aps.org</a></li>
+<li>T-Motor 官方商城，MN4012 KV340/400/480（定子 40×12 mm、内阻、最大电流与功率、测试数据）：<a href="https://store.tmotor.com/product/mn4012-kv340-motor-navigator-type.html">store.tmotor.com</a></li>
+<li>ODrive Robotics 文档，Hardware Configuration（回馈电流、过压保护、刹车电阻、部分电源遇回馈即关断）：<a href="https://docs.odriverobotics.com/v/latest/manual/hardware-config.html">docs.odriverobotics.com</a></li>
+<li>Westwood Robotics, BEAR-Product-Manual-1.3.0-EN.pdf（Table 1 的 K<sub>V</sub> / K<sub>T</sub>；第 2.2 节 Back EMF & Power Protection CAUTION）；BEAR-SDK-Manual-EN.pdf（Torque Mode：T = iq × K<sub>T</sub>；Velocity Mode 最高转速受供电电压限制的 CAUTION）——公司内部资料</li>
+</ul>
+</main>
+
+<script>
+(function(){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $(i){return document.getElementById(i)}
+  var NS='http://www.w3.org/2000/svg';
+  function mags(g,r1,r2,n){
+    for(var k=0;k<n;k++){
+      var a0=(k/n)*2*Math.PI, a1=((k+0.82)/n)*2*Math.PI;
+      var p=document.createElementNS(NS,'path');
+      var d='M'+(r1*Math.sin(a0)).toFixed(1)+' '+(-r1*Math.cos(a0)).toFixed(1)+
+        ' A'+r1+' '+r1+' 0 0 1 '+(r1*Math.sin(a1)).toFixed(1)+' '+(-r1*Math.cos(a1)).toFixed(1)+
+        ' L'+(r2*Math.sin(a1)).toFixed(1)+' '+(-r2*Math.cos(a1)).toFixed(1)+
+        ' A'+r2+' '+r2+' 0 0 0 '+(r2*Math.sin(a0)).toFixed(1)+' '+(-r2*Math.cos(a0)).toFixed(1)+'Z';
+      p.setAttribute('d',d);p.setAttribute('class',k%2?'s-S':'s-N');g.appendChild(p);
+    }
+  }
+  /* ---------- 图：手拧电机 ---------- */
+  mags($('f1mags'),94,80,14);
+  var tg=$('f1teeth');
+  for(var k=0;k<12;k++){var a=k*30;var r=document.createElementNS(NS,'rect');
+    r.setAttribute('x','-5');r.setAttribute('y','-60');r.setAttribute('width','10');r.setAttribute('height','34');r.setAttribute('rx','2');
+    r.setAttribute('class','s-cu');r.setAttribute('transform','rotate('+a+')');tg.appendChild(r);}
+  var KE=60/(2*Math.PI*340), R0=0.133, mode='open', ang1=0, run1=false, last1=0;
+  function calc1(){
+    var rpm=+$('r1').value, w=rpm*2*Math.PI/60, E=KE*w;
+    var Rx=mode=='open'?Infinity:(mode=='lamp'?1.0:0);
+    var I=isFinite(Rx)?E/(R0+Rx):0, T=KE*I, P=E*I;
+    $('o1').textContent=rpm+' rpm';
+    $('e1').textContent=E.toFixed(2)+' V';
+    $('i1').textContent=I.toFixed(1)+' A';
+    $('t1').textContent=T.toFixed(2)+' N·m';
+    $('w1').textContent=P.toFixed(1)+' W';
+    var h=Math.min(200,T/0.6*200);
+    $('f1bar').setAttribute('y',(250-h).toFixed(1));$('f1bar').setAttribute('height',h.toFixed(1));
+    $('f1barT').textContent=T.toFixed(2);
+    $('f1drag').setAttribute('opacity',Math.min(1,T/0.25).toFixed(2));
+    $('f1dragT').setAttribute('opacity',T>0.02?'1':'0');
+    $('f1halo').setAttribute('opacity',mode=='lamp'?Math.min(.9,P/4).toFixed(2):'0');
+    return rpm;
+  }
+  function setMode(m){mode=m;
+    ['open','lamp','short'].forEach(function(x){$('m1'+x).className=(x==m?'on':'');$('f1'+x).style.display=(x==m?'':'none');});
+    calc1();}
+  ['open','lamp','short'].forEach(function(x){$('m1'+x).addEventListener('click',function(){setMode(x)});});
+  $('r1').addEventListener('input',calc1);
+  function draw1(){$('f1rot').setAttribute('transform','rotate('+ang1.toFixed(1)+')');}
+  function tick1(ts){if(!run1)return;var rpm=+$('r1').value;if(last1)ang1+=(ts-last1)/1000*rpm*0.12;last1=ts;draw1();requestAnimationFrame(tick1);}
+  $('p1play').addEventListener('click',function(){
+    if(reduce){ang1+=25;draw1();return;}
+    run1=!run1;last1=0;this.textContent=run1?'❚❚ 停':'▶ 转起来';if(run1)requestAnimationFrame(tick1);});
+  calc1();draw1();
+
+  /* ---------- 图：通电加速 ---------- */
+  mags($('f2mags'),74,62,14);
+  var V=22.2, J=0.00012, w2=0, ang2=0, run2=false, last2=0;
+  function TL(){return +$('r2').value}
+  function steady(){var T=TL(), I=T/KE, w=(V-I*R0)/KE; return {I:I,w:w};}
+  function show2(){
+    var E=KE*w2, I=(V-E)/R0; var rpm=w2*60/(2*Math.PI);
+    var hE=Math.max(0,Math.min(194,E/V*194)), hg=194-hE;
+    $('f2E').setAttribute('y',(250-hE).toFixed(1));$('f2E').setAttribute('height',hE.toFixed(1));
+    $('f2Et').setAttribute('y',Math.max(70,244-hE).toFixed(1));
+    $('f2Et').textContent=E.toFixed(1)+' V';
+    $('f2gap').setAttribute('y',(250-hg).toFixed(1));$('f2gap').setAttribute('height',hg.toFixed(1));
+    $('f2It').textContent=(V-E).toFixed(1)+' V → '+(I>60?'限流 60':Math.max(0,I).toFixed(0))+' A';
+    $('f2rpm').textContent=Math.round(rpm)+' rpm';
+    $('f2rot').setAttribute('transform','rotate('+ang2.toFixed(1)+')');
+    var s=steady();
+    $('o2').textContent=TL().toFixed(2)+' N·m';
+    $('s2').textContent=Math.round(s.w*60/(2*Math.PI))+' rpm';
+    $('c2').textContent=s.I.toFixed(1)+' A';
+    $('e2').textContent=(KE*s.w).toFixed(1)+' V';
+  }
+  function tick2(ts){if(!run2)return;var dt=last2?Math.min(0.05,(ts-last2)/1000):0;last2=ts;
+    var sub=0.012*dt; /* 画面放慢约 80 倍 */
+    for(var i=0;i<20;i++){var I=(V-KE*w2)/R0; if(I>60)I=60; var acc=(KE*I-TL())/J; w2+=acc*sub/20; if(w2<0)w2=0;}
+    ang2+=w2*60/(2*Math.PI)*dt*0.02;
+    show2();requestAnimationFrame(tick2);}
+  $('p2play').addEventListener('click',function(){
+    if(reduce){w2=steady().w;show2();return;}
+    run2=!run2;last2=0;this.textContent=run2?'❚❚ 暂停':'▶ 通电';if(run2)requestAnimationFrame(tick2);});
+  $('p2reset').addEventListener('click',function(){w2=0;ang2=0;show2();});
+  $('r2').addEventListener('input',function(){if(!run2&&w2>0)w2=steady().w;show2();});
+  if(reduce){w2=steady().w*0.6;}
+  show2();
+
+  /* ---------- 图：三种绕法 ---------- */
+  var D=[{kv:340,R:133,I:22,P:660,turns:9,wid:2.2},{kv:400,R:75,I:25,P:750,turns:7,wid:3},{kv:480,R:57,I:29,P:870,turns:6,wid:3.6}];
+  var rows=[
+    {n:'KV（rpm/V）',f:function(d){return d.kv},max:500,fmt:function(v){return v}},
+    {n:'内阻（mΩ）',f:function(d){return d.R},max:140,fmt:function(v){return v}},
+    {n:'最大持续电流（A）',f:function(d){return d.I},max:32,fmt:function(v){return v}},
+    {n:'Kₜ 推算（mN·m/A）',f:function(d){return 9549/d.kv},max:30,fmt:function(v){return v.toFixed(1)}},
+    {n:'最大持续力矩 推算（N·m）',f:function(d){return 9.549/d.kv*d.I},max:0.7,fmt:function(v){return v.toFixed(2)}},
+    {n:'最大功率 180 s（W）',f:function(d){return d.P},max:900,fmt:function(v){return v}}
+  ];
+  var bars=$('f3bars'), barEls=[];
+  rows.forEach(function(r,i){
+    var y=i*38;
+    var t=document.createElementNS(NS,'text');t.setAttribute('x','0');t.setAttribute('y',(y+12).toString());t.setAttribute('font-size','13');t.setAttribute('class','s-ink2');t.textContent=r.n;bars.appendChild(t);
+    var bg=document.createElementNS(NS,'rect');bg.setAttribute('x','0');bg.setAttribute('y',(y+17).toString());bg.setAttribute('width','300');bg.setAttribute('height','12');bg.setAttribute('rx','6');bg.setAttribute('class','s-bg');bars.appendChild(bg);
+    var b=document.createElementNS(NS,'rect');b.setAttribute('x','0');b.setAttribute('y',(y+17).toString());b.setAttribute('height','12');b.setAttribute('rx','6');b.setAttribute('class',i==4?'s-acc':'s-acc2');
+    b.style.transition=reduce?'none':'width .4s';bars.appendChild(b);
+    var v=document.createElementNS(NS,'text');v.setAttribute('x','310');v.setAttribute('y',(y+28).toString());v.setAttribute('font-size','14');v.setAttribute('font-weight','700');v.setAttribute('class','s-ink');bars.appendChild(v);
+    barEls.push({b:b,v:v,r:r});
+  });
+  function coil(d){
+    var g=$('f3coil');g.innerHTML='';
+    var h=150, top=-75, step=h/(d.turns);
+    for(var k=0;k<d.turns;k++){
+      var y=top+step*(k+0.5);
+      var e=document.createElementNS(NS,'ellipse');e.setAttribute('cx','0');e.setAttribute('cy',y.toFixed(1));e.setAttribute('rx','58');e.setAttribute('ry',(step*0.42).toFixed(1));
+      e.setAttribute('fill','none');e.setAttribute('stroke','var(--copper)');e.setAttribute('stroke-width',(d.wid*3).toFixed(1));g.appendChild(e);
+    }
+    var t=document.createElementNS(NS,'text');t.setAttribute('x','0');t.setAttribute('y','-98');t.setAttribute('text-anchor','middle');t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('class','s-acc');
+    t.textContent='KV'+d.kv+'：'+(d.kv==340?'圈多线细':(d.kv==480?'圈少线粗':'居中'));g.appendChild(t);
+  }
+  function sel(k){var d=D[k];
+    var bs=document.querySelectorAll('button[data-k]');for(var i=0;i<bs.length;i++)bs[i].className=(+bs[i].getAttribute('data-k')==k?'on':'');
+    barEls.forEach(function(e){var v=e.r.f(d);e.b.setAttribute('width',Math.max(4,Math.min(300,v/e.r.max*300)).toFixed(1));e.v.textContent=e.r.fmt(v);});
+    coil(d);}
+  var bs=document.querySelectorAll('button[data-k]');for(var i=0;i<bs.length;i++)bs[i].addEventListener('click',function(){sel(+this.getAttribute('data-k'))});
+  sel(0);
+})();
+</script>
+</body>
+</html>
