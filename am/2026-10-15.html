@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W1-2｜无刷电机怎么转起来</title>
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<a href="../index.html" style="display:inline-block;margin:12px 16px 0;font:15px -apple-system,'PingFang SC',sans-serif;color:inherit;opacity:.75;text-decoration:none">← 返回目录</a>
+
+
+
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --magN:#c2410c; --magS:#1d4ed8;
+  --gear:#7c8593; --gear2:#4b5563; --warn:#fdf0d5; --warnline:#d97706;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --magN:#ea7a45; --magS:#6d8cf0;
+    --gear:#8b95a3; --gear2:#b0b8c4; --warn:#2b2416; --warnline:#f59e0b;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:12px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:6px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:18px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:6px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+strong{color:var(--ink)}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5.5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top}
+td:first-child{white-space:nowrap;font-weight:600}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--accent);margin-left:4px;vertical-align:2px}
+svg text{font-family:var(--sans)}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<style>
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+</style>
+
+<main>
+<div class="kicker">机器人早课 · 第 1 单元「电机基础」· 第 2 课</div>
+<h1>早课 W1-2｜无刷电机怎么转起来</h1>
+<p class="sub">一只火星车的坏轮子、一个公园里的黄昏，和一根永远够不着的胡萝卜。约 15 分钟。</p>
+
+<div class="lead">
+<p>2006 年 3 月，火星上，勇气号（Spirit）任务的第 779 个火星日。地面照常发去行驶指令，这台六轮车的右前轮却不转了。它原本只计划工作三个月，此时已经在火星上跑了两年多。</p>
+<p>JPL 的工程师翻遍遥测数据，头号嫌疑落在一个很小的零件上：电机里的<strong>电刷</strong>（brush）——负责把电流送进旋转部件的那一小块导体，可能接触不上了。新闻稿里还有一个数字：这些轮子电机此时已经转了<strong>超过 1300 万圈</strong>，远远超出设计要求。</p>
+<p>勇气号和它的孪生兄弟机遇号身上，各装着 39 台瑞士 maxon 公司的<strong>有刷直流电机</strong>，直径 20 到 25 毫米，驱动轮子、机械臂、相机等部件，绝大多数一直工作得很好。但“有刷”两个字意味着：电机里永远有两个零件一边摩擦、一边导电。磨得再慢，也有磨完的一天。</p>
+<p>工程师的办法很干脆：倒着开，拖着那只死轮子走。勇气号就这样又挪了将近一公里。</p>
+<p>今天就从这只轮子出发，回答一个问题：<strong>电刷到底在干什么？把它拿掉之后，电机靠什么转？</strong>答案就是你在 BEAR 执行器、MIT Mini Cheetah、无人机，甚至家里的变频吊扇里都会碰到的东西——无刷电机。</p>
+</div>
+
+<figure class="photo">
+<img src="https://pds-rings.seti.org/press_releases/medium/PIA05xxx/PIA05033_med.jpg" loading="lazy" referrerpolicy="no-referrer" alt="JPL 工程师在地面测试火星探测车的站立动作" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://pds-rings.seti.org/press_releases/pages/PIA05xxx/PIA05033.html">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>2003—2004 年 JPL 在地面用测试车演练火星车“站起来”的动作。注意那六个轮子——勇气号上每个轮子都由自己的电机驱动，坏掉的就是其中一个。<br>图：NASA/JPL / <a href="https://pds-rings.seti.org/press_releases/pages/PIA05xxx/PIA05033.html">PIA05033 “Spirit Rises at JPL”</a>，NASA 图片，公有领域</figcaption>
+</figure>
+
+<div class="box cold">
+<div class="t">冷知识｜坏轮子立了大功</div>
+<p>2007 年，勇气号拖着那只不转的右前轮倒车，死轮像犁一样在地上刨出一道浅沟，翻出一片亮白色的土。车上的光谱仪一测：这片土大约 90% 是二氧化硅。首席科学家 Steve Squyres 的解读是，这里曾经有过温泉或蒸汽喷口——那种环境可能适合微生物生存。这被认为是两台火星车最重要的发现之一。一次电机故障，换来一个科学大发现。</p>
+</div>
+
+<figure class="photo">
+<img src="https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia09/pia09403/PIA09403.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg" loading="lazy" referrerpolicy="no-referrer" alt="勇气号拖着坏轮子在火星地面翻出的亮白色富硅土壤" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://science.nasa.gov/photojournal/silica-rich-soil-in-gusev-crater/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>画面里那片发亮的白色土壤（昵称“Gertrude Weise”），就是被坏轮子拖出来的。一只“磨坏了电刷”的轮子，在火星上留下了最值钱的车辙。<br>图：NASA/JPL/Cornell / <a href="https://science.nasa.gov/photojournal/silica-rich-soil-in-gusev-crater/">NASA Photojournal PIA09403</a>，NASA 图片，公有领域</figcaption>
+</figure>
+
+<h2><span class="n">01</span>电机只做一件事：让磁铁永远追不上</h2>
+<p>先把电机想得极简单。磁铁同极相斥、异极相吸，这你高中就知道。把一块磁铁装在能转的轴上，旁边再放一块磁铁，轴上那块会转过去、对齐，然后——停住。指南针就是这样：它会转，但只转到对齐为止。</p>
+<p>想让它一直转，诀窍只有一个：<strong>在它快要对齐的时候，把吸引它的那个“目标”往前挪一点。</strong>目标一直往前挪，它就一直追。世界上所有旋转电机，说穿了都是这个游戏。</p>
+<div class="analogy"><div class="t">类比①｜驴子和胡萝卜</div>
+<p>老漫画里，驴头上绑一根竿子，竿子前面吊一根胡萝卜。驴往前走，胡萝卜也往前走，驴永远够不着，于是一直走。电机的转子就是驴，“吸引它的磁场”就是胡萝卜。</p>
+<p class="off">哪里不准：胡萝卜绑在驴头上，跟着走是自动的；电机里的“胡萝卜”没有竿子，得有专门的机构把它一格一格往前挪，而且挪多远、什么时候挪，直接决定电机有没有劲（第 04 节）。这个“挪胡萝卜”的动作，就是今天的主角。</p></div>
+<p>几个词先认一下：不动的部分叫<strong>定子</strong>（stator），转的部分叫<strong>转子</strong>（rotor），“把磁场往前挪”这个动作叫<strong>换相</strong>（commutation）。下面所有内容，都在回答一个问题：<strong>谁来换相？</strong></p>
+
+<h2><span class="n">02</span>有刷电机：让转子自己去拨开关</h2>
+<p>勇气号轮子里的有刷直流电机，是 19 世纪就成熟的老办法：磁铁固定在外壳上（定子），线圈绕在转子上。那么电怎么送进一个一直在转的线圈？</p>
+<p>答案在轴的一端：一个切成几瓣的铜环，叫<strong>换向器</strong>（commutator），每瓣连着一组线圈；两块石墨做的<strong>碳刷</strong>被弹簧压在铜环上，一正一负。转子转到某个角度，碳刷就从一瓣滑到下一瓣，线圈里的电流方向随之翻转——“胡萝卜”被转子自己拨着往前挪了。</p>
+
+<figure>
+<svg viewBox="0 -18 340 310" role="img" aria-label="有刷直流电机正面剖视与换向器、碳刷示意">
+<circle cx="170" cy="105" r="92" fill="var(--can)"/>
+<circle cx="170" cy="105" r="84" fill="var(--bg2)"/>
+<path d="M105.7,51.0 A84,84 0 0 0 105.7,159.0 L116.4,150.0 A70,70 0 0 1 116.4,60.0Z" fill="var(--magN)"/>
+<path d="M234.3,51.0 A84,84 0 0 1 234.3,159.0 L223.6,150.0 A70,70 0 0 0 223.6,60.0Z" fill="var(--magS)"/>
+<text x="87" y="110" font-size="14" font-weight="700" fill="#fff">N</text>
+<text x="243" y="110" font-size="14" font-weight="700" fill="#fff">S</text>
+<g id="armature">
+<g><rect x="165" y="52" width="10" height="40" fill="var(--steel)"/><rect x="148" y="45" width="44" height="8" rx="3" fill="var(--steel)"/><rect x="157" y="60" width="26" height="22" rx="4" fill="var(--copper)"/><path d="M161 60v22M166 60v22M171 60v22M176 60v22" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(120 170 105)"><rect x="165" y="52" width="10" height="40" fill="var(--steel)"/><rect x="148" y="45" width="44" height="8" rx="3" fill="var(--steel)"/><rect x="157" y="60" width="26" height="22" rx="4" fill="var(--copper)"/><path d="M161 60v22M166 60v22M171 60v22M176 60v22" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(240 170 105)"><rect x="165" y="52" width="10" height="40" fill="var(--steel)"/><rect x="148" y="45" width="44" height="8" rx="3" fill="var(--steel)"/><rect x="157" y="60" width="26" height="22" rx="4" fill="var(--copper)"/><path d="M161 60v22M166 60v22M171 60v22M176 60v22" stroke="#7a4512" stroke-width="1"/></g>
+<circle cx="170" cy="105" r="20" fill="var(--steel)"/>
+<circle cx="170" cy="105" r="6" fill="var(--ink)"/>
+</g>
+<text x="330" y="-5" font-size="11.5" fill="var(--ink2)" text-anchor="end">永磁体装在外壳上（定子）</text>
+<text x="40" y="200" font-size="11.5" fill="var(--ink2)">线圈绕在转子上</text>
+<line x1="88" y1="196" x2="150" y2="150" stroke="var(--ink2)" stroke-width="0.8"/>
+<line x1="170" y1="200" x2="170" y2="206" stroke="var(--ink2)" stroke-dasharray="3 3"/>
+<text x="170" y="214" text-anchor="middle" font-size="11" fill="var(--ink2)">沿着轴往后看 ↓</text>
+<polyline points="70,240 76,232 82,248 88,232 94,248 100,232 106,240" fill="none" stroke="var(--gear2)" stroke-width="2"/>
+<rect x="106" y="231" width="34" height="18" rx="2" fill="#3f3f46"/>
+<circle cx="170" cy="240" r="24" fill="var(--copper)"/>
+<path d="M170 240 L170 214 M170 240 L192.5 253 M170 240 L147.5 253" stroke="var(--bg2)" stroke-width="4"/>
+<circle cx="170" cy="240" r="7" fill="var(--ink)"/>
+<rect x="194" y="231" width="34" height="18" rx="2" fill="#3f3f46"/>
+<polyline points="228,240 234,232 240,248 246,232 252,248 258,232 264,240" fill="none" stroke="var(--gear2)" stroke-width="2"/>
+<polygon points="193,226 196,233 203,230 198,236 204,240 196,240 194,247 191,240 184,241 189,236 185,230 192,233" fill="#f5b301"/>
+<text x="56" y="244" font-size="16" font-weight="700" fill="var(--magN)">+</text>
+<text x="272" y="245" font-size="16" font-weight="700" fill="var(--magS)">−</text>
+<text x="100" y="270" text-anchor="middle" font-size="11.5" fill="var(--ink2)">碳刷与弹簧</text>
+<text x="190" y="288" text-anchor="middle" font-size="11.5" fill="var(--ink2)">换向器（三瓣铜环）</text>
+<text x="232" y="222" font-size="11" fill="#d97706">接缝处的火花</text>
+</svg>
+<figcaption><b>看图要看什么：</b>上半是正面剖视：磁铁不动，带线圈的三齿转子在中间转。下半是轴的另一端：碳刷压在分瓣铜环上，每滑过一道接缝，线圈电流就换一次方向——换相是“机械”完成的，代价是摩擦和那一点火花。</figcaption>
+</figure>
+
+<p>这个设计聪明在于：接上直流电就能转，电压越高转得越快，一个电子元件都不需要。所以玩具车、电动牙刷这类东西至今大量用它。</p>
+<div class="analogy"><div class="t">类比②｜无轨电车的“辫子”</div>
+<p>坐过老式无轨电车的人都记得车顶那两根长杆，顶端的滑块贴着架空线一路滑过去；雨天偶尔能看见火花，转弯太急还会“掉辫子”，司机得下车拿绳子把杆子拉回去。碳刷就是电机里的“辫子”，只不过它一分钟要滑过成千上万次接缝。</p>
+<p class="off">哪里不准：电车辫子只负责取电，不负责“切换方向”；碳刷还要在每道接缝上完成一次断开—接通，所以磨损和火花都集中在那一瞬间，比电车辫子辛苦得多。</p></div>
+<p>有刷电机的账单于是很清楚：<strong>会磨损</strong>（勇气号的 1300 万圈）、<strong>会打火</strong>（电磁干扰、碳粉）、而且<strong>发热的线圈在转子上</strong>——热量得先穿过一道空气缝隙才能到外壳。对要长时间出力的机器人关节来说，最后这一条最要命，我们第 5 单元讲热的时候会反复回到它。</p>
+
+<h2><span class="n">03</span>1882 年黄昏的公园：让磁场自己转起来</h2>
+<p>换个思路：<strong>线圈别转了，让磁场转。</strong></p>
+<p>这个念头有一个很有画面感的出处。按特斯拉晚年自己的回忆，1882 年他 26 岁，在布达佩斯，为“怎么用交流电驱动电机”这个问题熬到大病一场。康复中的一个傍晚，他和朋友 Szigety 在城市公园散步，夕阳下背诵歌德《浮士德》里的诗句，突然想通了：用几组固定的线圈，各自通上<strong>时间上错开</strong>的交流电，它们合成的磁场就会自己绕着圈转。他抓起树枝，在沙地上把图画了出来。六年后，他把这个方案讲给美国电气工程师学会，同年拿到了“电磁电机”专利。</p>
+
+<figure class="photo">
+<img src="https://teslasciencecenter.org/wp-content/uploads/2018/08/Electro_magnetic_motor_patent-240x300.jpg" loading="lazy" referrerpolicy="no-referrer" alt="特斯拉 1888 年电磁电机专利图" style="max-width:240px;margin:12px auto 0" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://teslasciencecenter.org/pivotalmoments/alternating-current/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>一圈固定在外面的线圈，分成几组接到不同相位的交流电上——中间那个转的东西身上没有任何电刷。这就是“旋转磁场”的第一张工程图。<br>图：N. Tesla 1888 年美国专利图（公有领域）/ <a href="https://teslasciencecenter.org/pivotalmoments/alternating-current/">Tesla Science Center at Wardenclyffe</a></figcaption>
+</figure>
+
+<p>要说明一点：特斯拉造的是<strong>感应电机</strong>，转子里没有磁铁。但“旋转磁场”这个思想，是今天所有无刷电机的地基。</p>
+<div class="analogy"><div class="t">类比③｜体育场里的人浪</div>
+<p>看过球赛的人浪吗？每个观众只是“站起来—坐下”，没有一个人离开座位，可那道浪在整个看台上绕圈跑。三相电机也一样：A、B、C 三组线圈谁也不动，只是电流各自变大变小、正负翻转，但时间上错开三分之一个周期，合起来的磁场就绕着圈跑。</p>
+<p class="off">哪里不准：人浪是一个个离散的人，看起来是“一格一格”跳的；正弦电流驱动的磁场是连续叠加的，可以转得非常平滑。另外人浪不推任何东西，而磁场的浪会实实在在地拖着转子走。</p></div>
+
+<p>下面这张图你可以亲手玩。外圈是三组线圈（每组在对面还有一个“搭档”，A 和 A′ 是同一组），颜色表示电流方向和大小；中间是一块装在转子上的磁铁；青色箭头是三组线圈合成出来的磁场方向。</p>
+
+<figure>
+<svg id="rf" viewBox="0 0 340 420" role="img" aria-label="三相线圈产生旋转磁场，带动永磁转子转动的交互动画">
+<circle cx="170" cy="150" r="128" fill="var(--can)"/>
+<circle cx="170" cy="150" r="118" fill="var(--steel)"/>
+<circle cx="170" cy="150" r="72" fill="var(--bg2)"/>
+<g id="coils"></g>
+<g id="rotor">
+<path d="M170,96 A54,54 0 0 1 170,204 Z" fill="var(--magN)"/>
+<path d="M170,96 A54,54 0 0 0 170,204 Z" fill="var(--magS)"/>
+<text x="196" y="156" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">N</text>
+<text x="144" y="156" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">S</text>
+<circle cx="170" cy="150" r="8" fill="var(--ink)"/>
+</g>
+<g id="field"><line x1="170" y1="150" x2="250" y2="150" stroke="var(--accent2)" stroke-width="6" stroke-linecap="round"/><polygon points="264,150 248,141 248,159" fill="var(--accent2)"/></g>
+<path d="M20 322H320M20 352H320M20 382H320" stroke="var(--line)"/><text x="8" y="326" font-size="11" font-weight="700" fill="var(--accent)">A</text><text x="8" y="356" font-size="11" font-weight="700" fill="var(--accent2)">B</text><text x="8" y="386" font-size="11" font-weight="700" fill="var(--blue)">C</text>
+<text x="20" y="296" font-size="11.5" fill="var(--ink2)">三相电流（横轴：转子转过的电角度 0→360°）</text>
+<path id="wA" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+<path id="wB" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+<path id="wC" fill="none" stroke="var(--blue)" stroke-width="2.5"/>
+<line id="cur" x1="20" y1="304" x2="20" y2="398" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="292" y="414" font-size="12" font-weight="700" fill="var(--accent)">A</text>
+<text x="305" y="414" font-size="12" font-weight="700" fill="var(--accent2)">B</text>
+<text x="318" y="414" font-size="12" font-weight="700" fill="var(--blue)">C</text>
+</svg>
+<div class="seg"><button id="mSin" class="on">正弦电流（PMSM 式）</button><button id="mSix">六步方波（BLDC 式）</button></div>
+<div class="ctrl"><button id="rfPlay">▶ 播放</button><label for="rfAng">转子角度</label><input id="rfAng" type="range" min="0" max="359" value="20"><output id="rfOut">20°</output></div>
+<div class="readout"><div>磁场与转子夹角<b id="rfD">90°</b></div><div>相对转矩 ∝ sin(夹角)<b id="rfT">100%</b></div></div>
+<figcaption><b>看图要看什么：</b>先盯住青色箭头：线圈一个都没动，箭头却在转，而且总是领先磁铁的 N 极大约 90°——这就是那根“胡萝卜”。再切到“六步方波”：箭头变成每 60° 一跳，夹角在 60°～120° 之间来回摆，转矩跟着一起一伏。</figcaption>
+</figure>
+
+<p>现在把三件事拼起来，就是一台<strong>无刷电机</strong>：</p>
+<p>① 磁铁搬到转子上，转子身上不再有一根电线；② 线圈全部固定在定子上，直接贴着外壳，热量好往外跑；③ 原来碳刷干的“换相”活儿，交给一组电子开关——<strong>逆变器</strong>（inverter）——按转子的位置，给三组线圈排好电流。</p>
+
+<figure>
+<svg viewBox="0 0 340 250" role="img" aria-label="无刷电机系统：电池、逆变器、电机、位置传感器、控制芯片的闭环">
+<rect x="10" y="80" width="44" height="80" rx="6" fill="var(--gear2)"/>
+<rect x="24" y="72" width="16" height="10" rx="2" fill="var(--gear2)"/>
+<text x="32" y="126" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">电池</text>
+<text x="32" y="176" text-anchor="middle" font-size="11" fill="var(--ink2)">直流 DC</text>
+<rect x="72" y="58" width="104" height="124" rx="10" fill="var(--soft2)" stroke="var(--accent2)"/>
+<text x="124" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent2)">逆变器 inverter</text>
+<g fill="var(--ink2)">
+<rect x="84" y="88" width="20" height="16" rx="3"/><rect x="84" y="140" width="20" height="16" rx="3"/>
+<rect x="114" y="88" width="20" height="16" rx="3"/><rect x="114" y="140" width="20" height="16" rx="3"/>
+<rect x="144" y="88" width="20" height="16" rx="3"/><rect x="144" y="140" width="20" height="16" rx="3"/>
+</g>
+<path d="M94 104v36M124 104v36M154 104v36" stroke="var(--ink2)" stroke-width="2"/>
+<text x="124" y="174" text-anchor="middle" font-size="10.5" fill="var(--ink2)">6 个电子开关</text>
+<path d="M54 120H72" stroke="var(--ink2)" stroke-width="3"/>
+<path d="M94 122H190M124 122H190M154 122H190" stroke="none"/>
+<path d="M94 122 C110 122 170 104 196 104" fill="none" stroke="var(--accent)" stroke-width="3"/>
+<path d="M124 122 C140 122 175 120 196 120" fill="none" stroke="var(--accent2)" stroke-width="3"/>
+<path d="M154 122 C165 122 180 136 196 136" fill="none" stroke="var(--blue)" stroke-width="3"/>
+<circle cx="250" cy="120" r="54" fill="var(--can)"/>
+<circle cx="250" cy="120" r="46" fill="var(--steel)"/>
+<circle cx="250" cy="120" r="24" fill="var(--magN)"/>
+<path d="M250,96 A24,24 0 0 0 250,144 Z" fill="var(--magS)"/>
+<circle cx="250" cy="120" r="5" fill="var(--ink)"/>
+<text x="250" y="190" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">无刷电机</text>
+<rect x="290" y="30" width="44" height="26" rx="5" fill="var(--accent)"/>
+<text x="312" y="47" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">编码器</text>
+<path d="M290 50 L275 76" stroke="var(--accent)" stroke-width="2"/>
+<rect x="110" y="206" width="120" height="34" rx="8" fill="var(--soft)" stroke="var(--accent)"/>
+<text x="170" y="227" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent)">控制芯片 MCU</text>
+<path d="M312 56 V223 H230" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="318" y="140" font-size="10.5" fill="var(--accent)" writing-mode="tb">转子在哪</text>
+<path d="M124 206 V184" stroke="var(--accent2)" stroke-width="2"/>
+<polygon points="124,182 119,192 129,192" fill="var(--accent2)"/>
+<text x="60" y="200" font-size="10.5" fill="var(--accent2)">开关指令 PWM</text>
+<text x="170" y="18" text-anchor="middle" font-size="12" fill="var(--ink2)">“电子换向器” = 逆变器 + 控制芯片 + 位置传感器</text>
+</svg>
+<figcaption><b>看图要看什么：</b>虚线那一圈是关键：编码器告诉芯片“转子转到哪了”，芯片据此决定六个开关怎么开合，三根线上的电流就把磁场摆到转子前面 90°。碳刷那点机械动作，被这一整圈电子电路取代了。</figcaption>
+</figure>
+
+<p>“知道转子在哪”有三种常见办法：在定子里埋三个<strong>霍尔传感器</strong>（Hall sensor），转子每转过 60° 电角度报一次信，够六步方波用；装一个<strong>编码器</strong>（encoder），连续给出精确角度，正弦驱动和机器人关节都需要它（W3-1 细讲）；或者干脆不装传感器，靠测线圈里感应出的电压来“猜”位置——很多无人机电调就是这么干的，代价是低速和刚起步时不太灵。</p>
+
+<h2><span class="n">04</span>什么时候推得最有劲？——“90 度规则”</h2>
+<p>上面一直说磁场要领先转子“大约 90°”，为什么偏偏是 90°？</p>
+<p>一句人话：<strong>只有垂直于磁铁方向的那部分磁场，才在“拧”它；顺着磁铁方向的那部分，只是在“挤”或“拉”，一点转矩都不出。</strong>写成式子：</p>
+<div class="formula">T ∝ sin δ<small>δ：定子磁场方向与转子磁极方向的夹角。δ = 90° 时转矩最大，δ = 0° 时为零。</small></div>
+
+<figure>
+<svg id="tq" viewBox="0 0 340 220" role="img" aria-label="拖动夹角，观察转矩随 sin δ 变化，以及磁场分解为 d 轴和 q 轴分量">
+<circle cx="85" cy="110" r="44" fill="var(--bg)" stroke="var(--line)"/>
+<path d="M85,66 A44,44 0 0 1 85,154 Z" fill="var(--magN)"/>
+<path d="M85,66 A44,44 0 0 0 85,154 Z" fill="var(--magS)"/>
+<text x="104" y="115" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">N</text>
+<text x="66" y="115" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">S</text>
+<line id="tqD" x1="85" y1="110" x2="85" y2="110" stroke="var(--ink2)" stroke-width="3" stroke-dasharray="5 4"/>
+<line id="tqQ" x1="85" y1="110" x2="85" y2="110" stroke="var(--accent)" stroke-width="4" stroke-dasharray="6 3"/>
+<line id="tqV" x1="85" y1="110" x2="160" y2="110" stroke="var(--accent2)" stroke-width="5" stroke-linecap="round"/>
+<circle id="tqH" cx="160" cy="110" r="9" fill="var(--accent2)"/>
+<text x="8" y="196" font-size="11" fill="var(--ink2)">青＝磁场　红虚＝q 分量</text><text x="8" y="212" font-size="11" fill="var(--ink2)">灰虚＝d 分量</text>
+<line x1="185" y1="160" x2="330" y2="160" stroke="var(--line)"/>
+<line x1="185" y1="40" x2="185" y2="160" stroke="var(--line)"/>
+<path id="tqCurve" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+<circle id="tqDot" r="6" fill="var(--accent)"/>
+<text x="185" y="178" font-size="10.5" fill="var(--ink2)">0°</text>
+<text x="257" y="178" font-size="10.5" fill="var(--ink2)" text-anchor="middle">90°</text>
+<text x="330" y="178" font-size="10.5" fill="var(--ink2)" text-anchor="end">180°</text>
+<text x="190" y="36" font-size="11" fill="var(--ink2)">转矩</text>
+</svg>
+<div class="ctrl"><label for="tqS">夹角 δ</label><input id="tqS" type="range" min="0" max="180" value="30"><output id="tqO">30°</output></div>
+<div class="readout"><div>转矩（拧）∝ sin δ<b id="tqT">50%</b></div><div>白费的“挤/拉” ∝ cos δ<b id="tqW">87%</b></div></div>
+<figcaption><b>看图要看什么：</b>把滑块拖到 0°：磁场和 N 极完全对齐，吸得最紧，转矩却是零——就像静止的指南针。拖到 90°：红色的 q 分量最长，灰色的 d 分量消失，这时每一安培电流都用在“拧”上。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比④｜骑车踩踏板</div>
+<p>曲柄转到正上方（上死点）时，你使出吃奶的劲往下踩，车纹丝不动——力全压在轴承上了。曲柄转到水平位置，同样一脚，车“噌”就出去了。电机控制器的全部工作，就是让那只“脚”永远踩在曲柄水平的位置。</p>
+<p class="off">哪里不准：人只有两只脚、只能往下踩；三相线圈能合成任意方向的“脚”，还能拉。另外人踩踏板有死点要靠惯性越过，电机正弦驱动下可以做到每个角度都在最佳位置。</p></div>
+
+<p>这张图里有两个字母值得现在就记住：垂直于磁极、负责出转矩的分量叫 <strong>q 轴</strong>，对应的电流写作 <strong>iq</strong>；顺着磁极、不出转矩的叫 <strong>d 轴</strong>，电流写作 <strong>id</strong>。正常情况下控制器会把 id 压到接近零，把电流都给 iq。这套“按转子位置把电流拆成 d、q 两份来管”的方法，就是大名鼎鼎的 FOC（磁场定向控制，W3-3 专门讲）。</p>
+
+<h2><span class="n">05</span>BLDC 还是 PMSM？一家人，两种喂法</h2>
+<p>你一定在规格书和客户邮件里见过这两个缩写。好消息是：它们<strong>结构几乎一样</strong>——永磁转子、三相定子、没有电刷。区别主要在两处：</p>
+<p><strong>BLDC</strong>（brushless DC，无刷直流）：线圈绕法让它转动时感应出的电压是“梯形”的，配合<strong>六步换相</strong>：每一刻只有两相通电，磁场每 60° 跳一格。简单、便宜、三个霍尔就够。代价就是你在上面动画里看到的：夹角在 60°～120° 之间摆，转矩最低只剩峰值的 sin 60° ≈ 87%，大约 13% 的起伏，低速时能感觉到一顿一顿。</p>
+<p><strong>PMSM</strong>（permanent magnet synchronous motor，永磁同步电机）：感应电压是正弦的，三相同时通正弦电流，磁场平滑地转，配上编码器和 FOC，夹角稳稳停在 90°。转矩平顺、噪声小——机器人关节、工业伺服大多走这条路。</p>
+<p>名字里的“直流”，是因为它从电池这种直流电源取电、对外表现像一台直流电机（电压高转得快）；“同步”，是因为转子和旋转磁场转速完全相同，这一点和特斯拉的感应电机不一样——感应电机的转子总比磁场慢一点。</p>
+<p>现实里叫法很乱，不少厂家把正弦驱动的电机也叫 BLDC。和客户沟通时不必纠结名字，真正要问清的是两件事：<strong>用什么方式驱动（方波还是正弦/FOC），用什么传感器测位置。</strong></p>
+
+<h2><span class="n">06</span>无人机电机为什么是“外面在转”？</h2>
+<p>回到昨天那只后空翻的 Mini Cheetah。MIT 的新闻稿说，主要设计者 Ben Katz 是把航模、无人机上用的小型商用电机零件重新组合，做出了它的关节电机。稿子里列出的每台电机的内容是：产生旋转磁场的定子线圈、贴满磁铁的转子、一个设定电流的小控制器、一个 6:1 减速器、一个测肢体角度的位置传感器——几乎就是今天这堂课的零件清单。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Ben Katz 与 Mini Cheetah 的电机设计" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>MIT 新闻稿的配图说明是：Katz 通过重新组合航模和无人机用的小型商用电机零件，设计出了 Mini Cheetah 的电机。留意它扁平、大直径的外形——这正是下面要讲的“外转子”。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND（仅裁切，未修改）</figcaption>
+</figure>
+
+<p>无人机电机最显眼的特征：转的是外面那个“杯子”。磁铁贴在杯子内壁，线圈在里面不动——这叫<strong>外转子</strong>。为什么这么做？想想 W1-1 的“力矩 = 力 × 力臂”：同样的磁力，作用在越大的半径上，转矩越大。把磁铁放到最外圈，等于免费把力臂拉到最长。</p>
+
+<figure>
+<svg viewBox="0 0 340 230" role="img" aria-label="内转子与外转子电机剖面对比">
+<circle cx="85" cy="100" r="72" fill="var(--can)"/><circle cx="85" cy="100" r="63" fill="var(--steel)"/><circle cx="85" cy="100" r="34" fill="var(--bg2)"/>
+<g transform="rotate(-90 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(-150 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(-210 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(-270 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(-330 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<g transform="rotate(-390 85 100)"><rect x="121" y="94" width="28" height="12" fill="var(--steel)"/><rect x="119" y="89" width="5" height="22" rx="2" fill="var(--steel)"/><rect x="127" y="89" width="16" height="22" rx="4" fill="var(--copper)"/><line x1="131" y1="89" x2="131" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="135" y1="89" x2="135" y2="111" stroke="#7a4512" stroke-width="1"/><line x1="139" y1="89" x2="139" y2="111" stroke="#7a4512" stroke-width="1"/></g>
+<path d="M114.0,98.5 A29,29 0 0 0 86.5,71.0 L85.7,86.0 A14,14 0 0 1 99.0,99.3Z" fill="var(--magN)"/>
+<path d="M83.5,71.0 A29,29 0 0 0 56.0,98.5 L71.0,99.3 A14,14 0 0 1 84.3,86.0Z" fill="var(--magS)"/>
+<path d="M56.0,101.5 A29,29 0 0 0 83.5,129.0 L84.3,114.0 A14,14 0 0 1 71.0,100.7Z" fill="var(--magN)"/>
+<path d="M86.5,129.0 A29,29 0 0 0 114.0,101.5 L99.0,100.7 A14,14 0 0 1 85.7,114.0Z" fill="var(--magS)"/>
+<circle cx="85" cy="100" r="14" fill="var(--gear2)"/><circle cx="85" cy="100" r="5" fill="var(--ink)"/>
+<circle cx="255" cy="100" r="72" fill="var(--can)"/><circle cx="255" cy="100" r="66" fill="var(--bg2)"/>
+<path d="M321.0,98.3 A66,66 0 0 0 315.2,72.9 L307.0,76.6 A57,57 0 0 1 312.0,98.5Z" fill="var(--magN)"/>
+<path d="M313.7,69.8 A66,66 0 0 0 297.5,49.5 L291.7,56.4 A57,57 0 0 1 305.7,73.9Z" fill="var(--magS)"/>
+<path d="M294.8,47.3 A66,66 0 0 0 271.4,36.1 L269.1,44.8 A57,57 0 0 1 289.4,54.5Z" fill="var(--magN)"/>
+<path d="M268.0,35.3 A66,66 0 0 0 242.0,35.3 L243.8,44.1 A57,57 0 0 1 266.2,44.1Z" fill="var(--magS)"/>
+<path d="M238.6,36.1 A66,66 0 0 0 215.2,47.3 L220.6,54.5 A57,57 0 0 1 240.9,44.8Z" fill="var(--magN)"/>
+<path d="M212.5,49.5 A66,66 0 0 0 196.3,69.8 L204.3,73.9 A57,57 0 0 1 218.3,56.4Z" fill="var(--magS)"/>
+<path d="M194.8,72.9 A66,66 0 0 0 189.0,98.3 L198.0,98.5 A57,57 0 0 1 203.0,76.6Z" fill="var(--magN)"/>
+<path d="M189.0,101.7 A66,66 0 0 0 194.8,127.1 L203.0,123.4 A57,57 0 0 1 198.0,101.5Z" fill="var(--magS)"/>
+<path d="M196.3,130.2 A66,66 0 0 0 212.5,150.5 L218.3,143.6 A57,57 0 0 1 204.3,126.1Z" fill="var(--magN)"/>
+<path d="M215.2,152.7 A66,66 0 0 0 238.6,163.9 L240.9,155.2 A57,57 0 0 1 220.6,145.5Z" fill="var(--magS)"/>
+<path d="M242.0,164.7 A66,66 0 0 0 268.0,164.7 L266.2,155.9 A57,57 0 0 1 243.8,155.9Z" fill="var(--magN)"/>
+<path d="M271.4,163.9 A66,66 0 0 0 294.8,152.7 L289.4,145.5 A57,57 0 0 1 269.1,155.2Z" fill="var(--magS)"/>
+<path d="M297.5,150.5 A66,66 0 0 0 313.7,130.2 L305.7,126.1 A57,57 0 0 1 291.7,143.6Z" fill="var(--magN)"/>
+<path d="M315.2,127.1 A66,66 0 0 0 321.0,101.7 L312.0,101.5 A57,57 0 0 1 307.0,123.4Z" fill="var(--magS)"/>
+<circle cx="255" cy="100" r="22" fill="var(--steel)"/>
+<g transform="rotate(-15 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-45 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-75 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-105 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-135 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-165 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-195 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-225 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-255 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-285 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-315 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<g transform="rotate(-345 255 100)"><rect x="273" y="96" width="34" height="8" fill="var(--steel)"/><rect x="304" y="91" width="5" height="18" rx="2" fill="var(--steel)"/><rect x="281" y="92" width="20" height="16" rx="4" fill="var(--copper)"/></g>
+<circle cx="255" cy="100" r="9" fill="var(--gear2)"/><circle cx="255" cy="100" r="4" fill="var(--ink)"/>
+<text x="85" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">内转子 inner rotor</text><text x="85" y="214" text-anchor="middle" font-size="11.5" fill="var(--ink2)">线圈贴外壳：散热路径短</text>
+<text x="255" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">外转子 outer rotor</text><text x="255" y="214" text-anchor="middle" font-size="11.5" fill="var(--ink2)">磁铁在外圈：半径大、力臂长</text>
+<text x="85" y="14" text-anchor="middle" font-size="11" fill="var(--ink2)">2 对极 · 6 槽（示意）</text><text x="255" y="14" text-anchor="middle" font-size="11" fill="var(--ink2)">12 槽 14 极 = 7 对极（12N14P）</text>
+</svg>
+<figcaption><b>看图要看什么：</b>左边是工业伺服常见的内转子：线圈（铜色）贴着外壳，热量一步就能传出去，转子小、转动惯量也小。右边是无人机式外转子：14 块磁铁围成一圈，12 个线圈在里面朝外伸——磁铁 N/S 交替，数一数就知道它有几对极。</figcaption>
+</figure>
+
+<p>右图还有一个细节：磁铁不是一对，而是 N、S 交替贴了一圈。每一对 N–S 叫一个<strong>极对</strong>（pole pair）。极对数越多，转子只要转一小段，就完成了一个完整的“电周期”。</p>
+<p>拿一台真实的无人机电机算笔账：T-Motor 的 U8 II 标注的结构是 <strong>36N42P</strong>，即 36 个线圈槽、42 个磁极，也就是 <strong>21 对极</strong>。转子每转 1 圈，三相电流要走完 21 个完整周期。假设它转到 3000 rpm（每秒 50 圈），控制器那边的电频率就是 50 × 21 = <strong>1050 Hz</strong>——每秒要把磁场“挪”一千多圈，而且每一圈都得踩准 90°。</p>
+<p>为什么要这么多极？大致来说，极数多、直径大的扁平电机更擅长<strong>低速大力矩</strong>，这正是腿和手臂关节要的；代价是电频率高、控制器更忙，铁芯损耗也随频率上升（W1-4 讲损耗）。</p>
+
+<div class="box fail">
+<div class="t">翻车现场｜“无刷”不等于“不会坏”</div>
+<p>2009 年发射的开普勒太空望远镜，靠四个<strong>反作用轮</strong>稳住指向——每个都是一台带着飞轮转的电机，转速在每分钟 1000 到 4000 转之间，飞轮往一个方向转，望远镜就往另一个方向转。至少要三个轮子才能精确指向。2012 年 7 月坏了第一个，2013 年 5 月第二个停转，按原计划方式寻找系外行星的任务就此结束。NASA 怀疑的问题出在<strong>滚珠轴承</strong>上。</p>
+<p>教训：去掉电刷，只是去掉了一处磨损。轴承、齿轮、密封照样会老化。所以当客户说 “It's brushless, so it's maintenance-free, right?”，别顺口说 yes。</p>
+</div>
+
+<h2><span class="n">07</span>工作里会在哪遇到</h2>
+<div class="box work">
+<p><strong>BEAR SDK 手册的寄存器表。</strong>《BEAR-SDK-Manual-EN.pdf》的 Table 2 里，<code>goal_iq</code> 写的是 “Goal Torque Current”（目标力矩电流），<code>goal_id</code> 写的是 “Goal Excitation Current”（目标励磁电流），单位都是 A；手册说明 Torque Mode 下 BEAR 同时跟踪 goal iq 和 goal id。这就是第 04 节那两个分量：iq 管“拧”，id 管“挤/拉”。手册还给出 T = iq × K<sub>T</sub>——K<sub>T</sub> 是明天的主角。</p>
+<p><strong>两个温度读数。</strong>同一张表里有 <code>winding temperature</code>（绕组温度，电机线圈）和 <code>powerstage temperature</code>（功率级温度，即那组电子开关）。一个是电机本体，一个是“电子换向器”——客户问“哪个过热了”时，先分清是哪一个。</p>
+<p><strong>一条安全提醒。</strong>SDK 手册的 WARNING：电机使能（torque enable）期间不要保存配置，写 Flash 时电机可能不响应。电子换相是实时的，芯片被占用，“胡萝卜”就没人挪了。</p>
+<p><strong>客户邮件常见问法：</strong>“Is it a BLDC or PMSM?” “Hall sensors or encoder?” “Is it sensorless?” 回答前先翻手册；手册里查不到的硬件细节（比如电机极对数、有没有霍尔），标 <code>[待技术确认]</code> 去问工程，不要从 id/iq 这些寄存器名反推硬件配置。</p>
+</div>
+
+<h2><span class="n">08</span>自测三题</h2>
+<p class="q">1. 展会上，客户拍着一台关节执行器说：“Brushless — so basically no wear, no maintenance?” 你怎么接？</p>
+<details><summary>看答案</summary><p>无刷电机确实没有电刷磨损，但轴承、减速器、密封、线缆这些照样会老化（开普勒望远镜的反作用轮就坏在轴承上）。可以说：no brush wear, but bearings and gearing still need periodic inspection。公司自己的《THEMIS User Manual》维护章节也建议定期检查执行器和电机是否有磨损、异响或过热。</p></details>
+<p class="q">2. 一封邮件写着：“We noticed torque ripple at low speed with our current BLDC actuators using hall sensors.” 他们大概率遇到了什么？</p>
+<details><summary>看答案</summary><p>霍尔 + 六步方波驱动时，磁场每 60° 电角度才跳一次，与转子的夹角在 60°～120° 之间摆，转矩随之起伏（最低约为峰值的 87%），低速时尤其明显。改善方向通常是用编码器 + 正弦/FOC 驱动。回复中涉及具体产品能做到多少，需以手册或工程确认为准。</p></details>
+<p class="q">3. 一台外转子电机是 12N14P，跑到 6000 rpm，控制器要处理的电频率是多少？</p>
+<details><summary>看答案</summary><p>14 极 = 7 对极。6000 rpm = 100 圈/秒，电频率 = 100 × 7 = 700 Hz。也就是每秒要让三相电流完整循环 700 次。</p></details>
+
+<h2><span class="n">09</span>今天的 11 个术语</h2>
+<table>
+<tr><td>定子 / 转子</td><td>Stator / Rotor</td></tr>
+<tr><td>换相</td><td>Commutation</td></tr>
+<tr><td>电刷 / 换向器</td><td>Brush / Commutator</td></tr>
+<tr><td>有刷直流电机</td><td>Brushed DC motor</td></tr>
+<tr><td>无刷直流电机</td><td>Brushless DC motor (BLDC)</td></tr>
+<tr><td>永磁同步电机</td><td>Permanent magnet synchronous motor (PMSM)</td></tr>
+<tr><td>旋转磁场</td><td>Rotating magnetic field</td></tr>
+<tr><td>极对数</td><td>Pole pairs（如 36N42P：36 槽 42 极）</td></tr>
+<tr><td>逆变器 / 功率级</td><td>Inverter / Power stage</td></tr>
+<tr><td>霍尔传感器 / 无感</td><td>Hall sensor / Sensorless</td></tr>
+<tr><td>力矩电流 / 励磁电流</td><td>Torque current iq / Excitation current id</td></tr>
+</table>
+
+<div class="tease">下一课预告：找一台没通电的无刷电机，用手拧它的轴，很轻。现在把三根相线拧在一起短接，再拧——手感突然变“粘”了，像在搅蜂蜜。电机里明明没有电池，那股阻力是从哪来的？答案会顺带解释规格书上两个最常被问的数字。明天，W1-3：K<sub>t</sub>、K<sub>v</sub> 与反电动势。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>NASA JPL, “Mars Rovers Get New Manager During Challenging Period”（2006-03-17，右前轮停转、电刷嫌疑、1300 万圈）：<a href="https://www.jpl.nasa.gov/news/mars-rovers-get-new-manager-during-challenging-period/">jpl.nasa.gov</a></li>
+<li>NASA JPL, “NASA's Spirit Rover Completes Mission on Mars”（2011，拖轮倒车发现二氧化硅、行驶里程）：<a href="https://jpl.nasa.gov/news/nasas-spirit-rover-completes-mission-on-mars">jpl.nasa.gov</a></li>
+<li>The Planetary Society, “Pay dirt”（富硅土壤图说）：<a href="https://www.planetary.org/space-images/pay-dirt">planetary.org</a>；NASA Photojournal PIA09403：<a href="https://science.nasa.gov/photojournal/silica-rich-soil-in-gusev-crater/">science.nasa.gov</a></li>
+<li>A3 / automate.org, “Opportunity Celebrates 10 Years on Mars”（每台火星车 39 台 maxon 有刷直流电机，直径 20–25 mm）：<a href="https://www.automate.org/robotics/news/opportunity-celebrates-10-years-on-mars">automate.org</a></li>
+<li>Tesla Science Center at Wardenclyffe, “Rotating Field Revelation”（1882 年布达佩斯公园轶事、专利图）：<a href="https://teslasciencecenter.org/pivotalmoments/alternating-current/">teslasciencecenter.org</a></li>
+<li>MIT News, “Mini cheetah is the first four-legged robot to do a backflip”（2019-03-04，电机组成与配图）：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">news.mit.edu</a></li>
+<li>T-Motor 官方商城，U8 II KV190 规格（36N42P）：<a href="https://store.tmotor.com/goods-468-U8_KV190.html">store.tmotor.com</a></li>
+<li>Scientific American, “The Wheels Come Off Kepler Planet-Finding Mission”（2013，反作用轮故障与轴承）：<a href="https://www.scientificamerican.com/article/the-wheels-come-off-kepler-planet-finding-mission">scientificamerican.com</a></li>
+<li>Westwood Robotics, BEAR-SDK-Manual-EN.pdf（Table 2 寄存器：goal iq / goal id / winding & powerstage temperature；Torque Mode 与 T = iq × K<sub>T</sub>；保存配置的 WARNING）；THEMIS User Manual.pdf（维护章节）——公司内部资料</li>
+</ul>
+</main>
+
+<script>
+(function(){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $(i){return document.getElementById(i)}
+  var NS='http://www.w3.org/2000/svg', R=Math.PI/180, cx=170, cy=150;
+  /* ---------- 图2 旋转磁场 ---------- */
+  var axes=[0,120,240], names=['A','B','C'], coilEls=[];
+  var g=$('coils');
+  for(var k=0;k<3;k++){for(var s=0;s<2;s++){
+    var a=axes[k]+s*180, x=cx+95*Math.cos(a*R), y=cy-95*Math.sin(a*R);
+    var gg=document.createElementNS(NS,'g');
+    gg.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+(-a)+')');
+    gg.innerHTML='<rect x="-18" y="-15" width="36" height="30" rx="6" fill="var(--copper)"/>'+
+      '<path d="M-10 -15v30M-3 -15v30M4 -15v30M11 -15v30" stroke="#7a4512" stroke-width="1"/>'+
+      '<rect class="ov" x="-18" y="-15" width="36" height="30" rx="6" fill="var(--magN)" opacity="0"/>';
+    g.appendChild(gg);
+    var t=document.createElementNS(NS,'text');
+    t.setAttribute('x',x.toFixed(1));t.setAttribute('y',(y+5).toFixed(1));
+    t.setAttribute('text-anchor','middle');t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('fill','#fff');
+    t.textContent=names[k]+(s?'′':'');g.appendChild(t);
+    coilEls.push({ov:gg.querySelector('.ov'),k:k,s:s});
+  }}
+  var mode='sin', th=20, run=false, last=0;
+  function fieldAng(t){
+    if(mode=='sin') return t+90;
+    return 30+60*Math.round((t+90-30)/60);
+  }
+  function cur(t,k){
+    var psi=fieldAng(t), c=Math.cos((psi-axes[k])*R);
+    if(mode=='sin') return c;
+    var v=Math.round(c/0.866); return Math.max(-1,Math.min(1,v));
+  }
+  function waves(){
+    var ids=['wA','wB','wC'];
+    for(var k=0;k<3;k++){var d='';
+      for(var x=0;x<=360;x+=2){var px=20+x/360*300, py=[322,352,382][k]-cur(x,k)*12;
+        d+=(x?'L':'M')+px.toFixed(1)+','+py.toFixed(1);}
+      $(ids[k]).setAttribute('d',d);}
+  }
+  function draw(){
+    var t=((th%360)+360)%360, psi=fieldAng(t);
+    $('rotor').setAttribute('transform','rotate('+(-t).toFixed(1)+' '+cx+' '+cy+')');
+    $('field').setAttribute('transform','rotate('+(-psi).toFixed(1)+' '+cx+' '+cy+')');
+    coilEls.forEach(function(e){var i=cur(t,e.k)*(e.s?-1:1);
+      e.ov.setAttribute('fill',i>0?'var(--magN)':'var(--magS)');e.ov.setAttribute('opacity',(Math.abs(i)*0.85).toFixed(2));});
+    var cxp=20+t/360*300; $('cur').setAttribute('x1',cxp.toFixed(1));$('cur').setAttribute('x2',cxp.toFixed(1));
+    var d=psi-t; $('rfD').textContent=d.toFixed(0)+'°';
+    $('rfT').textContent=(Math.sin(d*R)*100).toFixed(0)+'%';
+    $('rfAng').value=Math.round(t); $('rfOut').textContent=Math.round(t)+'°';
+  }
+  function setMode(m){mode=m;$('mSin').className=m=='sin'?'on':'';$('mSix').className=m=='six'?'on':'';waves();draw();}
+  $('mSin').addEventListener('click',function(){setMode('sin')});
+  $('mSix').addEventListener('click',function(){setMode('six')});
+  $('rfAng').addEventListener('input',function(){th=+this.value;draw();});
+  function tick(ts){if(!run)return;if(last)th+=(ts-last)*0.05;last=ts;draw();requestAnimationFrame(tick);}
+  $('rfPlay').addEventListener('click',function(){
+    if(reduce){th+=30;draw();return;}
+    run=!run;last=0;this.textContent=run?'❚❚ 暂停':'▶ 播放';if(run)requestAnimationFrame(tick);
+  });
+  waves();draw();
+
+  /* ---------- 图3 转矩与夹角 ---------- */
+  var ox=85, oy=110, L=72;
+  var dc='';for(var x=0;x<=180;x+=3){var px=185+x/180*145, py=160-Math.sin(x*R)*110;dc+=(x?'L':'M')+px.toFixed(1)+','+py.toFixed(1);}
+  $('tqCurve').setAttribute('d',dc);
+  function tq(){
+    var d=+$('tqS').value, ex=ox+L*Math.cos(d*R), ey=oy-L*Math.sin(d*R);
+    $('tqV').setAttribute('x2',ex.toFixed(1));$('tqV').setAttribute('y2',ey.toFixed(1));
+    $('tqH').setAttribute('cx',ex.toFixed(1));$('tqH').setAttribute('cy',ey.toFixed(1));
+    $('tqD').setAttribute('x2',(ox+L*Math.cos(d*R)).toFixed(1));$('tqD').setAttribute('y2',oy);
+    $('tqQ').setAttribute('x1',(ox+L*Math.cos(d*R)).toFixed(1));$('tqQ').setAttribute('x2',(ox+L*Math.cos(d*R)).toFixed(1));
+    $('tqQ').setAttribute('y1',oy);$('tqQ').setAttribute('y2',ey.toFixed(1));
+    $('tqDot').setAttribute('cx',(185+d/180*145).toFixed(1));$('tqDot').setAttribute('cy',(160-Math.sin(d*R)*110).toFixed(1));
+    $('tqO').textContent=d+'°';
+    $('tqT').textContent=(Math.sin(d*R)*100).toFixed(0)+'%';
+    $('tqW').textContent=(Math.abs(Math.cos(d*R))*100).toFixed(0)+'%';
+  }
+  $('tqS').addEventListener('input',tq);tq();
+})();
+</script>
+</body>
+</html>
