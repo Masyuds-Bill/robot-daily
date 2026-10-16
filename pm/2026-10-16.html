@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>论文精讲 10/16｜人形机器人全身负重搬运</title>
+<style>
+:root{
+  --bg:#f6f4ef; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5d574e; --line:#e1dbcf;
+  --accent:#b4441a; --accent2:#0f766e; --soft:#fbefe6; --soft2:#e5f1ef;
+  --metal:#9aa1ab; --metal2:#5b6370; --cable:#c2410c; --skin:#d9dde3; --floor:#cfc7b8;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --bg2:#1d2024; --ink:#ebe7df; --ink2:#a8a297; --line:#33373d;
+    --accent:#f08a4b; --accent2:#2dd4bf; --soft:#2a2019; --soft2:#14292a;
+    --metal:#7b838e; --metal2:#b3bbc6; --cable:#f59e5b; --skin:#4a5059; --floor:#3a3d42;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:10px 16px 60px}
+a{color:var(--accent2);word-break:break-word}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:8px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-size:28px;line-height:1.35;margin:6px 0 4px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 20px}
+h2{font-size:21px;line-height:1.45;margin:40px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+h3{font-size:16px;margin:18px 0 2px;color:var(--accent2)}
+p{margin:10px 0}
+.three{background:var(--soft);border-radius:14px;padding:12px 16px;margin:16px 0}
+.three ol{margin:6px 0;padding-left:1.3em}
+.three li{margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--soft2);color:var(--accent2);margin-right:6px;vertical-align:2px}
+.note{font-size:15px;color:var(--ink2);border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:14px 0}
+figure{margin:20px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px}
+figure img{width:100%;height:auto;display:block;border-radius:8px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.65;margin-top:8px}
+figcaption b{color:var(--accent)}
+.fail{display:none;font-size:14px;padding:10px 0}
+.src{font-size:14px;color:var(--ink2)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btns button{font:inherit;font-size:15px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.glossary{background:var(--soft2);border-radius:14px;padding:6px 16px 10px;margin-top:20px}
+.refs{font-size:14px;line-height:1.7;padding-left:1.2em}
+.refs li{margin:4px 0}
+footer{font-size:13px;color:var(--ink2);margin-top:30px}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<div class="kicker">机器人晚报 · 本周论文精讲 · 2026 年 10 月 16 日 · 周五</div>
+<h1>抱着 5 公斤的罐子走路，为什么这么难？——读 HULK：让人形机器人“用全身使劲”</h1>
+<p class="sub">论文提交于 10 月 6 日 · 约 15 分钟</p>
+
+<div class="three">
+<b>这篇论文一句话</b>
+<ol>
+<li>亚马逊联合加州理工、密歇根大学、UCLA 的研究者提出 HULK：先让一个“物理计算器”（模型预测控制）算出搬重物时脚该怎么受力，再拿它当“教练”来训练强化学习策略。</li>
+<li>在 Unitree G1 实机上，把 5 公斤的罐子抵在胸前搬运，HULK 4 次全部成功，对比方法 0 次；逐步加重测试中，HULK 撑到 6.1 公斤，最好的对比方法 2.6 公斤。</li>
+<li>对做关节的人来说，最值得注意的是论文里的失败判据：“摔倒、掉落物体、或者<b>触发关节力矩保护停机</b>”都算失败——搬重物这件事，最后是被执行器的力矩上限卡住的。</li>
+</ol>
+</div>
+
+<h2><span class="n">01</span>它想解决什么问题</h2>
+<p>先想象一个画面：你从超市抱回一箱 24 瓶装的矿泉水。你不会只用手指捏着它——你会把箱子贴在肚子上，手臂环住，身体微微后仰，步子也变小变稳。这就是论文说的“全身用力的移动操作”（<i>whole-body forceful loco-manipulation</i>）：<b>loco</b> 指走路，<b>manipulation</b> 指操作物体，两件事同时做，而且要用手臂、躯干一起出力。</p>
+<p>人做起来毫不费力，人形机器人却很怵。原因有两个：</p>
+<p><b>第一，重心被拽走了。</b>机器人自己的重心本来在两脚之间，一抱上东西，整体重心就往前移。往前移多少，取决于东西多重、离身体多远。移过了头，机器人就会往前栽。</p>
+<p><b>第二，上半身被一直“压着”。</b>推门是一下子的力，抱箱子是持续的力。肩膀、肘部、腰要一直顶着重力，这对关节电机是持续负载，而不是瞬间峰值。</p>
+<p>HULK 要回答的问题是：能不能训练出<b>一个</b>控制策略，让人形机器人既能“手臂伸出去拎重物”，又能“把大物件抱在怀里走路”，走得稳，还能听指挥（让往哪走就往哪走）。</p>
+
+<figure>
+<img src="https://arxiv.org/html/2610.08970v1/cover_picture_5.png" loading="lazy" referrerpolicy="no-referrer" alt="论文首图：Unitree G1 人形机器人执行搬运、抱持等负重任务的多个场景" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fail"><a href="https://arxiv.org/html/2610.08970">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>注意机器人抱东西时躯干的姿态和东西贴身的位置——东西离身体越远，对平衡和肩肘关节的要求越高。据论文图注，图中还包括训练时没见过的动作，如“农夫行走”（两手各拎一物走路）和“硬拉”。<br>图：An Dang 等 / <a href="https://arxiv.org/html/2610.08970">HULK 论文 arXiv HTML 版 图 1</a>，论文作者公开配图</figcaption>
+</figure>
+
+<h2><span class="n">02</span>之前的做法卡在哪</h2>
+<p>论文把已有的方法挨个点了名，归纳起来是三类卡点：</p>
+<p><b>“柔顺”路线托不住重物。</b>很多工作让机器人“顺着外力让一让”（柔顺控制，<i>compliance</i>），被推了就退一点，像弹簧。这对“别被撞倒”很好用，但抱重物需要的恰恰是<b>顶住</b>重力，一味顺从就会被压垮。</p>
+<p><b>只管手腕的方法，顾此失彼。</b>比如 FALCON 只处理手腕处受的力，论文认为它在受力时难以继续执行行走指令；另有方法只处理水平方向的推拉，没管向下的重物；还有的假设两只脚一直着地，等于不能走路。</p>
+<p><b>纯强化学习不懂物理，纯模型控制又太死板。</b>强化学习（<i>reinforcement learning</i>，RL，让机器人在仿真里试错、按“奖励”学习）可以学出很灵活的动作，但面对“重心被拽走”这种问题，靠盲目试错效率很低；而模型预测控制（<i>model predictive control</i>，MPC，用一个简化物理模型往前算几步、挑出最好的方案）物理上很明白，却难以覆盖全身复杂的接触。此前已有人用 MPC 来“指导” RL，但没有把重物的力算进去，也没有处理“东西贴在躯干上”这种接触。</p>
+
+<h2><span class="n">03</span>核心思路：请一个“懂物理的教练”，再让徒弟出师</h2>
+<p>用一个类比理解 HULK 的结构：一位<b>举重教练</b>不会替你举，但他会告诉你“脚该踩在哪、地面该给你多大的力”；你按这个方向练，练到动作像样为止。</p>
+
+<h3>① 教练：会算负重的 MPC</h3>
+<p>HULK 里的 MPC 只看一个大大简化的机器人：把整个身体当成一个有质量、会转动的整体（这叫“质心动力学模型”，<i>centroidal dynamics</i>），它算的是质心位置、身体朝向、动量，以及两只脚（负重时再加两只手腕）各该受多大的力。关键改动是：<b>重物产生的力和力矩被直接写进这个模型</b>，当作一个已知的外力，而不是当成意外的干扰。论文还指出，常用的落脚点公式（Raibert 式启发规则）只看速度指令，不考虑持续外力，HULK 因此改成了“考虑受力的落脚参考”。</p>
+<p>注意：MPC 算出的计划<b>并不直接拿去执行</b>。它只是用来打分——RL 策略的实际状态和受力越接近 MPC 的计划，奖励越高。这就是“MPC 引导的强化学习”。</p>
+
+<h3>② 安全护栏：守住“该往哪儿迈脚”的那个点</h3>
+<p>第二个工具叫“捕获点”（<i>capture point</i>）。直观地说：如果机器人此刻正在往某个方向倒，捕获点就是“一步迈到那里就能刚好停住”的地面位置。捕获点还在两只脚围成的支撑区域里，就稳；跑出去了，就得赶紧迈步，不然会倒。（论文用的量是与它等价的“发散运动分量”，<i>divergent component of motion</i>，DCM。）</p>
+<p>HULK 在训练时加了一个“控制障碍函数”（<i>control barrier function</i>，CBF）——可以理解成一道数学护栏：一旦动作会让捕获点越界，就把它往回拉，并在奖励里扣分。但部署到真机时<b>护栏被拆掉了</b>，机器人只靠神经网络本身学到的习惯。</p>
+
+<h3>③ 两位老师，一个学生</h3>
+<p>HULK 训练了两个“老师”策略：一个专门练<b>手腕受力</b>（手臂按指令动作，同时手腕挂着力，还要能走），另一个专门练<b>全身抱持</b>（用手臂和躯干夹住不同形状的大物件走路）。然后用一种叫 DAgger 的“边做边纠正”方法，把两位老师的本事蒸馏（<i>distillation</i>）进一个学生策略。老师训练时能看到“作弊信息”（比如物体到底多重），<b>学生却看不到</b>——它只拿得到关节角度、关节速度、身体角速度、重力方向和上一步动作，以及一个“现在是哪种模式”的标志。也就是说，真机上的机器人要靠“自己的手感”判断负重。</p>
+
+<figure>
+<svg viewBox="0 0 680 400" role="img" aria-label="HULK 训练结构示意：MPC 教练给两个老师策略打分，两个老师蒸馏成一个学生，部署到真机">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--ink2)"/></marker>
+</defs>
+<rect x="0" y="0" width="680" height="400" fill="var(--bg2)"/>
+<!-- MPC coach -->
+<rect x="230" y="14" width="220" height="74" rx="12" fill="var(--soft)" stroke="var(--accent)"/>
+<text x="340" y="40" text-anchor="middle" font-size="17" font-weight="700" fill="var(--accent)">MPC“物理教练”</text>
+<text x="340" y="62" text-anchor="middle" font-size="13" fill="var(--ink2)">算：质心怎么走、脚和手腕各受多大力</text>
+<text x="340" y="79" text-anchor="middle" font-size="13" fill="var(--ink2)">重物的力直接写进模型</text>
+<!-- teacher 1 -->
+<g transform="translate(40,130)">
+<rect width="230" height="120" rx="12" fill="var(--bg)" stroke="var(--line)"/>
+<text x="115" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">老师 A：手腕受力</text>
+<!-- mini robot with dumbbells -->
+<g transform="translate(70,36)">
+<circle cx="45" cy="8" r="7" fill="var(--skin)" stroke="var(--metal2)"/>
+<rect x="36" y="17" width="18" height="30" rx="4" fill="var(--metal)"/>
+<line x1="38" y1="22" x2="16" y2="48" stroke="var(--metal2)" stroke-width="5" stroke-linecap="round"/>
+<line x1="52" y1="22" x2="74" y2="48" stroke="var(--metal2)" stroke-width="5" stroke-linecap="round"/>
+<rect x="6" y="48" width="20" height="14" rx="2" fill="var(--accent)"/>
+<rect x="64" y="48" width="20" height="14" rx="2" fill="var(--accent)"/>
+<line x1="40" y1="47" x2="36" y2="76" stroke="var(--metal2)" stroke-width="6" stroke-linecap="round"/>
+<line x1="50" y1="47" x2="56" y2="76" stroke="var(--metal2)" stroke-width="6" stroke-linecap="round"/>
+</g>
+<text x="115" y="112" text-anchor="middle" font-size="12" fill="var(--ink2)">训练时带“捕获点护栏”</text>
+</g>
+<!-- teacher 2 -->
+<g transform="translate(410,130)">
+<rect width="230" height="120" rx="12" fill="var(--bg)" stroke="var(--line)"/>
+<text x="115" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">老师 B：全身抱持</text>
+<g transform="translate(70,36)">
+<circle cx="45" cy="8" r="7" fill="var(--skin)" stroke="var(--metal2)"/>
+<rect x="36" y="17" width="18" height="30" rx="4" fill="var(--metal)"/>
+<rect x="50" y="20" width="30" height="34" rx="6" fill="var(--accent2)" opacity=".85"/>
+<path d="M52,22 Q76,24 80,38" stroke="var(--metal2)" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M52,30 Q74,46 66,54" stroke="var(--metal2)" stroke-width="5" fill="none" stroke-linecap="round"/>
+<line x1="40" y1="47" x2="34" y2="76" stroke="var(--metal2)" stroke-width="6" stroke-linecap="round"/>
+<line x1="50" y1="47" x2="54" y2="76" stroke="var(--metal2)" stroke-width="6" stroke-linecap="round"/>
+</g>
+<text x="115" y="112" text-anchor="middle" font-size="12" fill="var(--ink2)">多种形状的大物件</text>
+</g>
+<line x1="300" y1="88" x2="170" y2="128" stroke="var(--ink2)" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+<line x1="380" y1="88" x2="510" y2="128" stroke="var(--ink2)" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+<text x="340" y="118" text-anchor="middle" font-size="12" fill="var(--ink2)">按“离计划多远”给奖励</text>
+<!-- student -->
+<rect x="230" y="290" width="220" height="92" rx="12" fill="var(--soft2)" stroke="var(--accent2)"/>
+<text x="340" y="316" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent2)">学生策略（上真机）</text>
+<text x="340" y="338" text-anchor="middle" font-size="12.5" fill="var(--ink2)">只看关节角/速度、姿态、上一步动作</text>
+<text x="340" y="356" text-anchor="middle" font-size="12.5" fill="var(--ink2)">看不到物体多重 · 护栏已拆除</text>
+<text x="340" y="373" text-anchor="middle" font-size="12.5" fill="var(--ink2)">用“模式开关”切换两种本事</text>
+<line x1="155" y1="252" x2="262" y2="288" stroke="var(--ink2)" marker-end="url(#ar)"/>
+<line x1="525" y1="252" x2="418" y2="288" stroke="var(--ink2)" marker-end="url(#ar)"/>
+<text x="140" y="282" font-size="12" fill="var(--ink2)">DAgger 蒸馏</text>
+<text x="470" y="282" font-size="12" fill="var(--ink2)">DAgger 蒸馏</text>
+</svg>
+<figcaption><b>看图要看什么：</b>MPC 从不直接控制机器人，它只当“打分的教练”；真正上真机的是最下面那个“看不到物体重量”的学生。示意图为本报自绘，依据论文方法部分。</figcaption>
+</figure>
+
+<h3>动手试一试：重物越重、离得越远，捕获点越容易跑出脚底</h3>
+<p>下面这个小模型只用最简单的杠杆关系（总重心 = 机器人重心与物体重心按质量加权平均），机器人质量取 35 kg 只是为了演示，<b>不代表任何真实机型的参数</b>。拖动滑块，看看橙色的“总重心投影”什么时候逼近脚尖——再叠加走路时的晃动，就是捕获点出界、不得不迈步甚至摔倒的时候。</p>
+<figure>
+<svg id="cg" viewBox="0 0 680 300" role="img" aria-label="交互示意：负重质量和距离改变总重心位置">
+<rect x="0" y="0" width="680" height="300" fill="var(--bg2)"/>
+<rect x="0" y="262" width="680" height="38" fill="var(--floor)"/>
+<!-- support polygon -->
+<rect id="sp" x="270" y="256" width="150" height="8" rx="3" fill="var(--accent2)" opacity=".55"/>
+<text x="345" y="290" text-anchor="middle" font-size="13" fill="var(--ink)">双脚支撑区（脚跟 → 脚尖）</text>
+<!-- robot -->
+<g id="bot">
+<rect x="282" y="236" width="56" height="20" rx="6" fill="var(--metal2)"/>
+<rect x="332" y="246" width="70" height="10" rx="4" fill="var(--metal2)"/>
+<rect x="300" y="150" width="20" height="90" rx="8" fill="var(--metal)"/>
+<circle cx="310" cy="160" r="9" fill="var(--bg2)" stroke="var(--metal2)" stroke-width="3"/>
+<rect x="288" y="62" width="46" height="94" rx="12" fill="var(--metal)"/>
+<circle cx="311" cy="40" r="18" fill="var(--skin)" stroke="var(--metal2)" stroke-width="2"/>
+<rect x="300" y="34" width="26" height="8" rx="4" fill="var(--ink)" opacity=".7"/>
+<line id="arm" x1="320" y1="82" x2="400" y2="118" stroke="var(--metal2)" stroke-width="10" stroke-linecap="round"/>
+<circle cx="320" cy="82" r="7" fill="var(--bg2)" stroke="var(--metal2)" stroke-width="3"/>
+</g>
+<rect id="box" x="390" y="100" width="48" height="44" rx="6" fill="var(--accent)" opacity=".9"/>
+<text id="boxt" x="414" y="127" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">5kg</text>
+<!-- CoM markers -->
+<line x1="311" y1="110" x2="311" y2="262" stroke="var(--ink2)" stroke-dasharray="3 4"/>
+<circle cx="311" cy="110" r="6" fill="var(--ink2)"/>
+<line id="cl" x1="330" y1="110" x2="330" y2="262" stroke="var(--cable)" stroke-width="2" stroke-dasharray="6 4"/>
+<circle id="cm" cx="330" cy="110" r="8" fill="var(--cable)"/>
+<text x="250" y="105" font-size="12" fill="var(--ink2)">机器人自身重心</text>
+<text id="ct" x="20" y="28" font-size="15" fill="var(--ink)">总重心前移 0 cm</text>
+<text id="cs" x="20" y="50" font-size="14" fill="var(--accent2)">离脚尖还有 0 cm</text>
+</svg>
+<div class="btns" style="flex-direction:column;gap:2px">
+<label style="font-size:15px">物体质量：<b id="mv">5</b> kg <input id="m" type="range" min="0" max="15" step="0.5" value="5" style="width:100%"></label>
+<label style="font-size:15px">物体离身体中线：<b id="dv">30</b> cm <input id="d" type="range" min="15" max="50" step="1" value="30" style="width:100%"></label>
+</div>
+<figcaption><b>看图要看什么：</b>同样 5 kg，抱在胸前（15–20 cm）和伸直手臂拎着（40 cm 以上），重心前移量差一倍多——这就是为什么 HULK 要区分“手腕受力”和“贴身抱持”两种模式。纯静力学示意，本报自绘；真机还要叠加走路时的动态晃动，更危险。</figcaption>
+</figure>
+
+<h2><span class="n">04</span>实验结果说明了什么</h2>
+<p><b>仿真里：</b>每条手臂挂 10 kg（挂在前臂中部）时，加了捕获点护栏的老师 A 横向速度跟踪误差约 0.14 m/s，不加护栏约 0.26 m/s；衡量“离摔倒有多近”的 DCM 越界总量减少了 35.7%。站立时推躯干，加护栏的版本在 50–130 N 的所有测试方向上都扛住了 130 N，不加护栏的扛到 110 N。</p>
+<p><b>真机上（Unitree G1，学生策略零样本部署，即不在真机上再训练）：</b></p>
+<p>· <b>罐子搬运</b>：一个 5 kg 的罐子抵在躯干上搬运，HULK 4/4 成功，各对比方法都是 0/4。<br>
+· <b>最大负重扫描</b>：逐步加重直到失败，HULK 到 6.1 kg，最好的对比方法到 2.6 kg。<br>
+· 四项硬件任务中 HULK 三项领先，“负重行走”一项与另一方法 AMO 打平。</p>
+<p>这说明：<b>把重物的力“告诉”物理教练，比让策略自己瞎摸索有效得多</b>，而且这种好处能从仿真带到真机——即使真机上的学生看不到物体重量。</p>
+
+<h2><span class="n">05</span>没说明什么、哪里要存疑</h2>
+<p><b>样本很小。</b>4 次试验的 4/4 对 0/4 差距醒目，但统计上仍很单薄；“最大负重”是单次扫描的结果，没有看到重复次数。</p>
+<p><b>不是每项指标都更好。</b>作者自己承认：护栏版本并非全面占优——在“边走边受手腕力”的测试中，FALCON 的手臂跟踪误差更低；转向速度误差方面 AMO 最低。作者把这解读为“跟踪精度和抗摔恢复之间的取舍”。</p>
+<p><b>护栏只在训练时有。</b>部署时拆掉了，所以真机上<b>没有</b>任何形式化的安全保证，只能说“学到了更稳的习惯”。</p>
+<p><b>只覆盖测试过的几种抱法。</b>论文明确说，结果不能推广到任意接触方式，也没处理“从拎着换成抱着”这类抓握切换。</p>
+<p><b>6.1 kg 是什么量级？</b>要换个角度看：这是一个小型人形机器人在这套方法下的结果，离“搬一箱矿泉水”（约 12–14 kg）还有距离。论文的价值在方法，不在绝对负重数字。另外，本报未能读到完整的实验表格（论文表 I 为图片），以上数字均来自论文正文描述。</p>
+
+<h2><span class="n">06</span>和执行器、人形机器人硬件的关系</h2>
+<p>这一节是我觉得对你最有用的部分。</p>
+<p><b>1. 失败判据里写着“关节力矩保护停机”。</b>论文把“触发保护性关节力矩停机”（<i>protective joint-torque stop</i>）和摔倒、掉物体并列为失败。换句话说，搬重物时，机器人有时不是“控制没算好”，而是<b>关节电机的力矩到了上限，驱动器自己把它停了</b>。这把软件论文和硬件规格直接连在了一起：同一套算法，换一副更有余量的关节，负重上限很可能不一样。</p>
+<p><b>2. MPC 算的是“地面能给多大力”，不是“电机能出多大力”。</b>从论文方法部分看，HULK 的 MPC 约束的是脚底摩擦力和最大法向力，<b>没有显式加入电机力矩上限或发热约束</b>。这是一个值得关注的空白：抱重物是持续负载，考验的是关节的<b>额定（持续）力矩</b>和散热，而不是峰值力矩——峰值力矩只能撑几秒，持续力矩才决定能抱多久。客户如果拿“峰值扭矩”去估算负重能力，往往会高估。</p>
+<p><b>3. “手感”要靠关节反馈。</b>学生策略看不到物体重量，只能从关节角度、速度的细微变化里“感觉”出负重。这意味着关节的位置传感精度、低摩擦、响应一致性，都会影响策略能不能在真机上复现仿真里的表现。关节内部摩擦越大、越不一致，仿真到真机的差距（<i>sim-to-real gap</i>）就越大。</p>
+<p><b>4. 对销售和技术支持的启发。</b>当客户说“想让人形机器人搬东西”时，可以把问题拆成几个可量化的指标：要搬多重、离身体多远（力臂）、持续多久、走多远、是否要求边搬边转向。本篇的交互图正好说明：<b>同样的质量，力臂翻倍，肩肘的持续力矩需求也翻倍。</b>具体到某款执行器能否满足，仍需以产品手册和工程确认为准。</p>
+
+<h2><span class="n">07</span>想深入可以接着看什么</h2>
+<p>· 论文原文：<a href="https://arxiv.org/abs/2610.08970">HULK: Learning Whole-Body Forceful Loco-Manipulation for Humanoids（arXiv:2610.08970）</a>，方法部分的第三节值得细读，特别是“考虑受力的落脚参考”。<br>
+· 同期另一篇思路相反的工作：加州大学圣地亚哥分校 Michael Yip 团队的 <a href="https://arxiv.org/abs/2610.05678v1">OCLO（arXiv:2610.05678）</a>，走的是“柔顺”路线——检测到外力就按弹簧-阻尼模型让身体让一让，也在 G1 上做了实机。两篇对照着读，正好看到“顶住”和“让开”两种哲学。<br>
+· 关键词：capture point、DCM（发散运动分量）、centroidal MPC、control barrier function、teacher-student distillation。早课讲到电机力矩常数之后，再回来看“持续力矩 vs 峰值力矩”，会更有体感。</p>
+
+<h2><span class="n">08</span>本周其他值得一看</h2>
+<p><b>乐聚 15 台人形机器人上产线两个多月。</b>10 月 15 日，乐聚机器人与兆丰机电在浙江发布汽车零部件上料方案：15 台人形机器人处理内径 80–120 mm 的十余种零件，节拍低于 40 秒，报道称成功率约 98%，累计运行约 1000 小时、生产 6 万余件。数字均为公司方发布，未见第三方核验。<a href="https://k.sina.com.cn/article_5952915720_162d24908067050bmo.html">来源</a></p>
+<p><b>机器人训练数据采集公司 Mecka AI 获 6000 万美元 B 轮。</b>红杉领投，它做的是采集第一人称（<i>egocentric</i>）人类操作数据的硬件和传感器——和近期 arXiv 上一批“用人类第一视角视频训练人形机器人”的论文是同一股潮流。同周还有 ICON、MMI 等四家机器人公司融资，五家合计 5.1 亿美元。<a href="https://dealroom.co/news/162719-five-robotics-startups-raise-510m-as-investors-chase-physical-ai/">来源</a></p>
+<p><b>禾赛从激光雷达跨入“机器人训练数据”。</b>10 月 15 日禾赛发布 Kosmo 数据引擎和 Kosmo One 相机，称约 15 分钟可扫描 100 平方米空间、毫米级三维重建，用于机器人训练。零部件厂商往“数据”方向延伸，值得留意。<a href="https://k.sina.com.cn/article_5953189932_162d6782c0670512z4.html">来源</a></p>
+<p><b>工博会上，关节与灵巧手比整机更抢眼。</b>报道称今年工博会海外采购商增多，展商重心偏向关节、灵巧手等零部件，并从卖标准件转向卖整套方案——和昨天晚报里威灵、汇川的动向一致。<a href="https://k.sina.com.cn/article_5953740931_162dee0830670423zi.html">来源</a></p>
+
+<div class="glossary">
+<h2 style="border:0;margin-top:14px;padding-top:0">本期术语</h2>
+<p><b>捕获点 / 发散运动分量（Capture Point / DCM）</b>：把走路的机器人想成一根正在倒下的扫帚。捕获点就是“现在一步踩到那里就能把扫帚稳住”的地面位置。它在脚底支撑范围内，就稳；跑出去，就必须迈步，否则会倒。</p>
+<p><b>持续力矩 vs 峰值力矩（Continuous / Peak Torque）</b>：峰值力矩像百米冲刺，能爆发但撑不了几秒，电机会过热；持续力矩像跑马拉松的配速，能长时间维持。抱重物走路是马拉松，看的是持续力矩和散热。</p>
+</div>
+
+<h2>来源</h2>
+<ol class="refs">
+<li><a href="https://arxiv.org/abs/2610.08970">Dang et al., HULK: Learning Whole-Body Forceful Loco-Manipulation for Humanoids, arXiv:2610.08970（2026-10-06 提交）</a></li>
+<li><a href="https://arxiv.org/html/2610.08970">HULK 论文 arXiv HTML 版（作者单位、方法、图 1）</a></li>
+<li><a href="https://alphaxiv.org/abs/2610.08970v1">alphaXiv 上的 HULK 论文页（实验数字与局限）</a></li>
+<li><a href="https://arxiv.org/abs/2610.05678v1">Yeom et al., Dataset-Free Compliant Humanoid Loco-Manipulation with Dynamic Online Posture (OCLO), arXiv:2610.05678</a></li>
+<li><a href="https://k.sina.com.cn/article_7857201856_1d45362c001908r9ja.html">新浪机器人热点小时报，2026-10-16 16 时（乐聚、禾赛、工博会条目汇总）</a></li>
+<li><a href="https://k.sina.com.cn/article_5952915720_162d24908067050bmo.html">乐聚机器人 × 兆丰机电 上料方案报道</a></li>
+<li><a href="https://k.sina.com.cn/article_5953189932_162d6782c0670512z4.html">禾赛 Kosmo 发布报道</a></li>
+<li><a href="https://k.sina.com.cn/article_5953740931_162dee0830670423zi.html">工博会零部件趋势报道</a></li>
+<li><a href="https://dealroom.co/news/162719-five-robotics-startups-raise-510m-as-investors-chase-physical-ai/">Dealroom: Five robotics startups raise $510M（2026-10-14）</a></li>
+</ol>
+<footer>说明：本期论文实验数字取自论文正文与 alphaXiv 页面的文字描述；本报未能读到论文表格原图与项目主页。交互图为简化静力学示意，非任何真实机型参数。</footer>
+</main>
+<script>
+(function(){
+  var m=document.getElementById('m'),d=document.getElementById('d');
+  function upd(){
+    var M=35,mm=+m.value,dd=+d.value;
+    document.getElementById('mv').textContent=mm;
+    document.getElementById('dv').textContent=dd;
+    var shift=mm*dd/(M+mm); // cm
+    var px=3; // px per cm
+    var x=311+shift*px;
+    var toe=420, margin=(toe-x)/px;
+    document.getElementById('cm').setAttribute('cx',x);
+    document.getElementById('cl').setAttribute('x1',x);
+    document.getElementById('cl').setAttribute('x2',x);
+    var bx=311+dd*px-24;
+    var box=document.getElementById('box');
+    var s=Math.max(0.35,Math.min(1.3,0.5+mm/15*0.8));
+    var w=48*s,h=44*s;
+    box.setAttribute('x',311+dd*px-w/2);box.setAttribute('width',w);
+    box.setAttribute('y',122-h/2);box.setAttribute('height',h);
+    box.style.opacity=mm>0?0.9:0.15;
+    var t=document.getElementById('boxt');t.setAttribute('x',311+dd*px);t.textContent=mm+'kg';
+    document.getElementById('arm').setAttribute('x2',311+dd*px-w/2+4);
+    document.getElementById('ct').textContent='总重心前移约 '+shift.toFixed(1)+' cm';
+    var cs=document.getElementById('cs');
+    if(margin>8){cs.textContent='离脚尖还有约 '+margin.toFixed(0)+' cm：静止时稳';cs.setAttribute('fill','var(--accent2)');}
+    else if(margin>0){cs.textContent='离脚尖只剩约 '+margin.toFixed(0)+' cm：一走就危险';cs.setAttribute('fill','var(--cable)');}
+    else{cs.textContent='已越过脚尖：静止也会往前倒';cs.setAttribute('fill','var(--accent)');}
+  }
+  m.addEventListener('input',upd);d.addEventListener('input',upd);upd();
+})();
+</script>
+</body>
+</html>
