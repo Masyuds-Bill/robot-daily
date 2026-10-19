@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W1 复盘｜电机基础</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c;
+  --warn:#fdf0d5; --warnline:#b45309; --ok:#15803d; --bad:#b91c1c;
+  --L1:#c2410c; --L2:#1d4ed8; --L3:#0f766e; --L4:#a16207;
+  --L1s:#fbe6d8; --L2s:#e1e8fb; --L3s:#dcefec; --L4s:#f6ecd2;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668;
+    --warn:#2b2416; --warnline:#f59e0b; --ok:#4ade80; --bad:#f87171;
+    --L1:#fb923c; --L2:#7aa2ff; --L3:#2dd4bf; --L4:#facc15;
+    --L1s:#33241a; --L2s:#1c2438; --L3s:#152c2a; --L4s:#2e2a16;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:6em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.formula{font-family:"Times New Roman",var(--serif);font-size:22px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* map */
+.lessons{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.lessons button{font-size:14px;padding:6px 12px;min-height:36px}
+.lessons button[data-l="1"]{border-color:var(--L1);color:var(--L1);background:var(--L1s)}
+.lessons button[data-l="2"]{border-color:var(--L2);color:var(--L2);background:var(--L2s)}
+.lessons button[data-l="3"]{border-color:var(--L3);color:var(--L3);background:var(--L3s)}
+.lessons button[data-l="4"]{border-color:var(--L4);color:var(--L4);background:var(--L4s)}
+.lessons button[data-l="0"]{border-color:var(--ink2);color:var(--ink2);background:var(--bg)}
+.lessons button.on{outline:3px solid currentColor;outline-offset:1px}
+#map .node{cursor:pointer}
+#map .node rect{stroke-width:1.6;transition:opacity .2s}
+#map .node text{font-size:13px;font-weight:600;pointer-events:none}
+#map .node.sel rect{stroke-width:3.2}
+#map .dim{opacity:.22}
+#map .edge{stroke:var(--ink2);stroke-width:1.4;fill:none;opacity:.55}
+#map .edge.hot{stroke:var(--accent);stroke-width:2.6;opacity:1}
+#map .elab{font-size:10.5px;fill:var(--ink2)}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:8px;font-size:15px;line-height:1.7;min-height:150px}
+.panel .pt{font-weight:700;font-size:17px}
+.panel .tag{display:inline-block;font-size:12px;border-radius:999px;padding:0 8px;margin-left:6px;border:1px solid}
+.panel .pf{font-family:"Times New Roman",var(--serif);font-size:17px;background:var(--soft2);border-radius:8px;padding:2px 8px;display:inline-block;margin:4px 0}
+.panel .lbl{color:var(--accent);font-weight:600}
+/* calculator */
+.chain{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px}
+.chain div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2);line-height:1.45}
+.chain b{display:block;font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.chain i{font-style:normal;font-size:11.5px;color:var(--ink2)}
+.chain .warnc{border-color:var(--bad);background:var(--warn)}
+.verdict{font-size:15px;margin:8px 2px;padding:8px 12px;border-radius:10px;background:var(--soft2)}
+.verdict.bad{background:var(--warn);color:var(--ink)}
+/* quiz */
+.qz{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:16px 0}
+.qz .qh{font-weight:700;color:var(--accent);font-size:14px}
+.qz .qs{margin:4px 0 8px}
+.qz .opts{display:flex;flex-direction:column;gap:8px}
+.qz .opts button{text-align:left;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px 12px;line-height:1.5}
+.qz .opts button.right{border-color:var(--ok);background:var(--soft2);font-weight:600}
+.qz .opts button.wrong{border-color:var(--bad);background:var(--warn)}
+.qz .num{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qz .num input{font:inherit;font-size:17px;width:8em;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.qz .ex{display:none;margin-top:10px;font-size:15px;line-height:1.7;border-top:1px dashed var(--line);padding-top:8px}
+.qz .ex.show{display:block}
+.qz .res{font-weight:700}
+.qz .res.ok{color:var(--ok)} .qz .res.no{color:var(--bad)}
+.score{position:sticky;bottom:10px;margin:18px auto 0;width:max-content;max-width:100%;background:var(--ink);color:var(--bg);border-radius:999px;padding:6px 16px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0}
+.steps li{counter-increment:s;position:relative;padding:6px 0 6px 40px;border-bottom:1px dashed var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:7px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;text-align:center;line-height:28px;font-weight:700;font-size:15px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 1 单元「电机基础」· 复盘日</div>
+<h1>早课 W1 复盘｜电机基础</h1>
+<p class="sub">四个故事、一条腿、一张能点的地图，外加十道题。约 15 分钟。</p>
+
+<div class="lead">
+<p>这一周我们讲了四个看起来毫不相干的故事：MIT 草坪上后空翻的 Mini Cheetah，火星上磨坏了电刷、拖着死轮倒车的勇气号，1873 年维也纳世博会上那根“接错了”的铜电缆，还有北京亦庄半马赛道边上，工作人员对着机器人胯部电机狂喷的冷却剂。</p>
+<p>其实它们讲的是同一件事——<strong>一颗电机从吃进电、到使出劲、再到发烧的全过程</strong>。今天不讲新东西，我们把这四个故事重新装回同一条腿里：就选那只后空翻的小猎豹。它的每个关节里，都有一颗从航模、无人机电机改过来的扁平无刷电机，外加一个 6:1 的小齿轮箱。</p>
+<p>复盘的规矩很简单：先用一张地图把四课的概念连成一张网，再用一个计算器把“电池 → 力矩 → 发热”这本账从头到尾算一遍，然后看看最容易踩的四个坑，最后十道题检验一下。准备好了就开始。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Ben Katz 与 Mini Cheetah 的电机设计" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>MIT 新闻稿的配图说明是：Katz 把航模和无人机用的小型商用电机零件重新组合，设计出了 Mini Cheetah 的电机。这一周的四课，都能在这颗扁平、大直径的电机里找到：力臂（W1-1）、外转子与换相（W1-2）、反电动势（W1-3）、发热（W1-4）。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND（仅裁切，未修改）</figcaption>
+</figure>
+
+<h2><span class="n">01</span>一张图装下这一周：你能从“电池”走到“发烧”吗？</h2>
+<p>下面这张地图里，每个方块是这周出现过的一个核心概念，颜色代表它是哪一课的主角，连线是“谁决定了谁”。<strong>点任意一个方块</strong>，下面会展开它的要点、公式、工作里在哪遇到，以及最常见的误解；点上面的课程按钮，只看那一课。</p>
+<p>建议的走法：从左上角“电源电压”出发，顺着箭头走到最底下的“峰值 vs 额定”。这条路，就是一颗电机一生的能量账本。</p>
+
+<figure>
+<div class="lessons" id="lessonBtns">
+<button data-l="0" class="on">全部</button>
+<button data-l="1">W1-1 力矩·功率</button>
+<button data-l="2">W1-2 无刷电机</button>
+<button data-l="3">W1-3 Kt·Kv·反电动势</button>
+<button data-l="4">W1-4 损耗·曲线</button>
+</div>
+<svg id="map" viewBox="0 0 360 540" role="img" aria-label="第一单元知识地图：电源电压、换相、电流、反电动势、力矩、转速、功率、铜损、铁损、力矩-转速曲线、温升、峰值与额定之间的关系">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink2)"/></marker>
+<marker id="arh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
+<g id="edges"></g><g id="nodes"></g>
+</svg>
+<div class="panel" id="panel"><span class="pt">点上面任意一个方块</span><br>比如先点“功率 P = T·ω”——这周的第一个公式，也是你回客户邮件时最常用的那一个。</div>
+<figcaption><b>看图要看什么：</b>注意中间那个三角：电流 → 力矩（×K<sub>t</sub>），转速 → 反电动势（×K<sub>e</sub>），而 K<sub>t</sub> 和 K<sub>e</sub> 在 SI 单位下是同一个数。再看最底下：所有损耗最后都汇进“温升”，温升又决定了“峰值”和“额定”的差别。没有一个概念是孤立的。</figcaption>
+</figure>
+
+<p>如果只记四句话，就记这四句：</p>
+<ul>
+<li><strong>W1-1：</strong>功率 = 力矩 × 角速度，而且 ω 必须用 rad/s。峰值力矩和最高转速来自不同场景，不能相乘。</li>
+<li><strong>W1-2：</strong>电机就是让磁铁永远追不上的胡萝卜游戏。无刷电机把“挪胡萝卜”这件事交给电子开关和位置传感器，并让定子磁场领先转子约 90°。</li>
+<li><strong>W1-3：</strong>电机一转就自己发电（反电动势），所以有极速；“每喂一安使多大劲”（K<sub>t</sub>）和“每转快一点吐多少伏”（K<sub>e</sub>）是同一个数。</li>
+<li><strong>W1-4：</strong>力矩要交“平方税”（铜损 ∝ T²），转速要交铁损；能持续多久由发热和散热决定，所以同一颗电机有好几张力矩“身份证”。</li>
+</ul>
+
+<h2><span class="n">02</span>一本账从电池算到发热：亲手开一次电机</h2>
+<p>地图是静态的关系，下面这个计算器让它“动”起来。我们用 W1-3、W1-4 都用过的那颗真实无人机电机：<strong>T-Motor MN4012 KV340</strong>，官网公开的数据是内阻 133 mΩ、最大持续电流 22 A（限 180 秒），配一块 22.2 V 的六串锂电池。</p>
+<p>拖两个滑块，相当于你在问电机：“我要你在这个转速下，给我这么大的力矩。”下面每一格，就是这一周某一课教的一步换算。</p>
+
+<figure>
+<div class="ctrl"><label for="cT">电机力矩</label><input type="range" id="cT" min="0" max="0.8" step="0.01" value="0.30"><output id="oT"></output></div>
+<div class="ctrl"><label for="cN">电机转速</label><input type="range" id="cN" min="0" max="8000" step="50" value="4000"><output id="oN"></output></div>
+<div class="seg" id="presets">
+<button data-t="0.55" data-n="1200">低速大力矩</button>
+<button data-t="0.08" data-n="7000">高速小力矩</button>
+<button data-t="0.30" data-n="4000">中间档</button>
+<button id="gearBtn">看关节那一侧（×6 减速）</button>
+</div>
+<svg id="tmap" viewBox="0 0 340 210" role="img" aria-label="MN4012 电机的力矩-转速平面，标出电压极限线、持续电流线和当前工作点"></svg>
+<div class="chain" id="chain"></div>
+<div class="verdict" id="verdict"></div>
+<figcaption><b>看图要看什么：</b>上面的小图就是 W1-4 的力矩-转速平面：右侧那条陡峭的斜线是 22.2 V 电压能撑到的极限（W1-3 的反电动势在作怪），水平虚线是官方最大持续电流 22 A 对应的力矩，两条细曲线是 100 W 和 200 W 的等功率线（W1-1）。把工作点往左上拖，看铜损那一格怎么飙；往右拖，看“需要电压”怎么撞墙。<br>模型说明：K<sub>t</sub> = K<sub>e</sub> ≈ 9.55 ÷ 340 ≈ 0.028（推算，理想换算）；铁损按 W1-4 的教学模型（10 V 空载约 9 W、磁滞与涡流各占一半）估算；“×6 减速”借用 Mini Cheetah 的减速比，齿轮效率 95% 为<strong>教学假设</strong>。这颗电机并不是 Mini Cheetah 用的电机，这里只借它的公开参数来演示换算链。</figcaption>
+</figure>
+
+<p>多玩几下，你会发现三件事。第一，<strong>力矩那一列只看电流，转速那一列只看电压</strong>——这就是 W1-1 结尾那个“缺角长方形”的来历：顶上的天花板是电流给的，右边的墙是电压给的。第二，电机慢慢拖着大力矩走的时候，输出功率很小，铜损却很大，效率惨不忍睹；这就是亦庄赛道上那些膝关节“没干多少活却发烧”的原因。第三，点开“×6 减速”，关节那一侧的力矩被放大了约 6 倍、转速缩小 6 倍，功率几乎不变——齿轮箱只换算功率，不制造功率。这件事，下一单元要细讲。</p>
+
+<h2><span class="n">03</span>四个最容易踩的坑</h2>
+<p>这一周的内容里，有四处是工作中最容易出错、而且一错就是“差十倍”或者“答应了做不到的事”的地方。</p>
+
+<h3 style="font-family:var(--serif);font-size:19px;margin:22px 0 4px">坑一：单位换错，一错就是十倍</h3>
+<figure>
+<svg viewBox="0 0 340 170" role="img" aria-label="两把尺子：1 rad/s 约等于 9.55 rpm；1 kg·cm 约等于 0.098 N·m">
+<rect x="10" y="12" width="320" height="64" rx="10" fill="var(--L1s)"/>
+<text x="22" y="32" font-size="12.5" fill="var(--ink2)">转速：同一个快慢，两把尺子</text>
+<line x1="30" y1="52" x2="310" y2="52" stroke="var(--ink)" stroke-width="1.2"/>
+<g fill="var(--ink2)" font-size="10">
+<line x1="30" y1="46" x2="30" y2="58" stroke="var(--ink)"/><text x="30" y="70" text-anchor="middle">0</text>
+<line x1="170" y1="44" x2="170" y2="60" stroke="var(--L1)" stroke-width="2.4"/>
+<line x1="310" y1="46" x2="310" y2="58" stroke="var(--ink)"/>
+</g>
+<text x="170" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="var(--L1)">40 rad/s</text>
+<text x="170" y="71" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">≈ 382 rpm（× 9.55）</text>
+<rect x="10" y="90" width="320" height="70" rx="10" fill="var(--L3s)"/>
+<text x="22" y="110" font-size="12.5" fill="var(--ink2)">力矩：舵机的 kg·cm vs 执行器的 N·m</text>
+<rect x="30" y="122" width="250" height="14" rx="3" fill="var(--L3)" opacity=".85"/>
+<text x="286" y="134" font-size="11.5" fill="var(--ink)">25 kg·cm</text>
+<rect x="30" y="140" width="25" height="14" rx="3" fill="var(--L1)"/>
+<text x="62" y="152" font-size="11.5" fill="var(--ink)">≈ 2.45 N·m（数字小了约 10 倍，是同一个力矩）</text>
+</svg>
+<figcaption><b>看图要看什么：</b>同一个物理量，换一把尺子，数字差将近十倍。BEAR SDK 手册里速度模式的单位是 rad/s，客户邮件里大多写 rpm；舵机规格常写 kg·cm，1 kg·cm ≈ 0.098 N·m。W1-1 讲过的火星气候探测者号，就是死在一次单位换算上。</figcaption>
+</figure>
+
+<h3 style="font-family:var(--serif);font-size:19px;margin:22px 0 4px">坑二：峰值力矩 × 最高转速，不是你能拿到的功率</h3>
+<figure>
+<svg viewBox="0 0 340 210" role="img" aria-label="Mini Cheetah 关节的力矩-转速边界：17 N·m 和 40 rad/s 围成的长方形缺了一个大角">
+<defs><pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="var(--ink2)" stroke-width="1.2" opacity=".5"/></pattern></defs>
+<line x1="44" y1="170" x2="325" y2="170" stroke="var(--ink2)"/><line x1="44" y1="170" x2="44" y2="18" stroke="var(--ink2)"/>
+<text x="325" y="188" text-anchor="end" font-size="11" fill="var(--ink2)">关节转速 ω（rad/s）</text>
+<text x="48" y="20" font-size="11" fill="var(--ink2)">力矩 T（N·m）</text>
+<g font-size="10" fill="var(--ink2)"><text x="44" y="184" text-anchor="middle">0</text><text x="148" y="184" text-anchor="middle">14.7</text><text x="310" y="184" text-anchor="middle">40</text><text x="38" y="44" text-anchor="end">17</text><text x="38" y="149" text-anchor="end">6.3</text></g>
+<path id="usable" d="M44,170 L44,40 L148,40" fill="none"/>
+<path d="M44,170 L44,40 L148,40 C190,77 250,118 310,135 L310,170 Z" fill="var(--L3s)"/>
+<path d="M148,40 L310,40 L310,135 C250,118 190,77 148,40 Z" fill="url(#hatch)"/>
+<rect x="44" y="40" width="266" height="130" fill="none" stroke="var(--ink2)" stroke-dasharray="4 4"/>
+<path d="M44,40 L148,40 C190,77 250,118 310,135 L310,170" fill="none" stroke="var(--L1)" stroke-width="3"/>
+<circle cx="310" cy="40" r="5" fill="var(--bad)"/>
+<text x="304" y="34" text-anchor="end" font-size="11.5" font-weight="700" fill="var(--bad)">17 × 40 = 680 W：够不着</text>
+<text x="120" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="var(--L3)">能用的区域</text>
+<text x="215" y="78" font-size="11" fill="var(--L1)">P = 250 W 边界</text>
+</svg>
+<figcaption><b>看图要看什么：</b>Mini Cheetah 论文给出的三个上限：关节力矩 17 N·m、转速 40 rad/s、功率 250 W。只有在约 14.7 rad/s 以下才能给满 17 N·m，到 40 rad/s 只剩约 6 N·m。阴影那个角，就是“同时用满”的幻想。（边界形状为教学简化。）</figcaption>
+</figure>
+<div class="analogy"><div class="t">类比：电梯铭牌</div>
+<p>电梯铭牌上写着“额定载重 1000 kg、额定速度 2 m/s”，没人会指望它拉着两吨跑得更快。曳引机功率就那么多，载重和速度是绑在一起设计的。</p>
+<p class="off">哪里不准：电梯的额定点就是它天天工作的点；执行器的峰值力矩只能撑几秒，长期能给的要小得多——这就是坑三。</p></div>
+
+<h3 style="font-family:var(--serif);font-size:19px;margin:22px 0 4px">坑三：同一颗电机有三张“身份证”</h3>
+<figure>
+<svg viewBox="0 0 340 200" role="img" aria-label="KB02 的三种力矩：1.5 秒 10.5 N·m，15 秒 3.5 N·m，额定 2.1 N·m，液冷版 15 秒 4.2、额定 2.6">
+<text x="10" y="20" font-size="12.5" font-weight="700" fill="var(--ink)">Koala BEAR V2（KB02），温升不超过 55 °C</text>
+<g font-size="11.5" fill="var(--ink2)">
+<text x="10" y="56">1.5 秒</text><text x="10" y="106">15 秒</text><text x="10" y="156">一直给</text>
+</g>
+<g>
+<circle cx="66" cy="52" r="11" fill="none" stroke="var(--L1)" stroke-width="2"/><line x1="66" y1="52" x2="66" y2="44" stroke="var(--L1)" stroke-width="2"/><line x1="66" y1="52" x2="70" y2="54" stroke="var(--L1)" stroke-width="2"/>
+<circle cx="66" cy="102" r="11" fill="none" stroke="var(--L4)" stroke-width="2"/><line x1="66" y1="102" x2="66" y2="94" stroke="var(--L4)" stroke-width="2"/><line x1="66" y1="102" x2="73" y2="98" stroke="var(--L4)" stroke-width="2"/>
+<circle cx="66" cy="152" r="11" fill="none" stroke="var(--L3)" stroke-width="2"/><path d="M60,152 a3,3 0 1,1 6,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 a3,3 0 1,1 -6,0" fill="none" stroke="var(--L3)" stroke-width="1.6"/>
+</g>
+<rect x="84" y="42" width="231" height="20" rx="4" fill="var(--L1)"/><text x="310" y="57" text-anchor="end" font-size="12" font-weight="700" fill="#fff">10.5 N·m</text>
+<rect x="84" y="80" width="92" height="18" rx="4" fill="var(--L4)" opacity=".55"/><text x="182" y="94" font-size="11" fill="var(--ink2)">液冷 4.2</text>
+<rect x="84" y="100" width="77" height="18" rx="4" fill="var(--L4)"/><text x="167" y="114" font-size="12" font-weight="700" fill="var(--ink)">3.5 N·m</text>
+<rect x="84" y="130" width="57" height="18" rx="4" fill="var(--L3)" opacity=".55"/><text x="147" y="144" font-size="11" fill="var(--ink2)">液冷 2.6</text>
+<rect x="84" y="150" width="46" height="18" rx="4" fill="var(--L3)"/><text x="136" y="164" font-size="12" font-weight="700" fill="var(--ink)">2.1 N·m（额定）</text>
+<text x="10" y="192" font-size="11" fill="var(--ink2)">柱长按力矩等比例绘制。数据：BEAR-Product-Manual-1.3.0-EN Table 1</text>
+</svg>
+<figcaption><b>看图要看什么：</b>最长和最短差五倍，可说的是同一颗电机，区别只在“你打算让它顶多久”。液冷把 15 秒和额定两档都往上推了，1.5 秒那档手册没有单列液冷值。对外报数时，<strong>时长、是否液冷、55 °C 温升条件</strong>要跟数字一起写。</figcaption>
+</figure>
+<div class="analogy"><div class="t">类比：百米冲刺和马拉松</div>
+<p>同一个人，百米和马拉松的配速能差两三倍，腿还是那双腿。峰值力矩是电机的百米，额定力矩是它的马拉松配速，亦庄赛道考的正是后者。</p>
+<p class="off">哪里不准：人跑不动有能量和疲劳的原因；电机“跑不动”只因为温度，所以散热一改善，持续能力立刻就上去了。</p></div>
+
+<figure class="photo">
+<img src="https://www.nasa.gov/wp-content/uploads/2025/03/x-57-testing-1.jpg" loading="lazy" referrerpolicy="no-referrer" alt="NASA 研究人员在为 X-57 巡航电机控制器布置热测试" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/image-detail/x-57-testing-3">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>W1-4 的翻车现场：NASA X-57 电动飞机的巡航电机控制器正在准备热测试。项目曾因电子器件扛不住测试中的极端温度和振动而推迟，后来改用碳化硅晶体管，效率约 98%。热，是电驱动系统里最不起眼、也最要命的那一项。<br>图：NASA/Jef Janis / <a href="https://www.nasa.gov/image-detail/x-57-testing-3">NASA Image Detail</a>，NASA 图片（公有领域，按 NASA 媒体使用指南署名）</figcaption>
+</figure>
+
+<h3 style="font-family:var(--serif);font-size:19px;margin:22px 0 4px">坑四：KV 越高越“猛”？</h3>
+<figure>
+<svg viewBox="0 0 340 200" role="img" aria-label="MN4012 三种绕法：Kt 乘以最大持续电流，面积几乎相同">
+<text x="10" y="18" font-size="12.5" font-weight="700" fill="var(--ink)">同一个定子（40×12 mm），三种绕法</text>
+<text x="10" y="34" font-size="11" fill="var(--ink2)">宽 = K<tspan baseline-shift="sub" font-size="8">t</tspan>（N·m/A，推算），高 = 最大持续电流（A，官方），面积 = 力矩</text>
+<g>
+<rect x="20" y="172" width="0" height="0"/>
+<rect x="22" y="73" width="84" height="99" fill="var(--L1)" opacity=".8"/>
+<rect x="126" y="59" width="72" height="113" fill="var(--L2)" opacity=".8"/>
+<rect x="218" y="42" width="60" height="130" fill="var(--L3)" opacity=".8"/>
+<line x1="14" y1="172" x2="330" y2="172" stroke="var(--ink2)"/>
+</g>
+<g font-size="11.5" text-anchor="middle" fill="#fff" font-weight="700">
+<text x="64" y="125">0.62</text><text x="162" y="118">0.60</text><text x="248" y="110">0.58</text>
+<text x="64" y="140" font-size="10" font-weight="400">N·m</text><text x="162" y="133" font-size="10" font-weight="400">N·m</text><text x="248" y="125" font-size="10" font-weight="400">N·m</text>
+</g>
+<g font-size="11" text-anchor="middle" fill="var(--ink)">
+<text x="64" y="188">KV340·22 A</text><text x="162" y="188">KV400·25 A</text><text x="248" y="188">KV480·29 A</text>
+</g>
+<text x="300" y="80" font-size="11" fill="var(--ink2)">KV↑</text><text x="300" y="94" font-size="11" fill="var(--ink2)">Kt↓</text><text x="300" y="108" font-size="11" fill="var(--ink2)">I↑</text>
+</svg>
+<figcaption><b>看图要看什么：</b>三块颜色的形状越来越“瘦高”，面积却差不多——力矩天花板由电机个头（铜和磁铁的量）决定，KV 只决定你用“高电压小电流”还是“低电压大电流”去够它。电流为 T-Motor 官方数据，K<sub>t</sub> 按 9.55/KV 推算。</figcaption>
+</figure>
+<div class="analogy"><div class="t">类比：骑车换挡</div>
+<p>低挡上坡脚下轻、车走得慢；高挡平路车快、每一脚都沉。你的腿能出的功率没变，变的只是“劲”和“快”的分配。绕组匝数就是电机出厂时挂好的那一挡。</p>
+<p class="off">哪里不准：自行车可以边骑边换挡，电机的绕法出厂就定死了；能“边跑边换挡”的，是下一单元的减速器——不过它的齿比也是定死的。</p></div>
+
+<div class="box cold"><div class="t">冷知识｜这一周最“巧”的一个巧合</div>
+<p>法拉第在 1821 年先做出了“电磁旋转”（电动机的原理），十年后的 1831 年才发现电磁感应（发电机的原理）。又过了四十多年，方丹在维也纳那根传说中接错的电缆，才让工业界看清楚：电动机和发电机是同一台机器。而我们这周推出来的 K<sub>t</sub> = K<sub>e</sub>，就是这枚硬币两面的数学写法。</p></div>
+
+<h2><span class="n">04</span>回客户邮件前，先过一遍这五步</h2>
+<p>把这一周压成一张工作清单。下次收到 “Can your actuator do X Nm at Y rpm?” 这类邮件，按顺序过一遍：</p>
+<ol class="steps">
+<li><strong>统一单位。</strong>rpm → rad/s（× 0.105），kg·cm → N·m（× 0.098）。</li>
+<li><strong>算功率。</strong>P = T × ω，先知道这是几十瓦、几百瓦还是上千瓦的事，就知道该去看哪一级的产品。</li>
+<li><strong>问清是持续还是瞬时。</strong>“continuous” 对照额定力矩，“peak” 对照堵转力矩，并且问持续多久、占空比多少。</li>
+<li><strong>问电压。</strong>客户的转速要求要和供电电压一起看；BEAR SDK 手册写明，实际最高转速受供电电压和负载限制。</li>
+<li><strong>看热和回馈。</strong>长时间大力矩要看散热和液冷；有冲击、被倒拖的场景，提醒电源要能吸收回馈电能（BEAR 产品手册第 2.2 节的 CAUTION）。</li>
+</ol>
+<div class="box work">
+<p><strong>一段可以直接改着用的英文：</strong></p>
+<div class="en">To check the fit, could you share the required torque at each operating speed, and whether each point is continuous or short-duration (with the duration or duty cycle)? Please also let us know your supply voltage. Peak (stall) torque and maximum speed are rated under different conditions, so they cannot be reached at the same time.</div>
+<p style="font-size:14px;color:var(--ink2)">具体型号的数字，以《BEAR-Product-Manual-1.3.0-EN》和工程团队确认为准；手册里查不到的，标 [待技术确认]。</p>
+</div>
+
+<h2><span class="n">05</span>小测：十个真实场景</h2>
+<p>点选即判，下面会展开解析；计算题填数字后点“提交”。不计分，只看你哪一课还虚。</p>
+<div id="quizwrap"><div id="quiz"></div>
+<div class="score" id="score">已答 0 / 10 · 答对 0</div></div>
+
+<h2>本单元术语对照</h2>
+<table class="terms">
+<tr><td>力矩 / 扭矩</td><td>Torque（N·m）</td></tr>
+<tr><td>角速度</td><td>Angular velocity（rad/s）</td></tr>
+<tr><td>机械功率</td><td>Mechanical power（W）</td></tr>
+<tr><td>定子 / 转子</td><td>Stator / Rotor</td></tr>
+<tr><td>换相</td><td>Commutation</td></tr>
+<tr><td>无刷直流 / 永磁同步</td><td>BLDC / PMSM</td></tr>
+<tr><td>反电动势</td><td>Back-EMF</td></tr>
+<tr><td>速度常数 / 力矩常数</td><td>Speed constant K<sub>v</sub> / Torque constant K<sub>t</sub></td></tr>
+<tr><td>铜损 / 铁损</td><td>Copper loss / Iron (core) loss</td></tr>
+<tr><td>力矩-转速曲线</td><td>Torque-speed curve</td></tr>
+<tr><td>堵转力矩 / 额定力矩</td><td>Stall torque / Rated (continuous) torque</td></tr>
+<tr><td>能量回馈</td><td>Regeneration / Back-driven energy</td></tr>
+</table>
+
+<div class="tease">下一单元预告：回到那个计算器，点开“×6 减速”。力矩放大 6 倍，转速缩小 6 倍，看起来是笔稳赚不赔的买卖——那为什么 Mini Cheetah 偏偏只用 6:1，而不是 50:1、100:1？答案藏在一个你看不见的东西里：电机转子的“惯性”，隔着齿轮箱传到腿上时，会被放大成减速比的<strong>平方</strong>倍。6:1 是 36 倍，100:1 就是一万倍。机器人摔下来那一刻，这个数字决定了是腿扛住冲击，还是齿轮先碎。明天，第 2 单元第 1 课：减速比与反射惯量。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>MIT News, “Mini cheetah is the first four-legged robot to do a backflip”（2019-03-04，电机组成、6:1 减速、配图）：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">news.mit.edu</a></li>
+<li>D. Kim et al., “Highly Dynamic Quadruped Locomotion via Whole-Body Impulse Control and Model Predictive Control”（关节最大力矩 17 N·m、转速 40 rad/s、执行器功率 250 W）：<a href="https://arxiv.org/abs/1909.06586">arxiv.org</a></li>
+<li>NASA JPL, “Mars Rovers Get New Manager During Challenging Period”（2006，勇气号右前轮停转、电刷嫌疑）：<a href="https://www.jpl.nasa.gov/news/mars-rovers-get-new-manager-during-challenging-period/">jpl.nasa.gov</a></li>
+<li>Bureau International des Expositions, “Zénobe Gramme’s electrifying discovery at Expo 1873 Vienna”：<a href="https://bie-paris.org/site/en/latest/blog/entry/zenobe-gramme-s-electrifying-discovery-at-expo-1873-vienna">bie-paris.org</a></li>
+<li>APS News, “This Month in Physics History”：法拉第 1821 年电磁旋转与 1831 年电磁感应：<a href="https://www.aps.org/apsnews/2001/08/faraday-electromagnetism">aps.org</a></li>
+<li>每日经济新闻，《穿童鞋、脚踝跑断、胯部要喷制冷剂……探营松延动力极限备赛》（2025-04-18）：<a href="https://www.nbd.com.cn/articles/2025-04-18/3837513.html">nbd.com.cn</a></li>
+<li>T-Motor 官方商城，MN4012 KV340/400/480（内阻、最大持续电流 22 A/180 s、空载电流、定子尺寸）：<a href="https://store.tmotor.com/product/mn4012-kv340-motor-navigator-type.html">store.tmotor.com</a></li>
+<li>NASA Image Detail, “X-57 Cruise Motor Controller Thermal Test Setup”（NASA/Jef Janis）：<a href="https://www.nasa.gov/image-detail/x-57-testing-3">nasa.gov</a>；AIN, “NASA's X-57 Maxwell electric airplane passes critical thermal tests”（2023-02-10）：<a href="https://backend.ainonline.com/news-article/2023-02-10/nasas-x-57-maxwell-electric-airplane-passes-critical-thermal-tests">ainonline.com</a></li>
+<li>Scientific American, “The Wheels Come Off Kepler Planet-Finding Mission”（2013，反作用轮与轴承）：<a href="https://www.scientificamerican.com/article/the-wheels-come-off-kepler-planet-finding-mission">scientificamerican.com</a></li>
+<li>Westwood Robotics, BEAR-Product-Manual-1.3.0-EN.pdf（Table 1：KB02 Stall Torque 15sec / 1.5sec、Rated Torque、LC 及 55 °C 温升脚注；第 2.2 节反电动势 CAUTION）；BEAR-SDK-Manual-EN.pdf（goal_iq / goal_id、T = iq × K<sub>T</sub>、Velocity Mode 单位 rad/s 与最高转速 CAUTION、temp_limit_low/high）——公司内部资料</li>
+<li>本单元前四课：<a href="2026-10-14.html">W1-1</a> · <a href="2026-10-15.html">W1-2</a> · <a href="2026-10-16.html">W1-3</a> · <a href="2026-10-19.html">W1-4</a></li>
+</ul>
+</main>
+
+<script>
+(function(){
+/* ---------------- 知识地图 ---------------- */
+var NS='http://www.w3.org/2000/svg';
+var N=[
+{id:'V',x:90,y:40,t:'电源电压 V',L:3,one:'电池或电源给的“推力”，决定电机最多能转多快。',f:'空载转速 ≈ K<sub>v</sub> × V',work:'客户问 “max speed at 24 V?”，先看供电电压；BEAR SDK 手册写明实际最高转速受供电电压与负载限制。',trap:'电压高≠力矩大。力矩看的是电流。'},
+{id:'C',x:270,y:40,t:'换相 / 逆变器',L:2,one:'“挪胡萝卜”：按转子位置给三相线圈排电流，让定子磁场领先磁铁约 90°。有刷电机靠碳刷，无刷电机靠电子开关 + 位置传感器。',f:'T ∝ sin δ（δ = 90° 最有劲）',work:'BEAR SDK 寄存器 goal_iq（力矩电流）和 goal_id（励磁电流），就是这 90° 的两个分量。',trap:'BLDC 和 PMSM 结构几乎一样，主要差在驱动方式：六步方波 vs 正弦 / FOC。“无刷”也不等于免维护，轴承照样会老。'},
+{id:'I',x:270,y:120,t:'电流 I',L:3,one:'真正“出力”的东西。只有垂直于磁极的那一份（i<sub>q</sub>）在拧。',f:'I = (V − E) ÷ R',work:'驱动器里的电流限制（如 BEAR 的 limit_i_max）就是力矩的天花板。',trap:'电流越大越有劲，但发热按平方涨。'},
+{id:'E',x:90,y:120,t:'反电动势 E',L:3,one:'电机一转就自己“吐”电压，方向和电源对着干。转得越快吐得越多，最后把电流挤没——这就是“极速”。',f:'E = K<sub>e</sub> · ω',work:'被外力倒拖时电机变成发电机，电能回灌，开关电源可能保护关断。BEAR 产品手册第 2.2 节有对应的 CAUTION。',trap:'短接的电机拧起来粘手，不是摩擦，是反电动势电流在刹车。'},
+{id:'T',x:270,y:200,t:'力矩 T',L:1,one:'“有劲”的准确说法：力 × 力臂。磁铁离轴越远，同样的磁力拧出的力矩越大，所以扁平外转子电机受欢迎。',f:'T = K<sub>t</sub> · I，且 K<sub>t</sub> = K<sub>e</sub>（SI 单位）',work:'BEAR SDK 给出的粗估：T = iq × K<sub>T</sub>。舵机的 kg·cm 要先 × 0.098 换成 N·m。',trap:'KV 高的电机 K<sub>t</sub> 低：同一个身体，绕法只决定“高压小电流”还是“低压大电流”。'},
+{id:'W',x:90,y:200,t:'转速 ω',L:1,one:'公式里一律用 rad/s。1 rad/s ≈ 9.55 rpm。',f:'ω = rpm × 2π ÷ 60',work:'BEAR 速度模式的目标速度单位是 rad/s；客户邮件多写 rpm。',trap:'把 rpm 直接代进 P = T·ω，功率会大 9.55 倍。'},
+{id:'P',x:180,y:280,t:'功率 P = T·ω',L:1,one:'每秒钟干多少活。力矩和转速都翻倍，功率翻四倍——“又快又有劲”很贵，原因就在这。',f:'P = T × ω',work:'收到 “X Nm at Y rpm”，第一步换单位、算功率，立刻知道该看哪个尺寸级别。',trap:'峰值力矩 × 最高转速 ≠ 能达到的功率（Mini Cheetah：17 × 40 = 680，而上限 250 W）。'},
+{id:'Cu',x:305,y:362,w:100,t:'铜损 I²R',L:4,one:'线圈电阻发热，只看电流（也就是力矩），和转不转无关；堵转时电能全部变成热。',f:'P<sub>铜</sub> = (T ÷ K<sub>t</sub>)² · R',work:'力矩减半，铜损降到四分之一；力矩翻倍，铜损变四倍。',trap:'线圈热了电阻变大（约每度 +0.4%），发热会自己加速。'},
+{id:'Fe',x:55,y:362,w:100,t:'铁损',L:4,one:'定子铁芯里的磁场来回翻转：磁滞 ∝ 频率，涡流 ∝ 频率²。看转速的脸色，空转也有。',f:'P<sub>铁</sub> ≈ a·f + b·f²',work:'硅钢叠片就是为了切断涡流；极对数多的电机电频率高，铁损也更值得留意。',trap:'“空载就不发热”是错的。'},
+{id:'K',x:180,y:362,w:110,t:'力矩-转速曲线',L:4,one:'三条边界拼出的地图：电流上限（顶）、电压上限（右边的斜线）、发热上限（连续区）。',f:'能用的区域 = 缺了角的长方形',work:'规格书上的峰值力矩和最高转速来自曲线的不同角落，不能相乘。',trap:'曲线以内也不是哪里都能一直待：只有连续区可以。'},
+{id:'H',x:180,y:440,t:'温升与散热',L:4,one:'所有损耗最后都变成热；进来多少、散出去多少，决定电机能撑多久。',f:'散热翻倍 → 连续力矩约 × √2（推算）',work:'BEAR SDK：温度超过 temp_limit_low（默认 80 °C）开始线性降电流，到 temp_limit_high（默认 100 °C）电流限制降为 0。',trap:'客户说“跑一会儿力矩就变小”，先查 winding_temperature，别建议调高温度限值——那是保护。'},
+{id:'R',x:180,y:512,t:'峰值 vs 额定',L:4,one:'同一颗电机的“百米”和“马拉松”。每个力矩数字都带着时间和散热条件。',f:'KB02：1.5 s 10.5 / 15 s 3.5 / 额定 2.1 N·m',work:'对外回复把条件写全：时长、液冷与否、温升 55 °C。数据见 BEAR-Product-Manual-1.3.0-EN Table 1。',trap:'“峰值 10.5 N·m”不等于能一直给 10.5 N·m。'}
+];
+var E=[
+['V','I','M150,46 L210,110','V − E 推电流',200,80],
+['E','I','M150,120 L208,120','顶回来',160,136],
+['C','I','M270,60 L270,98','摆到 90°',276,83],
+['I','T','M270,140 L270,178','× Kt',276,163],
+['W','E','M90,180 L90,142','× Ke',96,165],
+['T','P','M250,220 L205,258','',0,0],
+['W','P','M110,220 L155,258','',0,0],
+['I','Cu','M330,120 L350,120 L350,340','平方',318,250],
+['W','Fe','M60,220 L52,340','频率',26,290],
+['P','K','M180,300 L180,340','',0,0],
+['Cu','H','M290,382 L232,422','',0,0],
+['Fe','H','M70,382 L128,422','',0,0],
+['K','H','M180,382 L180,418','',0,0],
+['H','R','M180,460 L180,490','',0,0]
+];
+var LN={1:'W1-1',2:'W1-2',3:'W1-3',4:'W1-4'};
+var eg=document.getElementById('edges'),ng=document.getElementById('nodes');
+var edgeEls=[],nodeEls={};
+E.forEach(function(e){
+  var p=document.createElementNS(NS,'path');p.setAttribute('d',e[2]);p.setAttribute('class','edge');p.setAttribute('marker-end','url(#ar)');eg.appendChild(p);
+  edgeEls.push({a:e[0],b:e[1],el:p});
+  if(e[3]){var t=document.createElementNS(NS,'text');t.setAttribute('x',e[4]);t.setAttribute('y',e[5]);t.setAttribute('class','elab');t.textContent=e[3];eg.appendChild(t);}
+});
+N.forEach(function(n){
+  var w=n.w||120,h=40,g=document.createElementNS(NS,'g');g.setAttribute('class','node');g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',n.t);
+  var r=document.createElementNS(NS,'rect');r.setAttribute('x',n.x-w/2);r.setAttribute('y',n.y-h/2);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx',10);
+  r.setAttribute('fill','var(--L'+n.L+'s)');r.setAttribute('stroke','var(--L'+n.L+')');
+  var t=document.createElementNS(NS,'text');t.setAttribute('x',n.x);t.setAttribute('y',n.y+4.5);t.setAttribute('text-anchor','middle');t.setAttribute('fill','var(--ink)');t.textContent=n.t;
+  g.appendChild(r);g.appendChild(t);ng.appendChild(g);nodeEls[n.id]=g;
+  function pick(){select(n.id);}
+  g.addEventListener('click',pick);g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();pick();}});
+});
+var panel=document.getElementById('panel');
+function select(id){
+  var n=N.filter(function(x){return x.id===id;})[0];
+  Object.keys(nodeEls).forEach(function(k){nodeEls[k].classList.toggle('sel',k===id);});
+  edgeEls.forEach(function(e){var hot=(e.a===id||e.b===id);e.el.classList.toggle('hot',hot);e.el.setAttribute('marker-end',hot?'url(#arh)':'url(#ar)');});
+  panel.innerHTML='<span class="pt">'+n.t+'</span><span class="tag" style="color:var(--L'+n.L+');border-color:var(--L'+n.L+')">'+LN[n.L]+'</span><br>'+n.one+'<br><span class="pf">'+n.f+'</span><br><span class="lbl">工作里：</span>'+n.work+'<br><span class="lbl">易错：</span>'+n.trap;
+}
+document.querySelectorAll('#lessonBtns button').forEach(function(b){
+  b.addEventListener('click',function(){
+    var l=+b.getAttribute('data-l');
+    document.querySelectorAll('#lessonBtns button').forEach(function(x){x.classList.toggle('on',x===b);});
+    N.forEach(function(n){nodeEls[n.id].classList.toggle('dim',l!==0&&n.L!==l);});
+  });
+});
+
+/* ---------------- 计算器 ---------------- */
+var KV=340,KT=9.55/KV,R=0.133,VB=22.2,IMAX=22,G=6,ETA=0.95;
+var gear=false;
+var cT=document.getElementById('cT'),cN=document.getElementById('cN'),oT=document.getElementById('oT'),oN=document.getElementById('oN');
+var chain=document.getElementById('chain'),verdict=document.getElementById('verdict'),tmap=document.getElementById('tmap');
+/* 坐标：x 0..8000 rpm -> 40..325 ; y 0..0.8 -> 180..20 */
+function X(n){return 40+n/8000*285;} function Y(t){return 180-t/0.8*160;}
+function line(x1,y1,x2,y2,cls){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" '+cls+'/>';}
+var bg='';
+bg+=line(40,180,328,180,'stroke="var(--ink2)"')+line(40,180,40,14,'stroke="var(--ink2)"');
+[2000,4000,6000,8000].forEach(function(n){bg+='<text x="'+X(n)+'" y="194" font-size="10" text-anchor="middle" fill="var(--ink2)">'+n+'</text>';});
+[0.2,0.4,0.6,0.8].forEach(function(t){bg+='<text x="35" y="'+(Y(t)+3)+'" font-size="10" text-anchor="end" fill="var(--ink2)">'+t+'</text>';});
+bg+='<text x="326" y="207" font-size="10" text-anchor="end" fill="var(--ink2)">电机转速 rpm</text><text x="44" y="12" font-size="10" fill="var(--ink2)">力矩 N·m</text>';
+/* 等功率线 */
+[100,200].forEach(function(P){var d='';for(var n=300;n<=8000;n+=100){var t=P/(n*2*Math.PI/60);if(t>0.8)continue;d+=(d?'L':'M')+X(n).toFixed(1)+','+Y(t).toFixed(1);}
+  bg+='<path d="'+d+'" fill="none" stroke="var(--L1)" stroke-width="1" opacity=".6"/>';});
+bg+='<text x="'+X(7400)+'" y="'+(Y(100/(7400*0.1047))-4)+'" font-size="9.5" fill="var(--L1)">100 W</text>';
+bg+='<text x="'+X(5200)+'" y="'+(Y(200/(5200*0.1047))-5)+'" font-size="9.5" fill="var(--L1)">200 W</text>';
+/* 电流线 */
+bg+=line(40,Y(IMAX*KT),325,Y(IMAX*KT),'stroke="var(--L3)" stroke-dasharray="5 4" stroke-width="1.6"');
+bg+='<text x="44" y="'+(Y(IMAX*KT)-4)+'" font-size="9.5" fill="var(--L3)">22 A（官方最大持续，180 s）</text>';
+/* 电压线 T = KT*(VB - KE*w)/R */
+function nAtV(t){return (VB-(t/KT)*R)/KT*60/(2*Math.PI);}
+bg+=line(X(nAtV(0)),Y(0),X(nAtV(0.8)),Y(0.8),'stroke="var(--bad)" stroke-width="2"');
+bg+='<text x="'+(X(nAtV(0.8))-4)+'" y="'+(Y(0.8)+12)+'" font-size="9.5" text-anchor="end" fill="var(--bad)">22.2 V 极限</text>';
+tmap.innerHTML=bg+'<g id="pt"></g>';
+var ptg=document.getElementById('pt');
+function f(v,d){return v.toFixed(d);}
+function calc(){
+  var T=+cT.value,n=+cN.value,w=n*2*Math.PI/60;
+  var P=T*w,I=T/KT,Ee=KT*w,Vn=Ee+I*R,Pcu=I*I*R,r=n/3400,Pfe=4.5*r+4.5*r*r,eta=P>0?P/(P+Pcu+Pfe):0;
+  var overV=Vn>VB,overI=I>IMAX;
+  oT.textContent=f(T,2)+' N·m';oN.textContent=n+' rpm';
+  var c='';
+  c+='<div>① 换单位 <i>W1-1</i><b>'+f(w,0)+' rad/s</b><i>ω = rpm × 2π/60</i></div>';
+  c+='<div>② 机械功率 <i>W1-1</i><b>'+f(P,0)+' W</b><i>P = T·ω</i></div>';
+  c+='<div class="'+(overI?'warnc':'')+'">③ 需要电流 <i>W1-3</i><b>'+f(I,1)+' A</b><i>I = T ÷ K<sub>t</sub>（K<sub>t</sub>≈0.028）</i></div>';
+  c+='<div>④ 反电动势 <i>W1-3</i><b>'+f(Ee,1)+' V</b><i>E = K<sub>e</sub>·ω</i></div>';
+  c+='<div class="'+(overV?'warnc':'')+'">⑤ 需要电压 <i>W1-3</i><b>'+f(Vn,1)+' / 22.2 V</b><i>V = E + I·R</i></div>';
+  c+='<div>⑥ 铜损 <i>W1-4</i><b>'+f(Pcu,1)+' W</b><i>I²R，看力矩</i></div>';
+  c+='<div>⑦ 铁损（估） <i>W1-4</i><b>'+f(Pfe,1)+' W</b><i>看转速，教学模型</i></div>';
+  c+='<div>⑧ 效率（估） <i>W1-4</i><b>'+(P>0.5?f(eta*100,0)+' %':'—')+'</b><i>P ÷ (P + 损耗)</i></div>';
+  if(gear){c+='<div style="grid-column:1/-1;border-color:var(--accent)">⑨ 关节那一侧（×6 减速，效率 95% 假设）<b>'+f(T*G*ETA,2)+' N·m · '+f(n/G,0)+' rpm（'+f(w/G,1)+' rad/s）· '+f(P*ETA,0)+' W</b><i>力矩 ×6、转速 ÷6、功率几乎不变——W2 的主角</i></div>';}
+  chain.innerHTML=c;
+  var msg;
+  if(overV&&overI)msg='两头撞墙：电压不够（转不到这么快），电流也超过了 22 A。这个工作点做不到。';
+  else if(overV)msg='撞上电压墙：要在这个转速给这么大力矩，需要 '+f(Vn,1)+' V，电池只有 22.2 V。反电动势把电流挤没了（W1-3）。';
+  else if(overI)msg='超过官方最大持续电流 22 A：只能短时冲刺。铜损已达 '+f(Pcu,0)+' W，是 22 A 时的 '+f(Pcu/(IMAX*IMAX*R),1)+' 倍（W1-4 的平方税）。';
+  else if(P>0.5&&Pcu>P)msg='做得到，但很亏：铜损比输出的机械功率还大。低速大力矩就是这样——像伸直胳膊拎水桶，没干多少活却一直在烧。';
+  else msg='在边界以内。看看损耗里谁是大头：低速时铜损为主，高速时铁损抬头。';
+  verdict.textContent=msg;verdict.classList.toggle('bad',overV||overI);
+  var col=(overV||overI)?'var(--bad)':'var(--accent)';
+  var cx=X(Math.min(n,8000)),cy=Y(Math.min(T,0.8));
+  ptg.innerHTML='<line x1="40" y1="'+cy+'" x2="'+cx+'" y2="'+cy+'" stroke="'+col+'" stroke-dasharray="2 3" opacity=".6"/><line x1="'+cx+'" y1="180" x2="'+cx+'" y2="'+cy+'" stroke="'+col+'" stroke-dasharray="2 3" opacity=".6"/><circle cx="'+cx+'" cy="'+cy+'" r="7" fill="'+col+'" stroke="var(--bg2)" stroke-width="2"/>';
+}
+cT.addEventListener('input',calc);cN.addEventListener('input',calc);
+document.querySelectorAll('#presets button[data-t]').forEach(function(b){b.addEventListener('click',function(){cT.value=b.getAttribute('data-t');cN.value=b.getAttribute('data-n');calc();});});
+var gb=document.getElementById('gearBtn');
+gb.addEventListener('click',function(){gear=!gear;gb.classList.toggle('on',gear);calc();});
+/* 在图上点按也能设置工作点 */
+function setFromEvent(ev){var r=tmap.getBoundingClientRect();var sx=340/r.width;var px=(ev.clientX-r.left)*sx,py=(ev.clientY-r.top)*(210/r.height);
+  var n=Math.max(0,Math.min(8000,(px-40)/285*8000)),t=Math.max(0,Math.min(0.8,(180-py)/160*0.8));cN.value=Math.round(n/50)*50;cT.value=t.toFixed(2);calc();}
+var drag=false;
+tmap.addEventListener('pointerdown',function(ev){drag=true;setFromEvent(ev);});
+tmap.addEventListener('pointermove',function(ev){if(drag)setFromEvent(ev);});
+window.addEventListener('pointerup',function(){drag=false;});
+calc();
+
+/* ---------------- 小测 ---------------- */
+var Q=[
+{l:'W1-1',s:'一封邮件写着：“We need 8 Nm continuous at 150 rpm.” 这个工作点的机械功率大约是多少瓦？',num:125.7,tol:8,unit:'W',ex:'150 rpm × 2π/60 ≈ 15.7 rad/s；P = 8 × 15.7 ≈ 126 W。注意 continuous：要对照额定（连续）力矩，而不是峰值。电机实际耗电还要加上损耗。'},
+{l:'W1-1',s:'展会上客户指着一张规格页：“峰值 17 N·m，最高 40 rad/s，同时用满就是 680 W，对吧？”',o:['对，P = T·ω，17 × 40 = 680 W','不对，峰值力矩和最高转速来自曲线的不同角落，实际还受功率、电压限制','不对，应该用 17 ÷ 40 来算'],a:1,ex:'这正是 Mini Cheetah 的那笔账：论文给的上限是 250 W，只有约 14.7 rad/s 以下才能给满 17 N·m。正确做法是请客户给出具体工作点：什么转速下要多大力矩、持续多久。'},
+{l:'W1-1',s:'客户说他们现在用的舵机是“35 kg·cm”，想换成执行器。这个力矩换成 N·m 大约是？',o:['35 N·m','约 3.4 N·m','约 0.34 N·m'],a:1,ex:'35 × 9.81 N × 0.01 m ≈ 3.43 N·m。kg·cm 和 N·m 差了将近 10 倍，先统一单位再比较。'},
+{l:'W1-2',s:'客户问：“It’s brushless, so it’s maintenance-free, right?” 哪个回答最稳妥？',o:['Yes, brushless motors never wear out.','No brush wear, but bearings and gearing still age and need periodic inspection.','No, brushless motors wear out faster than brushed ones.'],a:1,ex:'去掉电刷只是去掉了一处磨损。开普勒望远镜的反作用轮就是无刷电机，NASA 怀疑坏在滚珠轴承上。'},
+{l:'W1-2',s:'用 BEAR 的 Torque Mode 时，主要决定输出力矩的是哪个量？',o:['goal_id（目标励磁电流）','goal_iq（目标力矩电流）','goal_velocity（目标速度）'],a:1,ex:'i<sub>q</sub> 是垂直于磁极、负责“拧”的那份电流；i<sub>d</sub> 顺着磁极方向，只“挤/拉”不出力矩。SDK 手册给出粗估 T = iq × K<sub>T</sub>。'},
+{l:'W1-3',s:'一颗 KV340 的无人机电机，按理想换算 K<sub>t</sub> ≈ 9.55 ÷ 340。给它 20 A 电流，力矩大约多少 N·m？',num:0.56,tol:0.04,unit:'N·m',ex:'K<sub>t</sub> ≈ 0.028 N·m/A，20 A × 0.028 ≈ 0.56 N·m。这是理想推算：实际大电流下铁芯饱和，K<sub>t</sub> 会略低；三相电机还要注意 K<sub>v</sub> 的测量口径。'},
+{l:'W1-3',s:'同一个定子，KV340 和 KV480 两种绕法，哪个最大持续力矩更大？',o:['KV480，KV 越高越猛','KV340，K<sub>t</sub> 更大','差不多，K<sub>t</sub> 大的允许电流小，乘起来接近'],a:2,ex:'T-Motor MN4012 的官方数据：22 A × 0.028 ≈ 0.62 N·m，29 A × 0.020 ≈ 0.58 N·m。力矩天花板由铜和磁铁的量决定，KV 只是“挂挡”。'},
+{l:'W1-3',s:'实验室里有人快速扳动机械臂，给关节供电的开关电源突然保护关机了。最可能的原因是？',o:['电机内部短路','电机被倒拖变成发电机，能量回灌把母线电压顶高','编码器失效'],a:1,ex:'很多开关电源只会“出”电不会“吃”电。BEAR 产品手册第 2.2 节的 CAUTION 建议：大惯量、动态运动场景使用高倍率锂聚合物电池，或加装带大电容的反电动势吸收电路。'},
+{l:'W1-4',s:'客户来信：“Can KB02 hold 5 Nm indefinitely?” 根据产品手册，怎么回？',o:['Yes — its peak torque is 10.5 Nm.','No — its rated (continuous) torque is 2.1 Nm (2.6 Nm liquid-cooled); 5 Nm is above even its 15-s stall torque of 3.5 Nm.','Yes, if liquid cooling is used.'],a:1,ex:'BEAR-Product-Manual-1.3.0-EN Table 1：KB02 额定 2.1 N·m（液冷 2.6），15 秒堵转 3.5 N·m（液冷 4.2），1.5 秒堵转 10.5 N·m，均以温升不超过 55 °C 为条件。5 N·m 只能是十几秒以内的短时输出，具体能撑多久需要工程评估。'},
+{l:'W1-4',s:'客户把关节的持续力矩需求从 3 N·m 提到 6 N·m，转速不变。线圈铜损大约变成原来的多少倍？',o:['2 倍','4 倍','不变，因为转速没变'],a:1,ex:'力矩翻倍 → 电流翻倍 → I²R 变 4 倍。转速不变，铁损基本不变，所以总发热的增幅会略小于 4 倍；而且线圈变热后电阻变大，又会多一点。'}
+];
+var qd=document.getElementById('quiz'),score=document.getElementById('score'),done=0,right=0;
+function upd(){score.textContent='已答 '+done+' / '+Q.length+' · 答对 '+right;}
+Q.forEach(function(q,i){
+  var d=document.createElement('div');d.className='qz';
+  var h='<div class="qh">第 '+(i+1)+' 题 · '+q.l+'</div><div class="qs">'+q.s+'</div>';
+  if(q.o){h+='<div class="opts">'+q.o.map(function(o,j){return '<button data-j="'+j+'">'+String.fromCharCode(65+j)+'. '+o+'</button>';}).join('')+'</div>';}
+  else{h+='<div class="num"><input type="text" inputmode="decimal" aria-label="填写答案"> <span>'+q.unit+'</span> <button class="sub">提交</button></div>';}
+  h+='<div class="ex"><span class="res"></span> '+q.ex+'</div>';
+  d.innerHTML=h;qd.appendChild(d);
+  var ex=d.querySelector('.ex'),res=d.querySelector('.res'),answered=false;
+  function finish(ok){if(!answered){answered=true;done++;if(ok)right++;upd();}res.textContent=ok?'答对了。':'再想想——';res.className='res '+(ok?'ok':'no');ex.classList.add('show');}
+  if(q.o){d.querySelectorAll('.opts button').forEach(function(b){b.addEventListener('click',function(){
+    if(answered)return;var j=+b.getAttribute('data-j');
+    d.querySelectorAll('.opts button').forEach(function(x){var k=+x.getAttribute('data-j');if(k===q.a)x.classList.add('right');});
+    if(j!==q.a)b.classList.add('wrong');finish(j===q.a);});});}
+  else{var inp=d.querySelector('input');d.querySelector('.sub').addEventListener('click',function(){
+    var v=parseFloat((inp.value||'').replace(/[^\d.\-]/g,''));if(isNaN(v)){inp.focus();return;}
+    var ok=Math.abs(v-q.num)<=q.tol;finish(ok);if(!ok)res.textContent='参考答案约 '+q.num+' '+q.unit+'。';});}
+});
+upd();
+})();
+</script>
+</body>
+</html>
