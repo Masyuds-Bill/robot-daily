@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>晚报 10/19｜OpenAI 要造人形</title>
+<style>
+:root{
+  --bg:#f6f4ef; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5d574e; --line:#e1dbcf;
+  --accent:#b4441a; --accent2:#0f766e; --soft:#fbefe6; --soft2:#e5f1ef;
+  --metal:#9aa1ab; --metal2:#5b6370; --cable:#c2410c; --skin:#d9dde3; --floor:#cfc7b8;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --bg2:#1d2024; --ink:#ebe7df; --ink2:#a8a297; --line:#33373d;
+    --accent:#f08a4b; --accent2:#2dd4bf; --soft:#2a2019; --soft2:#14292a;
+    --metal:#7b838e; --metal2:#b3bbc6; --cable:#f59e5b; --skin:#4a5059; --floor:#3a3d42;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:10px 16px 60px}
+a{color:var(--accent2);word-break:break-word}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:8px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-size:28px;line-height:1.35;margin:6px 0 4px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 20px}
+h2{font-size:21px;line-height:1.45;margin:40px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+h3{font-size:16px;margin:18px 0 2px;color:var(--accent2)}
+p{margin:10px 0}
+.three{background:var(--soft);border-radius:14px;padding:12px 16px;margin:16px 0}
+.three ol{margin:6px 0;padding-left:1.3em}
+.three li{margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--soft2);color:var(--accent2);margin-right:6px;vertical-align:2px}
+.note{font-size:15px;color:var(--ink2);border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:14px 0}
+figure{margin:20px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px}
+figure img{width:100%;height:auto;display:block;border-radius:8px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.65;margin-top:8px}
+figcaption b{color:var(--accent)}
+.fail{display:none;font-size:14px;padding:10px 0}
+.src{font-size:14px;color:var(--ink2)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btns button{font:inherit;font-size:15px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.glossary{background:var(--soft2);border-radius:14px;padding:6px 16px 10px;margin-top:20px}
+.refs{font-size:14px;line-height:1.7;padding-left:1.2em}
+.refs li{margin:4px 0}
+footer{font-size:13px;color:var(--ink2);margin-top:30px}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<div class="kicker">机器人晚报 · 2026 年 10 月 19 日 · 周一（含周末）</div>
+<h1>OpenAI 要造人形，招的是“做关节的人”；一台 4 米液压巨人引来马斯克接话</h1>
+<p class="sub">约 10 分钟读完 · 5 条 · 周末新消息不多，宁少勿滥</p>
+
+<div class="three">
+<b>今日三句话</b>
+<ol>
+<li>周末刷屏的“OpenAI 官宣造人形”，核心说法其实是 9 月的旧话；真正值得看的是它的 27 个机器人岗位：电机、传动、传感、散热，它要自己做执行器。</li>
+<li>北京初创公司 NeodraDynamics 的 4 米级液压人形 Neo1 被马斯克在 X 上接了一句“Optimus 会造出 Optimus Prime”，液压和电驱谁更适合人形，又被拿出来讨论。</li>
+<li>arXiv 新论文 Whole-Body Dexterity 让宇树 G1 用胳膊和胸口“抱”东西，实机成功率 90%；国内两家“只做大脑、不造身体”的公司周末披露了融资进展。</li>
+</ol>
+</div>
+
+<!-- 1 -->
+<h2><span class="n">01</span>OpenAI 要造人形机器人：话是旧的，招聘启事是新线索</h2>
+<p><span class="tag">行业</span><span class="tag">执行器</span></p>
+<p><b>发生了什么。</b>10 月 17 日晚，Engadget 发文称 OpenAI CEO 奥特曼（Sam Altman）在 <i>Sources</i> 播客里确认公司会做人形机器人，理由是“世界基本是照着人的尺寸设计的”，并说身体没那么难，难的是“大脑”。19 日 Tech Times 又做了一篇长梳理，国内中文平台随即跟进成“OpenAI 官宣”。</p>
+<p>但请看日期：Tech Times 写明，播客是 <b>9 月 3 日</b>，“2027 年会有一个很酷的演示”那句话出自 <b>9 月中旬</b>接受《财富》（Fortune）采访。这不是新发布会，是旧话在周末又被翻出来。OpenAI 也没公布机器人长什么样、演示内容或时间表。</p>
+<p><b>真正的新信息藏在招聘页。</b>Engadget 统计 OpenAI 官网挂着 27 个机器人岗位，覆盖运动控制、状态估计、<b>执行器控制</b>，以及<b>定制机电执行器</b>（电机、传动、传感、散热），还有面向“大规模硬件生产”的制造与供应链岗位。Tech Times 还提到，OpenAI 3 月在加州里士满租了一处约 20 万平方英尺的场地，用 GELLO 遥操作装置带着 Franka 机械臂采数据；原硬件负责人 Caitlin Kalinowski 3 月离职，至今没有公开接任者。这些细节来自媒体梳理，OpenAI 未逐一确认。</p>
+<p><b>为什么值得关注。</b>一家以模型见长的公司，如果只想做“大脑”，大可以像 Google DeepMind 那样和 Apptronik 这类本体公司合作。它去招电机、减速器和散热工程师，说明它认为现成关节不够用，或者不想把成本和供应卡在别人手里。对做关节模组的公司来说，这是双面信号：头部玩家越来越倾向于自研执行器，留给外部供应商的，可能是研发早期的样机采购和非核心关节。</p>
+<p class="note">读新闻的小技巧：看到“官宣”，先找原话出处和日期。这条的原话最早出现在 9 月，周末只是被重新传播。</p>
+<p class="src">来源：<a href="https://www.engadget.com/2285040/openai-humanoid-robot-sam-altman-statement-real-challenge/">Engadget（10/17）</a> · <a href="https://www.techtimes.com/articles/329197/20261019/openai-confirms-humanoid-robot-2027-demo-competing-companies-it-once-backed.htm">Tech Times（10/19）</a></p>
+
+<!-- 2 -->
+<h2><span class="n">02</span>4 米、39 个液压关节：Neo1 让“液压还是电驱”这道老题又被翻了出来</h2>
+<p><span class="tag">执行器</span><span class="tag">产品</span></p>
+<p><b>发生了什么。</b>北京的 NeodraDynamics（清华背景团队创办）在上海工博会（10 月 12–16 日）上和京东工业一起展出了 Neo1。官方新闻稿给出的参数：4 米级身高（标题写 1.2 吨），全身 41 个主动自由度，其中前臂 2 个旋转关节用电机，<b>其余 39 个用自研微型数字液压直线执行器</b>，单个约 1 kg，宣称能输出“吨级”持续推力；双臂协同负载 500 kg，重复定位精度 ±0.005 mm。目标场景是港口重载搬运、核电与深海维护、矿山和救灾。</p>
+<p>10 月 17 日，有网友在 X 上问能不能造一台真人版 EVA，马斯克回了一句“Optimus will build Optimus Prime”（Optimus 会造出擎天柱），这台机器借此在周末又火了一轮。</p>
+
+<figure>
+<img src="https://mmx.prnewswire.com/media/MS2012961/20261013230641EDT_image_1.jpg?id=OA3017772&amp;p=facebook" loading="lazy" referrerpolicy="no-referrer" alt="上海工博会展台上的 Neo1 重型液压人形机器人" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fail"><a href="https://www.prnewswire.com/news-releases/neodradynamics-showcases-4-meter--1-2-ton-neo1-heavy-duty-hydraulic-robot-with-jd-industrial-at-ciif-hydraulicelectric-hybrid-solves-realworld-4d-industrial-challenges-302908332.html">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>这是公司在工博会展台上的官方照片。按新闻稿的说法，除前臂两个旋转关节外，它的关节都由沿肢体布置的液压直线缸驱动：可以找一找四肢上的缸体和油管，和电驱人形把“鼓包”集中在关节处的样子对比。<br>图：NeodraDynamics / <a href="https://www.prnewswire.com/news-releases/neodradynamics-showcases-4-meter--1-2-ton-neo1-heavy-duty-hydraulic-robot-with-jd-industrial-at-ciif-hydraulicelectric-hybrid-solves-realworld-4d-industrial-challenges-302908332.html">PR Newswire 新闻稿</a>，官方新闻稿配图</figcaption>
+</figure>
+
+<p><b>为什么值得关注。</b>上一代液压 Atlas 退役后，人形行业几乎一边倒地走向电驱：电机加减速器的关节好造、好控、不漏油，也方便量产。液压的强项是<b>力密度</b>，同样重的执行器能出大得多的力，还耐冲击。Neo1 的选择说明：当机器大到 4 米、要搬 500 kg，电驱关节的减速器和电机会又大又重，液压反而顺理成章。所以它更像“长得像人的工程机械”，不是在和 Optimus、G1 抢同一块市场。</p>
+<p class="note">所有参数都来自公司新闻稿，Interesting Engineering 也写明“规格仍需独立验证”。新闻稿没有给出动力源（泵站在哪、功率多大）、行走速度和续航，而这些恰恰是液压系统最难的地方。</p>
+
+<figure>
+<div class="btns" id="actBtns"><button class="on" data-k="h">液压直线缸</button><button data-k="e">电机 + 减速器关节</button></div>
+<svg viewBox="0 0 640 300" role="img" aria-label="液压执行器与电驱关节对比示意图">
+<defs>
+<linearGradient id="g-metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--metal)"/><stop offset=".5" stop-color="var(--skin)"/><stop offset="1" stop-color="var(--metal2)"/></linearGradient>
+<marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+</defs>
+<!-- hydraulic -->
+<g id="pane-h">
+<rect x="40" y="70" width="70" height="150" rx="14" fill="url(#g-metal)" stroke="var(--metal2)"/>
+<text x="75" y="245" text-anchor="middle" font-size="13" fill="var(--ink2)">大腿骨架</text>
+<rect x="330" y="150" width="70" height="120" rx="14" fill="url(#g-metal)" stroke="var(--metal2)" transform="rotate(-20 365 150)"/>
+<text x="395" y="290" text-anchor="middle" font-size="13" fill="var(--ink2)">小腿骨架</text>
+<circle cx="330" cy="150" r="18" fill="var(--bg2)" stroke="var(--metal2)" stroke-width="3"/>
+<circle cx="330" cy="150" r="5" fill="var(--metal2)"/>
+<text x="330" y="118" text-anchor="middle" font-size="13" fill="var(--ink2)">膝关节（只是铰链）</text>
+<!-- cylinder -->
+<g transform="rotate(8 120 130)">
+<rect x="110" y="118" width="130" height="26" rx="6" fill="var(--metal2)"/>
+<rect x="116" y="122" width="70" height="18" rx="3" fill="var(--soft)"/>
+<rect x="186" y="122" width="8" height="18" fill="var(--accent)"/>
+<rect x="194" y="127" width="140" height="8" rx="3" fill="var(--metal)"/>
+</g>
+<path d="M150 118 C150 70 200 60 230 60" fill="none" stroke="var(--cable)" stroke-width="4"/>
+<path d="M210 118 C210 85 240 80 260 80" fill="none" stroke="var(--cable)" stroke-width="4" stroke-dasharray="6 4"/>
+<text x="236" y="52" font-size="13" fill="var(--cable)">高压油进</text>
+<text x="266" y="84" font-size="13" fill="var(--cable)">回油</text>
+<path d="M200 175 L290 188" stroke="var(--accent)" stroke-width="3" marker-end="url(#arw)"/>
+<text x="150" y="210" font-size="13" fill="var(--accent)">活塞把杆“推”出去，带动小腿转</text>
+<text x="440" y="70" font-size="14" fill="var(--ink)" font-weight="600">液压：力沿肢体推拉</text>
+<text x="440" y="96" font-size="13" fill="var(--ink2)">✓ 同等重量力气大、抗冲击</text>
+<text x="440" y="118" font-size="13" fill="var(--ink2)">✗ 要泵站、油管，会漏油</text>
+<text x="440" y="140" font-size="13" fill="var(--ink2)">✗ 噪音大，难做低成本量产</text>
+</g>
+<!-- electric -->
+<g id="pane-e" style="display:none">
+<rect x="40" y="70" width="70" height="150" rx="14" fill="url(#g-metal)" stroke="var(--metal2)"/>
+<text x="75" y="245" text-anchor="middle" font-size="13" fill="var(--ink2)">大腿骨架</text>
+<circle cx="200" cy="150" r="62" fill="var(--metal2)"/>
+<circle cx="200" cy="150" r="52" fill="var(--bg2)" stroke="var(--metal)" stroke-width="2"/>
+<g fill="var(--cable)" opacity=".85">
+<rect x="196" y="100" width="8" height="14" rx="2"/><rect x="196" y="186" width="8" height="14" rx="2"/>
+<rect x="150" y="146" width="14" height="8" rx="2"/><rect x="236" y="146" width="14" height="8" rx="2"/>
+<rect x="165" y="113" width="10" height="10" rx="2" transform="rotate(45 170 118)"/><rect x="225" y="177" width="10" height="10" rx="2" transform="rotate(45 230 182)"/>
+<rect x="225" y="113" width="10" height="10" rx="2" transform="rotate(45 230 118)"/><rect x="165" y="177" width="10" height="10" rx="2" transform="rotate(45 170 182)"/>
+</g>
+<circle cx="200" cy="150" r="30" fill="var(--soft2)" stroke="var(--accent2)" stroke-width="2"/>
+<circle cx="200" cy="150" r="8" fill="var(--accent2)"/>
+<circle cx="200" cy="132" r="7" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+<circle cx="216" cy="159" r="7" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+<circle cx="184" cy="159" r="7" fill="none" stroke="var(--accent2)" stroke-width="2"/>
+<rect x="250" y="135" width="70" height="120" rx="14" fill="url(#g-metal)" stroke="var(--metal2)" transform="rotate(-20 285 135)"/>
+<text x="200" y="60" text-anchor="middle" font-size="13" fill="var(--ink2)">外圈：电机线圈（橙）</text>
+<text x="200" y="240" text-anchor="middle" font-size="13" fill="var(--accent2)">中心：行星减速器</text>
+<text x="440" y="70" font-size="14" fill="var(--ink)" font-weight="600">电驱：力在关节处转出来</text>
+<text x="440" y="96" font-size="13" fill="var(--ink2)">✓ 干净安静，只需走电线</text>
+<text x="440" y="118" font-size="13" fill="var(--ink2)">✓ 易控、易量产、易维护</text>
+<text x="440" y="140" font-size="13" fill="var(--ink2)">✗ 要大力矩就得加大电机</text>
+<text x="440" y="162" font-size="13" fill="var(--ink2)">   或提高减速比，变重变硬</text>
+</g>
+</svg>
+<figcaption><b>示意图（自绘，非比例）：</b>点上面的按钮切换。液压缸像一支“油压注射器”，装在骨架旁边推拉；电驱关节把电机和减速器塞进关节里直接转。Neo1 走的是前者，绝大多数人形（包括 Optimus、G1）走的是后者。</figcaption>
+</figure>
+<p class="src">来源：<a href="https://www.prnewswire.com/news-releases/neodradynamics-showcases-4-meter--1-2-ton-neo1-heavy-duty-hydraulic-robot-with-jd-industrial-at-ciif-hydraulicelectric-hybrid-solves-realworld-4d-industrial-challenges-302908332.html">NeodraDynamics 新闻稿（PR Newswire，10/14）</a> · <a href="https://interestingengineering.com/ai-robotics/china-neo1-hydraulic-humanoid-robot-1102-pound-payload">Interesting Engineering（10/14）</a> · <a href="https://beincrypto.com/musk-optimus-prime-china-robot/">BeInCrypto：马斯克回帖（10/17）</a></p>
+
+<!-- 3 -->
+<h2><span class="n">03</span>别只盯着手：一篇论文让 G1 用胳膊和胸口“抱”东西</h2>
+<p><span class="tag">学术</span><span class="tag">arXiv</span></p>
+<p><b>发生了什么。</b>10 月 15 日上传 arXiv 的论文 <i>Whole-Body Dexterity</i>（WBD，“全身灵巧”），作者来自 Amazon、加州大学圣地亚哥分校和密歇根大学（Nima Fazeli、Mustafa Mukadam 等）。它要解决的事很生活化：人搬篮球、纸箱这种大件，靠的不是五指，而是把东西夹在胳膊和胸口之间；机器人做不到，因为传统抓取规划只算“手和物体”的接触。</p>
+<p>做法分三步：先在仿真里生成约 251 万个稳定的“全身抱姿”；为每个物体训练强化学习“专家”，学会在任意两个抱姿之间挪动物体；再把 27.4 万条专家轨迹<b>蒸馏</b>成一个通用控制器，它不看相机，只靠关节自身的感觉（本体感觉，proprioception）和一个 5 维的物体形状描述。结果零样本迁移到宇树 G1：实机把篮球、纸箱在身前挪来挪去，还能把箱子夹在腋下，从货架走到桌边放下。成功率 90%，直接动作重定向（GMR）只有 18%，通用全身控制器 SONIC 只有 4%。</p>
+
+<figure>
+<svg viewBox="0 0 640 280" role="img" aria-label="人形机器人用手臂和躯干夹持纸箱的接触示意图">
+<rect x="0" y="250" width="640" height="30" fill="var(--floor)"/>
+<!-- left: hands only -->
+<g>
+<circle cx="150" cy="50" r="22" fill="var(--skin)" stroke="var(--metal2)" stroke-width="2"/>
+<rect x="138" y="44" width="24" height="7" rx="3" fill="var(--metal2)"/>
+<rect x="118" y="76" width="64" height="90" rx="16" fill="url(#g-metal)" stroke="var(--metal2)"/>
+<rect x="128" y="166" width="16" height="84" rx="7" fill="var(--metal)"/><rect x="156" y="166" width="16" height="84" rx="7" fill="var(--metal)"/>
+<path d="M120 86 L80 140 L100 150" stroke="var(--metal2)" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M180 86 L220 140 L200 150" stroke="var(--metal2)" stroke-width="14" stroke-linecap="round" fill="none"/>
+<rect x="100" y="140" width="100" height="70" rx="3" fill="#c79a5b" stroke="#8a6532" transform="rotate(-6 150 175)"/>
+<circle cx="102" cy="152" r="7" fill="var(--accent)"/><circle cx="198" cy="148" r="7" fill="var(--accent)"/>
+<text x="150" y="272" text-anchor="middle" font-size="13" fill="var(--ink)">只用手：2 个接触点，箱子容易转、滑</text>
+</g>
+<!-- right: whole body -->
+<g>
+<circle cx="470" cy="50" r="22" fill="var(--skin)" stroke="var(--metal2)" stroke-width="2"/>
+<rect x="458" y="44" width="24" height="7" rx="3" fill="var(--metal2)"/>
+<rect x="438" y="76" width="64" height="90" rx="16" fill="url(#g-metal)" stroke="var(--metal2)"/>
+<rect x="448" y="166" width="16" height="84" rx="7" fill="var(--metal)"/><rect x="476" y="166" width="16" height="84" rx="7" fill="var(--metal)"/>
+<rect x="500" y="92" width="80" height="62" rx="3" fill="#c79a5b" stroke="#8a6532"/>
+<path d="M500 84 L560 82 L586 112" stroke="var(--metal2)" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M500 160 L570 162" stroke="var(--metal2)" stroke-width="14" stroke-linecap="round" fill="none"/>
+<path d="M440 88 L420 140 L436 168" stroke="var(--metal2)" stroke-width="14" stroke-linecap="round" fill="none"/>
+<rect x="500" y="98" width="6" height="50" fill="var(--accent)" opacity=".85"/>
+<rect x="510" y="86" width="52" height="6" fill="var(--accent)" opacity=".85"/>
+<rect x="510" y="155" width="52" height="6" fill="var(--accent)" opacity=".85"/>
+<text x="490" y="272" text-anchor="middle" font-size="13" fill="var(--ink)">全身：上臂、前臂、躯干成片接触</text>
+</g>
+<text x="320" y="30" text-anchor="middle" font-size="13" fill="var(--accent)">橙色 = 接触面</text>
+</svg>
+<figcaption><b>示意图（自绘）：</b>左边只靠两只手“捏”，接触点少，箱子一晃就转；右边把箱子夹在腋下，胳膊和躯干是大面积的接触面，力分散在整条手臂上。WBD 学的就是右边这种动作，以及在不同夹法之间平滑切换。</figcaption>
+</figure>
+
+<p><b>实验没说明什么。</b>这不是“自主”搬箱子：实验中由人穿 Xsens 动捕服给出粗略的动作参考，控制器负责把物体稳住；手指被固定在握拳姿势，下半身交给另一个控制器 AMO；控制器跑在操作员工作站的 RTX 5090 上，不在机器人身上。训练也很贵，每个物体约 1030 个 H100 GPU 小时。</p>
+<p><b>和硬件有什么关系。</b>用胳膊“抱”意味着手臂关节长时间承受接触力，肩肘要能持续出力、不过热，还要“软”一点、被推得动（可反驱，backdrivable），否则一夹就挤坏东西或自己报过载。这类工作会让手臂执行器的持续力矩和力控能力变得和手一样重要。</p>
+<p class="src">来源：<a href="https://arxiv.org/abs/2610.22184">arXiv:2610.22184（10/15，CC BY-SA 4.0）</a> · <a href="https://www.teahose.com/paper/arXiv%20Physical%20AI/Whole-Body%20Dexterity">Teahose 论文摘要页（作者单位与实验细节）</a> · <a href="https://wholebodydex.com/">项目主页</a></p>
+
+<!-- 4 -->
+<h2><span class="n">04</span>不造身体只做“大脑”：两家公司周末披露融资</h2>
+<p><span class="tag">融资</span><span class="tag">国内</span></p>
+<p><b>发生了什么。</b>10 月 18 日，“机器人 Pro”报道杭州的<b>格物通智</b>完成近 1 亿元天使轮，投资方有杭州资本、杭州人才集团、省级具身产业基金和多家上市公司。公司 2026 年成立，CEO 蔡佳此前在华为负责智能驾驶 ADS 多代研发。它主打“物理反演世界模型”：从看到的动作反推看不见的接触和力，再用真实力觉、触觉数据校准，给训练数据补上“物理标签”。目前在纺织服装、光模块、汽车零部件客户那里做概念验证（PoC），计划年底前完成首个 PoC 交付。</p>
+<p>10 月 19 日《中国科学报》报道了北京的<b>星源智</b>：2025 年 8 月由北京智源研究院孵化，10 个月三轮融资累计超 10 亿元，首轮 2 亿元的产业方有智元机器人和中力股份；10 月 13 日总部迁入亦庄机器人产业园。它卖 T5 机器人计算平台（2025 年出货数百台）和 RoboBrain Pro 具身大脑，已用在中力的叉车装卸产品上，七成以上客户是具身本体公司。</p>
+<p><b>为什么值得关注。</b>两家都明确不做本体，只卖“大脑”和计算平台给所有本体厂。这和第 1 条形成对照：OpenAI 从大脑往下做身体，国内一批公司则把“大脑”和“身体”拆开做分工。分工越细，本体厂越需要标准化、接口清楚、数据好拿的关节和整机，执行器能不能提供干净的力矩、电流、温度数据，会越来越影响大脑公司选谁合作。融资金额和技术说法均为公司披露或媒体转述。</p>
+<p class="src">来源：<a href="https://zhidx.com/p/601967.html">智东西转载“机器人 Pro”（10/18）</a> · <a href="https://finance.sina.com.cn/tech/roll/2026-10-19/doc-inivtchz6962406.shtml">新浪科技转载《中国科学报》（10/19）</a></p>
+
+<!-- 5 -->
+<h2><span class="n">05</span>车企做家用人形：奇瑞系 AiMOGA 本周发布陪伴机器人 Mobo</h2>
+<p><span class="tag">产品预告</span></p>
+<p><b>发生了什么。</b>奇瑞旗下机器人公司 AiMOGA（墨甲）10 月 17 日发新闻稿：首款消费级家庭陪伴人形机器人 Mobo 将于 10 月 21 日在芜湖发布并开启全球预订。新闻稿给出的信息有限：全身 22 个自由度，可以互动、跳舞；搭载自研 MoAgent 系统，能拆解指令、规划长任务，记住家庭成员的习惯；会自主导航避障。价格、详细规格、是腿还是轮都没写。10 月 19–23 日的展示里还有交警机器人、导医“护士”机器人、讲解机器人 Mornine 和四足机器人 Argos。另据 IT 之家，奇瑞 10 月 20 日的全球创新大会会把公司定位从车企转向“全球 AI 科技公司”。</p>
+
+<figure>
+<img src="https://ml.globenewswire.com/Resource/Download/1be9133a-c36b-4d50-8ba8-f52eae858e11/aimoga.jpg" loading="lazy" referrerpolicy="no-referrer" alt="AiMOGA 新闻稿随附的机器人产品照片" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fail"><a href="https://www.globenewswire.com/news-release/2026/10/17/3382868/0/en/aimoga-to-unveil-mobo-its-first-family-companion-robot-on-october-21.html">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>这是新闻稿随附的唯一一张照片，稿件没有写说明，不能确定画面是不是 Mobo 本身。可以拿它和工业人形对比：陪伴机器人通常更强调外观亲和、体型小，而不是负载。具体机型以 10/21 正式发布为准。<br>图：AiMOGA Robotics / <a href="https://www.globenewswire.com/news-release/2026/10/17/3382868/0/en/aimoga-to-unveil-mobo-its-first-family-companion-robot-on-october-21.html">GlobeNewswire 新闻稿</a>，官方新闻稿配图</figcaption>
+</figure>
+
+<p><b>为什么值得关注。</b>车企有成熟的供应链、品控和渠道，做机器人时天然想把汽车零部件体系搬过来，压低成本。家用陪伴机器人对关节的要求和工业不同：力矩不必大，但要安静、安全、便宜、耐用，碰到孩子要能“软”下来。这也是一个看点：车企会自己做关节，还是向外采购。等 21 日的价格和规格出来再判断。</p>
+<p class="src">来源：<a href="https://www.globenewswire.com/news-release/2026/10/17/3382868/0/en/aimoga-to-unveil-mobo-its-first-family-companion-robot-on-october-21.html">AiMOGA 新闻稿（GlobeNewswire，10/17）</a> · <a href="https://www.globenewswire.com/news-release/2026/10/17/3382860/0/en/automotive-technology-comes-home-mobo-to-make-its-global-debut-at-the-omoda-jaecoo-international-user-summit.html">OMODA &amp; JAECOO 新闻稿（10/17）</a> · <a href="https://kucoin.com/news/flash/chery-to-launch-industry-specific-ai-model-and-humanoid-robot-mobao-at-global-innovation-conference">KuCoin 转 IT 之家（10/19）</a></p>
+
+<div class="glossary">
+<h2 style="border:0;margin-top:14px;padding-top:0">今日术语</h2>
+<h3>力密度 / 功率密度（force density / power density）</h3>
+<p>同样重的执行器能出多大的力（或功率）。可以想成“每公斤能举多重”。液压缸在这项上很强，所以挖掘机、Neo1 这类大块头爱用；电机加减速器胜在干净、好控、好量产。人形机器人越大、越重，天平越往液压倾斜；越小、越要和人共处，越往电驱倾斜。</p>
+<h3>策略蒸馏（policy distillation）</h3>
+<p>先训练很多只会一件事的“专家”，再让一个“学生”模型看它们怎么做，把本事学到同一个模型里。好比先请十位老师各教一门课，再让一个学生全学会，以后只带这一个学生上场。WBD 就是把每个物体的专家蒸馏成一个通用控制器。</p>
+</div>
+
+<h2>来源</h2>
+<ol class="refs">
+<li><a href="https://www.engadget.com/2285040/openai-humanoid-robot-sam-altman-statement-real-challenge/">Engadget：OpenAI is building a humanoid robot（2026-10-17）</a></li>
+<li><a href="https://www.techtimes.com/articles/329197/20261019/openai-confirms-humanoid-robot-2027-demo-competing-companies-it-once-backed.htm">Tech Times：OpenAI Confirms Humanoid Robot With 2027 Demo（2026-10-19）</a></li>
+<li><a href="https://www.prnewswire.com/news-releases/neodradynamics-showcases-4-meter--1-2-ton-neo1-heavy-duty-hydraulic-robot-with-jd-industrial-at-ciif-hydraulicelectric-hybrid-solves-realworld-4d-industrial-challenges-302908332.html">PR Newswire：NeodraDynamics Neo1 新闻稿（2026-10-14）</a></li>
+<li><a href="https://interestingengineering.com/ai-robotics/china-neo1-hydraulic-humanoid-robot-1102-pound-payload">Interesting Engineering：China's 13-foot robot titan（2026-10-14）</a></li>
+<li><a href="https://beincrypto.com/musk-optimus-prime-china-robot/">BeInCrypto：Musk Teases Real-Life Optimus Prime（2026-10-17）</a></li>
+<li><a href="https://arxiv.org/abs/2610.22184">arXiv:2610.22184 Whole-Body Dexterity（2026-10-15）</a></li>
+<li><a href="https://www.teahose.com/paper/arXiv%20Physical%20AI/Whole-Body%20Dexterity">Teahose：Whole-Body Dexterity 论文摘要页</a></li>
+<li><a href="https://zhidx.com/p/601967.html">智东西：杭州具身大脑创企融资近亿（2026-10-18）</a></li>
+<li><a href="https://finance.sina.com.cn/tech/roll/2026-10-19/doc-inivtchz6962406.shtml">新浪科技：10 个月融资超 10 亿元，他们给机器人安装“大脑”（2026-10-19）</a></li>
+<li><a href="https://www.globenewswire.com/news-release/2026/10/17/3382868/0/en/aimoga-to-unveil-mobo-its-first-family-companion-robot-on-october-21.html">GlobeNewswire：AiMOGA to Unveil Mobo（2026-10-17）</a></li>
+<li><a href="https://www.globenewswire.com/news-release/2026/10/17/3382860/0/en/automotive-technology-comes-home-mobo-to-make-its-global-debut-at-the-omoda-jaecoo-international-user-summit.html">GlobeNewswire：Mobo to Make Its Global Debut（2026-10-17）</a></li>
+<li><a href="https://kucoin.com/news/flash/chery-to-launch-industry-specific-ai-model-and-humanoid-robot-mobao-at-global-innovation-conference">KuCoin 快讯（转 IT 之家）：奇瑞全球创新大会预告（2026-10-19）</a></li>
+</ol>
+<footer>本期由 Claude 根据公开来源整理。公司参数均为公司自述，除特别注明外未经第三方验证。照片版权归原作者，按新闻稿发布用途外链引用。</footer>
+</main>
+<script>
+(function(){
+  var btns=document.querySelectorAll('#actBtns button');
+  for(var i=0;i<btns.length;i++){btns[i].addEventListener('click',function(){
+    var k=this.getAttribute('data-k');
+    for(var j=0;j<btns.length;j++){btns[j].classList.toggle('on',btns[j]===this);}
+    document.getElementById('pane-h').style.display=k==='h'?'':'none';
+    document.getElementById('pane-e').style.display=k==='e'?'':'none';
+  });}
+})();
+</script>
+</body>
+</html>
