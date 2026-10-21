@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W2-1｜减速比与反射惯量</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 2 单元「减速与传动」· 第 1 课</div>
+<h1>早课 W2-1｜减速比与反射惯量</h1>
+<p class="sub">一只被踹翻的机器猫、一扇推不动的门，和藏在齿轮箱后面那个“看不见的哑铃”。约 18 分钟。</p>
+
+<div class="lead">
+<p>2019 年 3 月，MIT 新闻办发了一条消息：一只只有二十来磅（约 9 公斤）重的四足机器人“Mini Cheetah”，成了第一台会后空翻的四足机器人。视频里最让人记住的却不是后空翻，而是研究员把它一脚踹倒那段——它先自动停机，重启后判断自己是仰面还是侧躺，然后用 MIT 新闻稿里的话说，“像功夫一样把肘部一甩”，翻身站起来，接着走。</p>
+<p>新闻稿里有一句很工程的话：这台机器人设计得“几乎摔不坏”，它的执行器轻、力矩大、<strong>惯量低</strong>，所以能扛住和地面的猛烈撞击，而不会把齿轮箱或腿弄坏。真坏了也好修——每条腿三个一模一样的电机模块，拆下来换一个就行。</p>
+<p>上一单元的复盘结尾留了个问题：Mini Cheetah 的电机和腿之间只有一级 <strong>6:1</strong> 的行星减速。可工业机器人的关节动不动就是 50:1、100:1，力矩一下就放大几十上百倍——这不是稳赚不赔的买卖吗？为什么 MIT 偏偏只要 6 倍？</p>
+<p>答案就藏在新闻稿里那个不起眼的词“惯量低”里。今天我们跟着 Mini Cheetah 的一条腿，从它腾空、落地、被踹倒，一路看下去，把这个“看不见的东西”揪出来。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，每条腿的髋部和膝部有圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>留意腿根处那些又扁又圆的“饼”——那就是执行器，电机和 6:1 行星减速器塞在同一个壳子里。它们又扁又粗，而不是又细又长，这个形状本身就是今天答案的一部分。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">01</span>门为什么在合页旁边推不动？</h2>
+<p>先做一个你今晚回家就能做的实验。找一扇普通的房门，第一次推门把手那一侧，第二次把手放在离合页只有一掌宽的地方推。同一扇门、同样的力气，第二次你会觉得这扇门“重得离谱”，要么推不动，要么慢吞吞地才开始转。</p>
+<p>门本身没变，变的是你“感觉到的质量”。物理上，转动物体有一个量叫<strong>转动惯量</strong>（moment of inertia），它衡量“让它转起来有多费劲”，就像质量衡量“让它动起来有多费劲”。而你在离转轴距离 r 的地方推它时，手上感觉到的等效质量是：</p>
+<p class="say">人话：同一个转动的东西，你离转轴越近去推，它就显得越重，而且是按距离的平方变重。</p>
+<div class="formula">m<sub>感觉</sub> = J ÷ r²<small>J：转动惯量（kg·m²）；r：你的手到转轴的距离（m）</small></div>
+
+<figure>
+<svg viewBox="0 0 680 300" role="img" aria-label="门的俯视图：在距合页80厘米处推和在20厘米处推，感觉到的质量相差16倍">
+  <rect width="680" height="300" class="s-bg2"/>
+  <!-- wall -->
+  <rect x="30" y="40" width="40" height="230" fill="#9ca3af" opacity=".55"/>
+  <g opacity=".35"><path d="M30 60l40-20M30 100l40-20M30 140l40-20M30 180l40-20M30 220l40-20M30 260l40-20" stroke="#6b7280"/></g>
+  <!-- hinge -->
+  <circle cx="82" cy="150" r="9" class="s-steel"/><circle cx="82" cy="150" r="3" class="s-ink"/>
+  <!-- swing arc -->
+  <path d="M82 150 m560 0 a560 560 0 0 0 -40 -200" class="st-ink2 nofill" stroke-dasharray="4 6" opacity=".6"/>
+  <!-- door slab with wood grain -->
+  <rect x="82" y="138" width="560" height="24" rx="3" class="s-wood"/>
+  <g stroke="#7a5532" stroke-width="1" opacity=".45" fill="none">
+    <path d="M95 144 C200 141 320 147 630 143"/><path d="M95 151 C220 154 380 148 630 152"/><path d="M95 157 C260 159 400 155 630 158"/>
+  </g>
+  <!-- handle -->
+  <rect x="600" y="128" width="26" height="10" rx="4" class="s-steel"/>
+  <!-- hand A at handle -->
+  <g transform="translate(560,175)">
+    <path d="M0 0 q-6 22 8 34 l30 0 q10-14 4-34 z" fill="#f2c7a5" stroke="#b07a55"/>
+    <path d="M22 -6 v-26" class="st-acc2" stroke-width="5" marker-end="url(#arA)"/>
+  </g>
+  <!-- hand B near hinge -->
+  <g transform="translate(220,175)">
+    <path d="M0 0 q-6 22 8 34 l30 0 q10-14 4-34 z" fill="#f2c7a5" stroke="#b07a55"/>
+    <path d="M22 -6 v-26" class="st-acc" stroke-width="5" marker-end="url(#arB)"/>
+  </g>
+  <defs>
+    <marker id="arA" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" class="s-acc2"/></marker>
+    <marker id="arB" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" class="s-acc"/></marker>
+  </defs>
+  <!-- dimension lines -->
+  <g font-size="14">
+    <path d="M82 100 H600" class="st-acc2" stroke-width="1.5"/><path d="M82 94v12M600 94v12" class="st-acc2"/>
+    <text x="340" y="92" text-anchor="middle" class="s-acc2">r = 0.8 m：感觉像推一扇“正常”的门</text>
+    <path d="M82 240 H242" class="st-acc" stroke-width="1.5"/><path d="M82 234v12M242 234v12" class="st-acc"/>
+    <text x="90" y="268" class="s-acc">r = 0.2 m：距离只有 1/4，感觉的质量变成 16 倍</text>
+  </g>
+  <text x="70" y="30" font-size="13" class="s-ink2">俯视图 · 合页在左</text>
+</svg>
+<figcaption><b>看图要看什么：</b>两只手推的是同一扇门，区别只在离合页的距离。距离缩到 1/4，门“显得”重了 4² = 16 倍——今天的主角“反射惯量”，就是这个平方关系的翻版。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比一：推门</div>
+<p>离合页越近，门越“重”，而且是平方地重。</p>
+<p class="off">哪里不准：门是同一个物体换了推的位置；齿轮箱里是两个不同的物体（电机转子和腿）被齿轮绑在一起，转速不同。但背后的数学是同一个——等效质量和“杠杆比”的平方成正比。</p></div>
+
+<h2><span class="n">02</span>齿轮箱：一根会转的杠杆，和它收的“平方税”</h2>
+<p>减速器（gear reducer）本质上就是一根会转圈的杠杆。<strong>减速比</strong>（gear ratio）N = 6，意思是电机转 6 圈，输出轴（腿）才转 1 圈。杠杆的规矩你在上一单元已经熟了：功率不能凭空变出来，P = T·ω，所以转速除以 N，力矩就乘以 N（先忽略齿轮的摩擦损失）。</p>
+<p>问题出在“让东西转起来”这件事上。想让腿以某个角速度 ω 摆动，电机转子就得以 N·ω 转——它转得快 N 倍。转动的动能是 ½·J·ω²，转子的动能于是是 ½·J<sub>转子</sub>·(Nω)²。把这笔账从腿这一侧看，就好像腿上额外挂了一个惯量为 N²·J<sub>转子</sub> 的东西。</p>
+<p class="say">人话：电机转子本来不重，可隔着齿轮箱从腿这边“摸”过去，它会显得重 N² 倍。</p>
+<div class="formula">J<sub>反射</sub> = N² × J<sub>转子</sub><small>反射惯量（reflected inertia）：电机转子折算到输出端后的等效转动惯量</small></div>
+<p>这就是“平方税”。力矩是按 N 倍放大的，惯量却按 N² 倍放大。减速比从 6 提到 60，力矩多 10 倍，转子“显得”重了 100 倍。</p>
+<p>来看真实数字。Mini Cheetah 执行器的主设计者 Benjamin Katz 在他的硕士论文里给了这颗电机的转子惯量：<strong>7.2 × 10⁻⁵ kg·m²</strong>，减速比 6:1，执行器在输出端的惯量是 <strong>0.0023 kg·m²</strong>。拿 7.2 × 10⁻⁵ × 6² 算一下，得 0.0026 kg·m²，和论文给的输出惯量几乎一样（差的那一点是行星齿轮等零件的细节）。也就是说，<strong>腿上感觉到的执行器惯量，几乎全来自那个被放大了 36 倍的转子</strong>。</p>
+<p>下面这个小实验把同一颗转子换配不同的减速比。拖动滑块，盯住右下角那个“脚上的隐形质量”：我们假设脚到关节约 0.2 m（教学假设，量级和 Mini Cheetah 的小腿相当），把反射惯量换算成“挂在脚尖的质量”，就是用第一节推门的那个公式 J ÷ r²。</p>
+
+<figure>
+<svg id="g1" viewBox="0 0 680 330" role="img" aria-label="减速比实验：左侧电机转子、右侧腿，转子转速是腿的N倍；下方对数刻度条显示反射惯量">
+  <rect width="680" height="330" class="s-bg2"/>
+  <!-- motor -->
+  <g transform="translate(150,135)">
+    <circle r="92" class="s-can"/>
+    <circle r="84" fill="none" stroke="#6b7280" stroke-width="1"/>
+    <g id="g1-rotor">
+      <g id="g1-mags"></g>
+      <circle r="58" class="s-steel"/>
+      <circle r="58" fill="none" stroke="#6b7280"/>
+      <rect x="-3" y="-56" width="6" height="30" rx="2" class="s-acc"/>
+      <circle r="12" class="s-ink2"/>
+    </g>
+    <text y="122" text-anchor="middle" font-size="14" class="s-ink">电机转子</text>
+    <text id="g1-rpm" y="140" text-anchor="middle" font-size="13" class="s-ink2">转 6 圈</text>
+  </g>
+  <!-- gear symbol -->
+  <g transform="translate(340,135)">
+    <circle id="g1-gsmall" r="16" class="s-cu"/>
+    <circle id="g1-gbig" cx="0" cy="0" r="40" fill="none" class="st-cu" stroke-width="6" stroke-dasharray="4 3" transform="translate(56,0)"/>
+    <text y="80" text-anchor="middle" font-size="13" class="s-ink2" x="28">减速比</text>
+    <text id="g1-N" y="104" text-anchor="middle" font-size="24" font-weight="700" class="s-acc" x="28">6 : 1</text>
+  </g>
+  <!-- leg -->
+  <g transform="translate(540,110)">
+    <circle r="26" class="s-can"/>
+    <g id="g1-leg">
+      <rect x="-9" y="0" width="18" height="120" rx="9" fill="#374151"/>
+      <circle cx="0" cy="120" r="11" fill="#111827"/>
+    </g>
+    <circle r="8" class="s-steel"/>
+    <text y="-36" text-anchor="middle" font-size="14" class="s-ink">腿（输出端）</text>
+    <text y="-54" text-anchor="middle" font-size="13" class="s-ink2">转 1 圈</text>
+  </g>
+  <!-- log scale -->
+  <g transform="translate(40,282)">
+    <text x="0" y="-12" font-size="12" class="s-ink2">反射惯量（kg·m²，对数刻度）</text>
+    <rect x="0" y="0" width="600" height="10" rx="5" class="s-bg" stroke="var(--line)"/>
+    <rect id="g1-fill" x="0" y="0" width="100" height="10" rx="5" class="s-acc"/>
+    <g font-size="11" class="s-ink2" text-anchor="middle">
+      <text x="0" y="28">10⁻⁴</text><text x="150" y="28">10⁻³</text><text x="300" y="28">10⁻²</text><text x="450" y="28">10⁻¹</text><text x="600" y="28">1</text>
+    </g>
+  </g>
+</svg>
+<div class="ctrl"><label for="g1n">减速比 N</label><input id="g1n" type="range" min="1" max="100" step="1" value="6"><output id="g1no">6 : 1</output><button id="g1play" type="button">播放转动</button></div>
+<div class="readout">
+<div>输出峰值力矩<b id="r-t">17 N·m</b></div>
+<div>输出最高转速<b id="r-w">40 rad/s</b></div>
+<div>反射惯量<b id="r-j">0.0026</b></div>
+<div>脚上的隐形质量<b id="r-m">65 g</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>从 6 拖到 60：力矩那一格只涨 10 倍，隐形质量那一格涨了 100 倍。到 100:1，脚尖上相当于挂了 18 公斤的哑铃——比整只 Mini Cheetah 还重一倍。<br>计算：转子惯量 7.2×10⁻⁵ kg·m²、6:1 时峰值 17 N·m、最高 40 rad/s 取自 Katz 论文；换配其他减速比是教学换算，忽略齿轮效率和齿轮自身惯量。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比二：把共享单车后轮架空，用手摇脚踏</div>
+<p>把一辆变速自行车倒过来，用手去摇脚踏，让后轮转起来。挂最轻的挡（爬坡挡），后轮转得慢，你一下就摇起来了；挂最重的挡，脚踏转一圈后轮要转好几圈，你会明显觉得摇起来“沉”，要使劲好一会儿后轮才飞转。后轮还是那个后轮，变的是它隔着链条在你手上“显得”多重——重挡下，它的惯量被传动比的平方放大了。</p>
+<p class="off">哪里不准：自行车重挡是“升速”（后轮比脚踏快），而执行器是“减速”（电机比腿快），方向正好相反；但道理相同——谁转得快，谁的惯量就会被平方放大后压到慢的那一侧。另外，共享单车多是内变速或单速，要找一辆带拨链器的自行车才玩得了这个实验。</p></div>
+
+<div class="analogy"><div class="t">类比三：汽车挂一挡猛踩油门</div>
+<p>汽车圈有句老话：“一磅转动的重量，顶十磅不转的重量。”汽车杂志 MotoIQ 的工程专栏解释过这句话为什么说不准：被变速箱带着转的发动机飞轮、离合器这些转动件，它们的惯量要乘以<strong>传动比的平方</strong>才折算到车上。一挡传动比最大，飞轮这笔税最重；挂到高挡，几乎可以忽略。所以“十磅”还是“三磅”，要看你挂几挡。</p>
+<p class="off">哪里不准：汽车主要是“发动机要先把自己的飞轮转起来”拖慢了加速；机器人关节更怕的是反过来——腿突然被地面刹停时，那个隐形的大惯量也要被一起刹住。下一节就讲这个。</p></div>
+
+<h2><span class="n">03</span>落地那 10 毫秒：隐形哑铃砸向了谁？</h2>
+<p>现在让 Mini Cheetah 后空翻落地。脚碰到地面的一瞬间，腿要在极短时间内从“往下砸”变成“停住”。腿本身要被刹住，这没办法；但隔着齿轮箱，电机转子也正以 N 倍的速度在转，它也得在同一瞬间被刹住——而<strong>刹住它的力，全部要从齿轮的齿上过</strong>。</p>
+<p>MIT 仿生机器人实验室 2017 年的论文（Wensing、Kim 等，发表在 IEEE Transactions on Robotics）把这件事说得很清楚：如果执行器反射惯量为零，脚落地时“撞上地面”的只是那条腿；如果反射惯量无穷大，关节就像被焊死，<strong>整个机身的质量都跟着腿一起砸向地面</strong>。他们为此定义了一个“冲击缓解系数”（Impact Mitigation Factor），反射惯量越小，这个系数越接近 1，越能“卸掉”冲击。</p>
+<p>下面这个动画用一个粗算模型演示：腿和脚折算质量 0.5 kg，机身 9 kg，落地速度 1.5 m/s，冲击在 10 ms 内结束（都是教学假设，只看量级，不是 Mini Cheetah 的实测数据）。</p>
+
+<figure>
+<svg id="g2" viewBox="0 0 680 340" role="img" aria-label="落地动画：机身、腿和脚，脚端挂着一个大小随减速比变化的隐形哑铃，右侧是冲击力条">
+  <rect width="680" height="340" class="s-bg2"/>
+  <!-- ground -->
+  <rect x="0" y="292" width="420" height="48" fill="#a8a29e" opacity=".5"/>
+  <g stroke="#78716c" opacity=".5"><path d="M10 300l14 14M50 300l14 14M90 300l14 14M130 300l14 14M170 300l14 14M210 300l14 14M250 300l14 14M290 300l14 14M330 300l14 14M370 300l14 14"/></g>
+  <g id="g2-robot">
+    <!-- body -->
+    <rect x="110" y="70" width="210" height="58" rx="16" fill="#4b5563"/>
+    <rect x="124" y="82" width="70" height="10" rx="5" fill="#9ca3af" opacity=".6"/>
+    <text x="215" y="106" text-anchor="middle" font-size="13" fill="#f3f4f6">机身 9 kg</text>
+    <!-- actuator at hip -->
+    <circle cx="200" cy="128" r="22" class="s-can"/><circle cx="200" cy="128" r="9" class="s-steel"/>
+    <!-- thigh -->
+    <path id="g2-thigh" d="M200 128 L170 200" stroke="#374151" stroke-width="16" stroke-linecap="round"/>
+    <circle id="g2-knee" cx="170" cy="200" r="12" class="s-can"/>
+    <path id="g2-shin" d="M170 200 L215 272" stroke="#1f2937" stroke-width="11" stroke-linecap="round"/>
+    <circle id="g2-foot" cx="215" cy="276" r="12" fill="#111827"/>
+    <!-- ghost dumbbell -->
+    <g id="g2-db" transform="translate(215,276)">
+      <circle id="g2-dbc" r="20" class="s-acc" opacity=".35"/>
+      <text id="g2-dbt" y="-26" text-anchor="middle" font-size="13" class="s-acc">隐形 65 g</text>
+    </g>
+  </g>
+  <!-- force meter -->
+  <g transform="translate(470,40)">
+    <text x="0" y="0" font-size="14" class="s-ink">撞上地面的等效质量</text>
+    <rect x="0" y="16" width="170" height="250" rx="10" class="s-bg" stroke="var(--line)"/>
+    <rect id="g2-bar" x="40" y="246" width="90" height="10" rx="4" class="s-acc"/>
+    <line x1="30" x2="140" y1="31" y2="31" class="st-ink2" stroke-dasharray="4 4"/>
+    <text x="85" y="48" text-anchor="middle" font-size="11" class="s-ink2">上限：腿+整机 9.5 kg</text>
+    <text id="g2-meff" x="85" y="290" text-anchor="middle" font-size="20" font-weight="700" class="s-acc">0.56 kg</text>
+    <text id="g2-F" x="85" y="312" text-anchor="middle" font-size="13" class="s-ink2">冲击力 ≈ 85 N</text>
+  </g>
+  <text id="g2-flash" x="215" y="324" text-anchor="middle" font-size="13" class="s-ink2" opacity="0">砰！</text>
+</svg>
+<div class="seg" id="g2seg"><button type="button" data-n="6" class="on">6:1</button><button type="button" data-n="20">20:1</button><button type="button" data-n="50">50:1</button><button type="button" data-n="100">100:1</button><button type="button" id="g2play">播放落地</button></div>
+<figcaption><b>看图要看什么：</b>右边那根柱子是“撞上地面的等效质量”，虚线是它的天花板（腿 + 整机）。6:1 时柱子几乎贴底，地面只撞到一条腿；切到 100:1，柱子顶到天花板附近——关节等于被焊死，整只机器人连同那个隐形哑铃一起砸下去，冲击力翻了十倍多。<br>模型：等效质量 = 腿 + 隐形质量与机身“串联”后的合成值；是教学粗算，用来看趋势。</figcaption>
+</figure>
+
+<p>冲击力翻十倍，后果是什么？那些力要从齿面、轴承、连杆一路传过去。论文里有一句很直白的话：减速比太高，腿一着地可能就断了，或者因为“太僵”根本做不出想要的动态动作。这也是为什么 MIT 新闻稿会把“惯量低”和“不会摔坏齿轮箱”写在同一句话里。</p>
+<p>还有一个更隐蔽的问题：这种由惯量带来的“僵硬”，<strong>很难靠控制算法补回来</strong>。论文的原话是，惯量相关的反驱特性“很难通过闭环阻抗控制来塑形”，主要得靠机械设计本身。冲击来得太快了——10 毫秒里，电流环还没反应完，齿已经吃到力了。</p>
+
+<div class="box fail"><div class="t">翻车现场：2015 年 DARPA 机器人挑战赛的那一跤</div>
+<p>2015 年 6 月，DARPA 机器人挑战赛决赛。IEEE Spectrum 的赛后长文记录：MIT 队的 Atlas 人形机器人第一天在“下车”环节摔倒，右臂摔断；队员熬了一整夜，几乎把机器人的“内脏”全掏出来修，第二天只能靠左臂继续比赛。同场 TRAC Labs 的 Atlas 摔倒后喷出了一道两米长的液压油。</p>
+<p>要说清楚：那一代 Atlas 是液压驱动，这次断臂和齿轮减速比没有直接关系。但它让整个行业记住了一件事——<strong>腿式机器人一定会摔</strong>，问题只是摔的时候有多少看不见的质量跟着一起砸下去、力最后由哪个零件来扛。四年后 Mini Cheetah 被一脚踹倒还能自己爬起来，靠的正是在设计第一天就把“摔”算进去。</p></div>
+
+<h2><span class="n">04</span>那为什么不干脆不要齿轮？</h2>
+<p>既然反射惯量和 N² 成正比，N = 1，也就是电机直接驱动腿（直驱，direct drive），岂不最好？</p>
+<p>问题是力矩。腿需要的力矩很大，电机自己给不了。上一单元讲过：电机力矩 = Kt × 电流，想要大力矩，要么电流大（铜损按平方涨，热死），要么电机做大（重死）。</p>
+
+<div class="box cold"><div class="t">冷知识：一颗 76 厘米宽、5 毫米厚的“煎饼”</div>
+<p>MIT 那篇 2017 年的论文算过：如果给（大号的）MIT Cheetah 做一颗不带减速器、能直接满足腿部力矩需求的电机，按他们的设计方法，它的直径要做到 <strong>76.2 厘米</strong>，厚度只有 <strong>5 毫米</strong>——一个比井盖还大的薄煎饼。显然塞不进一只猎豹的肩膀里。于是他们退了一步：选了一级 5.8:1 的行星减速，这差不多已经是单级标准行星齿轮能做到的最大减速比。</p></div>
+
+<p>所以减速比的选择是一场拔河：</p>
+<p><strong>N 太小</strong>：电机得自己出大部分力矩，电流大、发热多（铜损 ∝ 电流²），或者电机得做得又大又重。<br><strong>N 太大</strong>：反射惯量按 N² 暴涨，冲击扛不住、关节变“僵”，而且电机转速上限被除以 N，腿摆不快——在上面的滑块里拖到 100:1，最高转速只剩 2.4 rad/s，半秒都摆不完一个 90° 弧，更别说后空翻。</p>
+<p>MIT 的选择是：先用力矩密度高的大直径扁电机（Mini Cheetah 用的是改造过的大型航模/无人机电机），把 N 压到 6 左右。这条路线就叫<strong>准直驱</strong>（quasi-direct drive，QDD），我们第 2 单元第 4 课还会专门比较它和其他路线。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-00-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT 的 Benjamin Katz 与 Jared Di Carlo 和 Mini Cheetah 机器人在一起" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>MIT 新闻稿的说明是：主设计者 Benjamin Katz 和合作者 Jared Di Carlo 给 Mini Cheetah 编了后空翻程序。Katz 把一颗售价几十美元的航模电机改造成执行器——转子被重新加工，用来装太阳轮和位置传感磁铁。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<p>拆开一个准直驱执行器，你会看到下面这样的结构。反射惯量的“源头”就是那个大直径转子：它转得最快，半径又大（惯量和半径平方有关——又是一个平方）。</p>
+
+<figure>
+<svg viewBox="0 0 680 360" role="img" aria-label="准直驱执行器剖面示意：外转子电机、太阳轮、行星轮、内齿圈和输出行星架，标注各部件转速">
+  <defs>
+    <pattern id="lam2" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" class="s-steel"/><line x1="0" y1="0" x2="0" y2="6" stroke="#6b7280" stroke-width="1.1"/></pattern>
+    <radialGradient id="metal" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#e5e7eb"/><stop offset="1" stop-color="#6b7280"/></radialGradient>
+  </defs>
+  <rect width="680" height="360" class="s-bg2"/>
+  <!-- left: front view of planetary -->
+  <g transform="translate(180,185)">
+    <circle r="150" fill="url(#metal)" opacity=".55"/>
+    <circle r="150" fill="none" stroke="#4b5563" stroke-width="2"/>
+    <!-- magnets ring on rotor -->
+    <g id="magring"></g>
+    <circle r="124" fill="url(#lam2)"/>
+    <!-- ring gear -->
+    <circle r="96" fill="#9ca3af"/>
+    <circle r="88" fill="none" stroke="#4b5563" stroke-width="5" stroke-dasharray="3.5 3.5"/>
+    <circle r="85" class="s-bg2"/>
+    <!-- planets -->
+    <g class="s-cu">
+      <circle cx="0" cy="-52" r="32"/><circle cx="45" cy="26" r="32"/><circle cx="-45" cy="26" r="32"/>
+    </g>
+    <g fill="none" stroke="#8a4e1c" stroke-width="3" stroke-dasharray="3 3">
+      <circle cx="0" cy="-52" r="30"/><circle cx="45" cy="26" r="30"/><circle cx="-45" cy="26" r="30"/>
+    </g>
+    <!-- carrier -->
+    <path d="M0 -52 L45 26 L-45 26 Z" fill="none" class="st-acc2" stroke-width="6" stroke-linejoin="round" opacity=".8"/>
+    <!-- sun -->
+    <circle r="20" fill="#f59e0b"/><circle r="20" fill="none" stroke="#92400e" stroke-width="3" stroke-dasharray="3 3"/>
+    <circle r="5" class="s-ink"/>
+  </g>
+  <!-- labels -->
+  <g font-size="13">
+    <path d="M300 60 L268 92" class="st-ink2"/><text x="304" y="58" class="s-ink">外转子 + 磁钢：转得最快、半径最大</text>
+    <text x="304" y="76" class="s-acc" font-size="12">→ 反射惯量的主要来源（转 6 圈）</text>
+    <path d="M300 130 L228 150" class="st-ink2"/><text x="304" y="134" class="s-ink">定子铁芯 + 线圈（不转）</text>
+    <path d="M300 190 L196 186" class="st-ink2"/><text x="304" y="194" class="s-ink">太阳轮：和转子一体，转 6 圈</text>
+    <path d="M300 240 L222 214" class="st-ink2"/><text x="304" y="244" class="s-ink">行星轮：一边自转一边公转</text>
+    <path d="M300 286 L262 260" class="st-ink2"/><text x="304" y="290" class="s-ink">内齿圈：固定在外壳上</text>
+    <text x="304" y="322" class="s-acc2">行星架（青色三角）= 输出轴，转 1 圈</text>
+  </g>
+</svg>
+<figcaption><b>看图要看什么：</b>这是外转子电机套着一级行星减速器的正视示意（比例经过简化）。电机转子和太阳轮一体、转得最快；行星架带着三个行星轮慢慢公转，它就是输出。整个“又扁又粗”的形状，是为了让电机尽量多出力矩、少靠齿轮放大。</figcaption>
+</figure>
+
+<h2><span class="n">05</span>规格书上的那一行：Reflected Inertia</h2>
+<p>好消息是，这个概念在你的工作里是“看得见”的。Westwood 的 BEAR 产品手册（《BEAR-Product-Manual-1.3.0-EN》Table 1）里，紧挨着 Gear Ratio 那一行就是 Reflected Inertia。挑同属 Koala 系列的两款对比一下：</p>
+<table class="cmp">
+<tr><th>型号</th><th>减速比</th><th>反射惯量</th><th>1.5 s 堵转力矩</th></tr>
+<tr><td>KB02</td><td>9 : 1</td><td>1.82 × 10⁻³ kg·m²</td><td>10.5 N·m</td></tr>
+<tr><td>KBMB02</td><td>20 : 1</td><td>9.0 × 10⁻³ kg·m²</td><td>35 N·m</td></tr>
+<tr><td>PB02</td><td>6 : 1</td><td>7.44 × 10⁻³ kg·m²</td><td>33.5 N·m</td></tr>
+</table>
+<p class="src">数据：BEAR-Product-Manual-1.3.0-EN.pdf，Table 1；与知识库 BEAR_AI_Knowledge_Base_20260917_v3.xlsx 的 Specs 表一致。</p>
+<p>做个小练习：KBMB02 的减速比是 KB02 的 20/9 ≈ 2.22 倍，平方是 4.94；两者反射惯量之比 9.0/1.82 = 4.95。<span class="tag">推算</span> 这和“平方税”几乎严丝合缝——不过这只是我们拿公开数字做的对照，手册没有说两款用的是同一颗转子，别对客户这样下结论。</p>
+<p>再看 PB02：减速比只有 6:1，反射惯量却比 KB02 大，因为它是更大一号的执行器，转子本身就更大更重。所以<strong>比较反射惯量，一定要连同执行器的尺寸和力矩一起看</strong>，不能只盯减速比。</p>
+<p>顺带一个小坑：手册表格里这一行的单位印成了“kg/m2”，按量纲应该是 kg·m²（知识库也是按 kg·m² 记录的）。回客户邮件时请写 kg·m²。</p>
+
+<figure>
+<svg viewBox="0 0 680 330" role="img" aria-label="对数刻度对比：HUBO 160:1、MIT Cheetah 5.8:1、Mini Cheetah 6:1 以及 BEAR KB02、KBMB02、PB02 的反射惯量">
+  <rect width="680" height="330" class="s-bg2"/>
+  <g transform="translate(150,30)">
+    <!-- axis 1e-3 .. 1e-1 over 480px -->
+    <g font-size="11" class="s-ink2" text-anchor="middle">
+      <line x1="0" y1="0" x2="0" y2="262" class="st-ink2" opacity=".35"/><text x="0" y="280">0.001</text>
+      <line x1="240" y1="0" x2="240" y2="262" class="st-ink2" opacity=".35"/><text x="240" y="280">0.01</text>
+      <line x1="480" y1="0" x2="480" y2="262" class="st-ink2" opacity=".35"/><text x="480" y="280">0.1 kg·m²</text>
+    </g>
+    <g font-size="13">
+      <!-- HUBO 0.0852 -> log10=-1.0696 -> x=(3-1.0696)*240=463 -->
+      <text x="-10" y="22" text-anchor="end" class="s-ink">HUBO 160:1</text>
+      <rect x="0" y="10" width="463" height="18" rx="9" fill="#9ca3af"/><text x="455" y="24" text-anchor="end" font-size="12" fill="#111827">0.085</text>
+      <!-- Cheetah 0.0102 -> log=-1.991 -> x=242 -->
+      <text x="-10" y="62" text-anchor="end" class="s-ink">MIT Cheetah 5.8:1</text>
+      <rect x="0" y="50" width="242" height="18" rx="9" class="s-acc2"/><text x="250" y="64" font-size="12" class="s-ink2">0.010</text>
+      <!-- Mini Cheetah 0.0023 -> log=-2.638 -> x=87 -->
+      <text x="-10" y="102" text-anchor="end" class="s-ink">Mini Cheetah 6:1</text>
+      <rect x="0" y="90" width="87" height="18" rx="9" class="s-acc2"/><text x="95" y="104" font-size="12" class="s-ink2">0.0023</text>
+      <line x1="-140" x2="480" y1="128" y2="128" class="st-ink2" stroke-dasharray="3 5" opacity=".6"/>
+      <text x="-140" y="146" font-size="12" class="s-ink2">BEAR 手册 Table 1</text>
+      <!-- KB02 1.82e-3 -> log=-2.74 -> x=62 -->
+      <text x="-10" y="182" text-anchor="end" class="s-ink">KB02 9:1</text>
+      <rect x="0" y="170" width="62" height="18" rx="9" class="s-acc"/><text x="70" y="184" font-size="12" class="s-ink2">0.00182</text>
+      <!-- KBMB02 9e-3 -> log=-2.046 -> x=229 -->
+      <text x="-10" y="222" text-anchor="end" class="s-ink">KBMB02 20:1</text>
+      <rect x="0" y="210" width="229" height="18" rx="9" class="s-acc"/><text x="237" y="224" font-size="12" class="s-ink2">0.0090</text>
+      <!-- PB02 7.44e-3 -> log=-2.128 -> x=209 -->
+      <text x="-10" y="262" text-anchor="end" class="s-ink">PB02 6:1</text>
+      <rect x="0" y="250" width="209" height="18" rx="9" class="s-acc"/><text x="217" y="264" font-size="12" class="s-ink2">0.00744</text>
+    </g>
+  </g>
+</svg>
+<figcaption><b>看图要看什么：</b>注意横轴是对数刻度，每一格差 10 倍。160:1 的 HUBO 人形机器人比 5.8:1 的 MIT Cheetah 高出约 8 倍。这些机器人和执行器大小各不相同，图只用来感受量级，不是同条件下的性能比较。<br>数据：HUBO 与 MIT Cheetah 取自 Wensing 等 2017 年论文；Mini Cheetah 取自 Katz 论文的输出惯量；BEAR 取自产品手册 Table 1。</figcaption>
+</figure>
+
+<h2><span class="n">06</span>工作里会在哪遇到？</h2>
+<div class="box work">
+<p><strong>规格书上的行：</strong>Gear Ratio 和 Reflected Inertia 两行要一起看。反射惯量是“在输出端看到的惯量”，客户算自己关节的总惯量、估算加速能力或冲击时会用到它。</p>
+<p><strong>客户邮件常见问法：</strong>“What's the reflected inertia at the output?” / “Is the actuator backdrivable?” / “We need low output inertia for impact tolerance — which model fits?” 遇到客户说“我们要 good backdrivability”，可以反问他能接受的最大反射惯量是多少——把模糊要求变成可比较的数字。</p>
+<p><strong>客户自己再加一级减速时：</strong>如果客户在执行器后面再接一级皮带或齿轮（比如 2:1），执行器的反射惯量在他的关节处还要再乘以这一级减速比的平方。</p>
+<div class="en">The reflected inertia listed in the BEAR Product Manual is the rotor inertia as seen at the actuator output. For example, KB02 (9:1) is 1.82 × 10⁻³ kg·m² and KBMB02 (20:1) is 9.0 × 10⁻³ kg·m². If you add an additional reduction stage of ratio n after the actuator, the reflected inertia at your joint scales by n².</div>
+</div>
+
+<h2>自测：三个真实场景</h2>
+<p class="q">1. 展会上，一位客户指着手册问：“KBMB02 力矩是 KB02 的三倍多，可反射惯量怎么差了快 5 倍？是不是 KBMB02 做得特别笨重？”</p>
+<details><summary>看答案</summary><p>不是“笨重”，主要是减速比的平方效应：KBMB02 是 20:1，KB02 是 9:1，比值约 2.22，平方约 4.9，和反射惯量之比 4.95 很接近。力矩按减速比放大（一次方），惯量按平方放大，所以惯量涨得比力矩快。可以顺势告诉客户：要大力矩、对反驱和抗冲击要求不高的场景，选 KBMB02 划算；要很“软”、经常被撞的场景，KB02 这类低减速比的更合适。注意：“两款转子相同”手册没写，不要这样说。</p></details>
+<p class="q">2. 一封邮件写着：“We plan to put a 2:1 belt stage after a PB02. What would the reflected inertia be at our joint?”</p>
+<details><summary>看答案</summary><p>PB02 输出端的反射惯量是 7.44 × 10⁻³ kg·m²（手册 Table 1）。再经过 2:1 皮带，到客户关节处约为 7.44 × 10⁻³ × 2² ≈ 0.030 kg·m²，还要加上皮带轮自身折算过来的惯量，并且忽略了皮带弹性。这是推算值，回复时要写明是基于手册数字的计算，不是 BEAR 的规格。</p></details>
+<p class="q">3. 一位客户说：“反射惯量大一点没关系吧？我们的控制算法很强，可以用阻抗控制把它补偿掉。”你怎么回？</p>
+<details><summary>看答案</summary><p>只能部分补偿。MIT 那篇论文指出，惯量带来的反驱特性很难靠闭环阻抗控制来塑形：碰撞冲击发生在毫秒量级，控制回路还没来得及反应，力已经从齿面传过去了。所以抗冲击主要靠机械设计本身（低减速比、低转子惯量、或者加弹性元件），控制只能锦上添花。如果客户对冲击有硬要求，请他给出可接受的最大反射惯量或冲击工况，交给工程团队评估。</p></details>
+
+<h2>术语对照</h2>
+<table class="terms">
+<tr><td>减速比</td><td>Gear ratio / Reduction ratio</td></tr>
+<tr><td>减速器</td><td>Gear reducer / Gearbox</td></tr>
+<tr><td>转动惯量</td><td>Moment of inertia / Rotational inertia</td></tr>
+<tr><td>转子惯量</td><td>Rotor inertia</td></tr>
+<tr><td>反射惯量</td><td>Reflected inertia</td></tr>
+<tr><td>等效质量</td><td>Effective mass</td></tr>
+<tr><td>输出端</td><td>Output side</td></tr>
+<tr><td>反驱性</td><td>Backdrivability</td></tr>
+<tr><td>冲击缓解</td><td>Impact mitigation</td></tr>
+<tr><td>行星齿轮</td><td>Planetary gear</td></tr>
+<tr><td>直驱 / 准直驱</td><td>Direct drive / Quasi-direct drive (QDD)</td></tr>
+</table>
+
+<div class="tease">下一课预告：今天的行星减速器有个天花板——单级通常只做到十倍以内，MIT 的 5.8:1 已经接近他们那套标准齿轮的极限。可工业机器人手腕里，有一种齿轮一级就能减速一百倍：它的外圈齿数和内圈只差两个，靠一个会“变形”的薄壁金属杯一圈圈地啃。还有一种叫摆线的，长得像一朵花，在齿轮间“滚”而不是“滑”。BEAR 为什么选了摆线，而不选那个一级百倍的？明天，第 2 单元第 2 课：行星、谐波、摆线，三种减速器。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>MIT News, “Mini cheetah is the first four-legged robot to do a backflip”（2019-03-04；被踹倒后自动重启翻身、“几乎摔不坏”、低惯量不损坏齿轮箱、模块化电机；配图 Bryce Vickmark，CC BY-NC-ND）：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">news.mit.edu</a></li>
+<li>B. Katz, “A Low Cost Modular Actuator for Dynamic Robots,” MIT 硕士论文, 2018（转子惯量 7.2×10⁻⁵ kg·m²、6:1 单级行星、输出惯量 0.0023 kg·m²、峰值 17 N·m、24 V 下 40 rad/s、航模电机改造）：<a href="https://dspace.mit.edu/handle/1721.1/118671">dspace.mit.edu</a></li>
+<li>P. M. Wensing, A. Wang, S. Seok, D. Otten, J. Lang, S. Kim, “Proprioceptive Actuator Design in the MIT Cheetah: Impact Mitigation and High-Bandwidth Physical Interaction for Dynamic Legged Robots,” IEEE T-RO, 2017（反射惯量与减速比平方、冲击缓解系数、5.8:1、反射惯量 0.0102 kg·m²、HUBO 160:1 与 0.0852 kg·m²、76.2 cm 直驱电机、惯量效应难以靠闭环控制塑形）：<a href="https://fab.cba.mit.edu/classes/865.18/motion/papers/mit-cheetah-actuator.pdf">fab.cba.mit.edu（PDF）</a></li>
+<li>IEEE Spectrum, “DARPA Robotics Challenge: Amazing Moments, Lessons Learned, and What's Next”（2015；MIT 队 Atlas 摔断右臂、TRAC Labs Atlas 液压油喷出）：<a href="https://spectrum.ieee.org/darpa-robotics-challenge-amazing-moments-lessons-learned-whats-next">spectrum.ieee.org</a></li>
+<li>K. Dinh, “Where are the best places to lighten your car for increased performance?”, MotoIQ（变速箱带动的转动件惯量乘以传动比平方、“一磅转动重量”说法）：<a href="https://motoiq.com/where-are-the-best-places-to-lighten-your-car-for-increased-performance-read-this-and-find-out">motoiq.com</a></li>
+<li>Westwood Robotics, BEAR-Product-Manual-1.3.0-EN.pdf（Table 1：Gear Ratio、Reflected Inertia、Stall Torque 1.5sec）；BEAR_AI_Knowledge_Base_20260917_v3.xlsx（Specs 表）——公司内部资料</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* magnets */
+function ring(g,n,r0,r1){for(var i=0;i<n;i++){var a=360*i/n;el('rect',{x:-6,y:-r1,width:12,height:r1-r0,rx:2,'class':i%2?'s-S':'s-N',transform:'rotate('+a+')'},g);}}
+ring($('g1-mags'),14,60,80);
+ring($('magring'),20,126,146);
+
+/* fig1 */
+var JR=7.2e-5,TM=17/6,WM=240,R=0.2;
+var sl=$('g1n'),theta=0,playing=false,last=0;
+function fmtJ(j){return j<0.01?j.toFixed(4):(j<1?j.toFixed(3):j.toFixed(2));}
+function upd1(){
+  var N=+sl.value,J=JR*N*N,m=J/(R*R);
+  $('g1no').textContent=N+' : 1';$('g1-N').textContent=N+' : 1';
+  $('g1-rpm').textContent='转 '+N+' 圈';
+  $('r-t').textContent=(TM*N).toFixed(TM*N<10?1:0)+' N·m';
+  var w=WM/N;$('r-w').textContent=(w<10?w.toFixed(1):w.toFixed(0))+' rad/s';
+  $('r-j').textContent=fmtJ(J)+' kg·m²';
+  $('r-m').textContent=m<1?Math.round(m*1000)+' g':(m<10?m.toFixed(1):m.toFixed(0))+' kg';
+  var x=(Math.log(J)/Math.LN10+4)*150;$('g1-fill').setAttribute('width',Math.max(6,Math.min(600,x)));
+  draw1();
+}
+function draw1(){var N=+sl.value;$('g1-rotor').setAttribute('transform','rotate('+((theta*N)%360)+')');$('g1-leg').setAttribute('transform','rotate('+(theta%360)+')');$('g1-gsmall').setAttribute('transform','rotate('+((theta*N)%360)+')');}
+function tick(t){if(!playing)return;if(last)theta+=(t-last)/1000*30;last=t;draw1();requestAnimationFrame(tick);}
+$('g1play').addEventListener('click',function(){
+  if(reduce){theta+=30;draw1();return;}
+  playing=!playing;this.textContent=playing?'暂停':'播放转动';last=0;if(playing)requestAnimationFrame(tick);
+});
+sl.addEventListener('input',upd1);
+theta=20;upd1();
+
+/* fig2 */
+var ML=0.5,MB=9,V=1.5,DT=0.01,N2=6,anim=false;
+function upd2(){
+  var mh=JR*N2*N2/(R*R),me=ML+mh*MB/(mh+MB),F=me*V/DT;
+  $('g2-dbc').setAttribute('r',(10+Math.sqrt(mh)*9).toFixed(1));
+  $('g2-dbt').textContent='隐形 '+(mh<1?Math.round(mh*1000)+' g':mh.toFixed(1)+' kg');
+  $('g2-dbt').setAttribute('y',-(18+Math.sqrt(mh)*9));
+  var h=Math.max(6,me/(ML+MB)*225);
+  $('g2-bar').setAttribute('y',256-h);$('g2-bar').setAttribute('height',h);
+  $('g2-meff').textContent=me.toFixed(me<1?2:1)+' kg';
+  $('g2-F').textContent='冲击力 ≈ '+Math.round(F)+' N';
+}
+var btns=document.querySelectorAll('#g2seg button[data-n]');
+for(var i=0;i<btns.length;i++)btns[i].addEventListener('click',function(){for(var j=0;j<btns.length;j++)btns[j].classList.remove('on');this.classList.add('on');N2=+this.getAttribute('data-n');upd2();});
+$('g2play').addEventListener('click',function(){
+  var rb=$('g2-robot'),fl=$('g2-flash');
+  if(reduce){fl.setAttribute('opacity',1);setTimeout(function(){fl.setAttribute('opacity',0);},900);return;}
+  if(anim)return;anim=true;var t0=0;
+  function f(t){if(!t0)t0=t;var s=(t-t0)/1000,y;
+    if(s<0.55){var p=s/0.55;y=-110*(1-p*p);fl.setAttribute('opacity',0);}
+    else if(s<0.75){var q=(s-0.55)/0.2;y=Math.sin(q*Math.PI)*(4+Math.min(10,N2/10));fl.setAttribute('opacity',1);}
+    else{y=0;fl.setAttribute('opacity',Math.max(0,1-(s-0.75)*2));}
+    rb.setAttribute('transform','translate(0,'+y.toFixed(1)+')');
+    if(s<1.3)requestAnimationFrame(f);else{anim=false;fl.setAttribute('opacity',0);rb.removeAttribute('transform');}
+  }
+  requestAnimationFrame(f);
+});
+upd2();
+})();
+</script>
+</body>
+</html>
