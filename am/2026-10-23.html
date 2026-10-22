@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W2-3｜背隙、效率、摩擦与反驱性</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 2 单元「减速与传动」· 第 3 课</div>
+<h1>背隙、效率、摩擦与反驱性</h1>
+<p class="sub">一只闭着眼爬楼梯的机器猎豹，和一把在太空里没撑开的伞。约 18 分钟。</p>
+
+<div class="lead">
+<p>2018 年 7 月，MIT 仿生机器人实验室放出一段视频：一只 45 公斤、个头像拉布拉多的四足机器人 Cheetah 3，走上一段堆着杂物的楼梯，一步一步爬了上去。它身上<b>没开任何摄像头</b>。课题组负责人 Sangbae Kim 对 MIT News 说，它根本不知道每一级台阶有多高，“就这么一路踩上去，也没摔”。</p>
+<p>它靠什么“看”路？靠腿上的“触感”。每条腿在摆动时，控制算法都在实时估算：这条腿此刻踩到地面的可能性有多大、落地的力大概多少。踩空了就继续往下探，碰到台阶边就抬腿。Kim 的原话很有意思：视觉会有噪声、会不准、有时干脆没有，所以“我们希望机器人更多地依靠触觉”。</p>
+<p>可这条腿上并没有装力传感器。论文写得很直白：Cheetah 3 控制地面反力“靠本体感知（proprioception），不用任何力传感器、力矩传感器，关节和脚上也没有弹性元件”。也就是说，<b>电机自己就是传感器</b>——外面的力推了腿一下，这一下得原原本本地穿过减速器，传回电机，电机才能“感觉到”。今天的四个词——背隙、效率、摩擦、反驱性——讲的就是：这一路上，力会在哪里被吞掉、被延迟、被扭曲。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201807/MIT-Cheetah-PRESS.JPG" loading="lazy" referrerpolicy="no-referrer" alt="MIT Cheetah 3 四足机器人站在实验室楼梯上，四条腿的关节电机集中在髋部" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>注意那些粗短的圆柱——它们是关节执行器，全都挤在“大腿根”附近，小腿又细又轻。论文说三条关节都用单级 7.67:1 行星减速，没有一个是高减速比。<br>图：Courtesy of the researchers / <a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">01</span>齿轮之间那一点“晃”，会让腿犯什么迷糊？</h2>
+<p>先从最直观的一个说起。两只齿轮咬在一起，齿和齿之间不可能严丝合缝——总得留一点缝，不然热胀冷缩、加工误差一来就卡死了。这条缝带来的后果是：输入轴<b>换方向</b>时，得先空转一小段，把缝走完，另一边的齿面才贴上来，输出才开始动。这一小段空转，就叫<b>背隙</b>（backlash）。</p>
+
+<div class="analogy"><div class="t">类比：老车方向盘的“旷量”</div>
+<p>开过旧车的人都知道：方向盘左右轻轻晃，车轮压根不动，要转过一小截才“吃上劲”。这一截就是转向系统的背隙。直线上还好，一到要来回修正方向的时候，人就会觉得车“发飘”、“不跟手”。</p>
+<p class="off">哪里不准：方向盘的旷量来自一整串拉杆、球头的松动，而减速器的背隙主要在齿与齿之间；而且司机能靠经验补偿，控制器要补偿就得先知道背隙有多大。</p></div>
+
+<p>下面这张图把背隙夸大了，方便你看清。拖动滑块（或点“播放”）来回转输入，右边会画出“输入角—输出角”的轨迹：没有背隙时是一条斜线，有背隙时变成一个平行四边形——一来一回走的不是同一条路。</p>
+
+<figure>
+<svg viewBox="0 0 640 300" id="blsvg" role="img" aria-label="背隙演示：内侧输入齿在外侧输出环的两个凸耳之间来回，右侧绘制输入角与输出角关系">
+<defs><radialGradient id="blg" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="var(--bg2)"/><stop offset="1" stop-color="var(--line)"/></radialGradient></defs>
+<circle cx="170" cy="150" r="128" fill="url(#blg)" class="st-ink2" stroke-width="1"/>
+<g id="blout">
+<circle cx="170" cy="150" r="112" class="nofill st-acc2" stroke-width="20" opacity=".85"/>
+<g id="blteeth"></g>
+<g id="bllugs"></g>
+</g>
+<g id="blin">
+<circle cx="170" cy="150" r="60" class="s-steel" stroke="var(--ink2)" stroke-width="1.5"/>
+<circle cx="170" cy="150" r="14" class="s-bg2" stroke="var(--ink2)"/>
+<rect x="163" y="60" width="14" height="44" rx="3" class="s-acc"/>
+<line x1="170" y1="150" x2="170" y2="64" class="st-acc" stroke-width="3"/>
+</g>
+<text x="170" y="292" text-anchor="middle" class="s-ink2" font-size="13">橙：输入齿　青：输出环（含两只凸耳）</text>
+<g transform="translate(0,0)">
+<rect x="372" y="30" width="250" height="240" rx="8" class="s-bg" stroke="var(--line)"/>
+<line x1="380" y1="150" x2="616" y2="150" class="st-ink2" stroke-width=".8" stroke-dasharray="3 3"/>
+<line x1="497" y1="36" x2="497" y2="264" class="st-ink2" stroke-width=".8" stroke-dasharray="3 3"/>
+<text x="614" y="166" text-anchor="end" class="s-ink2" font-size="12">输入角 →</text>
+<text x="503" y="48" class="s-ink2" font-size="12">↑ 输出角</text>
+<polyline id="bltrace" fill="none" class="st-acc" stroke-width="2.4" stroke-linejoin="round"/>
+<circle id="bldot" r="5" class="s-acc"/>
+</g>
+</svg>
+<div class="seg" id="blseg"><button data-g="0">无背隙</button><button data-g="8" class="on">小背隙</button><button data-g="20">大背隙</button></div>
+<div class="ctrl"><label for="blr">输入角</label><input type="range" id="blr" min="-40" max="40" value="0" step="0.5"><output id="blv">0°</output></div>
+<div class="ctrl"><button id="blplay">播放来回摆</button></div>
+<div class="readout"><div>输入角<b id="bl-in">0°</b></div><div>输出角<b id="bl-out">0°</b></div><div>此刻状态<b id="bl-st">贴合</b></div></div>
+<figcaption><b>看图要看什么：</b>输入刚换方向时，输出那条线是“平”的——这一段输入在动、输出不动，控制器以为腿已经开始用力，其实还没碰上。平行四边形的宽度，就是背隙。（角度为看清楚已大幅夸大。）</figcaption>
+</figure>
+
+<p>真实的数字有多大？瑞士 maxon 的 GPX 32 行星减速器样本里，单级的平均空载背隙约 0.55°，三级约 0.9°。听着很小，但放到一根手臂末端就不小了：</p>
+<p class="say">用一句人话说：末端晃多远 ≈ 臂长 × 背隙角（换成弧度）。</p>
+<div class="formula">0.4 m × 0.55° × π/180 ≈ 3.8 mm<small>0.4 m 长的连杆，接单级 GPX 32 时末端的空程（按样本平均值估算）</small></div>
+<p>放在一只要往杯子里倒水的机械手上，近 4 毫米足够把水洒出去。这就是为什么规格书上背隙常用更细的单位——<b>角分</b>（arcmin，1° = 60 角分）：0.55° 就是 33 角分。上一课的谐波和 RV 摆线标榜“接近零背隙”或“1 角分以内”，卖点就在这里。</p>
+<p>对一条要“摸地”的腿，背隙还有一层更隐蔽的坏处：每次力的方向翻转——比如从“往下踩”变成“被地面往上顶”——都会有一小段时间电机和腿是“脱开”的。力传不过来，信息也就断了。</p>
+
+<h2><span class="n">02</span>电机出了 100 份力气，腿上收到几份？</h2>
+<p>第二个词：<b>效率</b>（efficiency）。减速器不会凭空造能量，进去多少功率，出来的只会更少，少掉的那部分变成了热。</p>
+<p class="say">用一句人话说：输出功率是输入功率打个折，这个折扣就是效率。</p>
+<div class="formula">P<sub>出</sub> = η · P<sub>入</sub>　⇒　T<sub>出</sub> = η · N · T<sub>入</sub><small>η 为效率，N 为减速比；转速严格除以 N，打折的只是力矩</small></div>
+<p>上一课谐波减速器样本里那个算例，20°C、1000 rpm、某个负载下效率约 73%。另外 27% 去了哪？看下面这张“能量去向图”。</p>
+
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="减速器能量去向示意：输入功率在齿面、轴承、润滑脂和密封处变成热，剩下的成为输出">
+<defs>
+<linearGradient id="egh" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient>
+<linearGradient id="egf" x1="0" x2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient>
+</defs>
+<path d="M20 120 L230 120 L230 200 L20 200 Z" fill="url(#egf)" opacity=".9"/>
+<text x="30" y="112" class="s-ink" font-size="14" font-weight="700">电机输入 100%</text>
+<rect x="230" y="70" width="190" height="180" rx="20" fill="url(#egh)" stroke="var(--ink2)" stroke-width="1.5"/>
+<circle cx="325" cy="160" r="62" class="s-bg2" stroke="var(--ink2)" stroke-width="6" stroke-dasharray="5 3"/>
+<circle cx="325" cy="160" r="16" class="s-acc"/>
+<circle cx="325" cy="122" r="18" class="s-acc2" opacity=".85"/><circle cx="358" cy="179" r="18" class="s-acc2" opacity=".85"/><circle cx="292" cy="179" r="18" class="s-acc2" opacity=".85"/>
+<g class="st-acc" stroke-width="2" fill="none" opacity=".9">
+<path d="M262 64 q-6 -10 0 -20 q6 -10 0 -20"/><path d="M325 64 q-6 -10 0 -20 q6 -10 0 -20"/><path d="M388 64 q-6 -10 0 -20 q6 -10 0 -20"/>
+</g>
+<text x="262" y="16" text-anchor="middle" class="s-acc" font-size="12" font-weight="700">齿面滑动</text>
+<text x="325" y="16" text-anchor="middle" class="s-acc" font-size="12" font-weight="700">轴承滚动</text>
+<text x="400" y="16" text-anchor="middle" class="s-acc" font-size="12" font-weight="700">润滑脂搅动·密封唇</text>
+<path d="M420 130 L620 140 L620 180 L420 190 Z" class="s-acc2" opacity=".9"/>
+<text x="612" y="128" text-anchor="end" class="s-ink" font-size="14" font-weight="700">输出 ≈ 73%</text>
+<text x="612" y="206" text-anchor="end" class="s-ink2" font-size="12">（谐波样本某工况算例）</text>
+<text x="325" y="272" text-anchor="middle" class="s-ink2" font-size="13">低速轻载时，“固定开销”的那几项占比更大，效率会更低</text>
+</svg>
+<figcaption><b>看图要看什么：</b>损耗有两类——一类跟传的力成正比（齿面、轴承），另一类不管你传不传力都在（润滑脂搅动、密封唇摩擦）。后一类就是“轻载时效率特别难看”的原因。各项比例为示意，非实测。</figcaption>
+</figure>
+
+<p>再看行星减速器：maxon GPX 32 的样本里，单级最高效率 90%，三级降到 75%。<b>每多一级，就多一道“过路费”</b>，背隙也跟着变大。这就是 Cheetah 3 坚持单级的原因之一。</p>
+
+<h2><span class="n">03</span>为什么推沙发最费劲的是“第一下”？</h2>
+<p>效率背后的元凶是摩擦。机器人工程师常把关节摩擦拆成三块：</p>
+<p><b>静摩擦</b>（static friction，也叫 stiction）：东西还没动时，要让它动起来得先越过的那道“门槛”。<b>库仑摩擦</b>（Coulomb friction）：动起来以后大致恒定的那部分阻力，跟速度关系不大。<b>粘滞摩擦</b>（viscous friction）：跟速度成正比，转得越快越大，润滑脂越稠越明显。</p>
+
+<div class="analogy"><div class="t">类比：超市里推一辆装满水的购物车</div>
+<p>满载的购物车，最难的永远是起步那一下；一旦滚起来，单手就能推着走。跑起来想加速，又会觉得越来越“沉”。这三种感觉，正好对应静摩擦、库仑摩擦和粘滞摩擦。</p>
+<p class="off">哪里不准：购物车起步难，很大一部分是惯性（要加速一大车水），不全是摩擦；关节里两者也混在一起，测量时要用很慢的速度才能把摩擦单独分出来。</p></div>
+
+<p>下面这个小实验，箱子按 20 kg、静摩擦系数 0.4、动摩擦系数 0.3 设定（教学假设）。慢慢加推力，看箱子什么时候突然“窜”出去；再把力减小，看它什么时候停。</p>
+
+<figure>
+<svg viewBox="0 0 640 300" id="frsvg" role="img" aria-label="推箱子实验：左侧箱子在地面上被推动，右侧是摩擦力随速度变化的曲线">
+<rect x="10" y="200" width="330" height="14" class="s-wood"/>
+<g class="st-ink2" stroke-width="1" opacity=".5"><line x1="10" y1="214" x2="340" y2="214"/></g>
+<g id="frgrid" class="st-ink2" stroke-width="1" opacity=".35"></g>
+<g id="frbox">
+<rect x="0" y="120" width="96" height="80" rx="4" fill="#c79a5b" stroke="#8a6234" stroke-width="2"/>
+<path d="M0 148 H96 M48 120 V200" stroke="#8a6234" stroke-width="2" opacity=".55"/>
+<rect x="30" y="150" width="36" height="20" rx="2" fill="#f1e2c2" stroke="#8a6234"/>
+<text x="48" y="165" text-anchor="middle" font-size="11" fill="#6b4a22">20 kg</text>
+</g>
+<g id="frarrow"><line id="frline" x1="-60" y1="160" x2="-4" y2="160" class="st-acc" stroke-width="6" stroke-linecap="round"/><path id="frhead" d="M-4 150 L10 160 L-4 170 Z" class="s-acc"/></g>
+<text id="frlabel" x="20" y="100" class="s-acc" font-size="13" font-weight="700"></text>
+<rect x="372" y="20" width="256" height="250" rx="8" class="s-bg" stroke="var(--line)"/>
+<line x1="392" y1="240" x2="618" y2="240" class="st-ink2"/>
+<line x1="392" y1="240" x2="392" y2="30" class="st-ink2"/>
+<text x="616" y="258" text-anchor="end" class="s-ink2" font-size="12">速度 →</text>
+<text x="398" y="40" class="s-ink2" font-size="12">摩擦力</text>
+<path id="frcurve" fill="none" class="st-acc2" stroke-width="2.6"/>
+<line x1="392" y1="0" x2="618" y2="0" id="frfs" class="st-acc" stroke-dasharray="4 4" stroke-width="1"/>
+<text id="frfst" x="400" y="0" class="s-acc" font-size="11">静摩擦门槛 78 N</text>
+<circle id="frdot" r="6" class="s-acc" stroke="var(--bg2)" stroke-width="2"/>
+<text x="500" y="290" text-anchor="middle" class="s-ink2" font-size="12">起点竖线 = 静摩擦，低谷 = 动起来变轻，后面上扬 = 粘滞</text>
+</svg>
+<div class="ctrl"><label for="frf">推力</label><input type="range" id="frf" min="0" max="100" value="0" step="1"><output id="frv">0 N</output></div>
+<div class="readout"><div>摩擦力<b id="fr-f">0 N</b></div><div>速度<b id="fr-v">0 m/s</b></div><div>状态<b id="fr-s">静止</b></div></div>
+<figcaption><b>看图要看什么：</b>推力从 0 加到 78 N 之前，箱子纹丝不动，摩擦力“刚好等于”你的推力；越过门槛后它一下子窜出去，因为动摩擦只有约 59 N。再把推力降到 60 N 左右，它还能接着走——想让它停，得降到动摩擦以下。</figcaption>
+</figure>
+
+<p>这对关节意味着什么？想让关节做一个极小、极慢的动作，电机得先攒够力越过静摩擦，一越过又容易冲过头——于是关节一顿一顿地走，这叫“粘滑”（stick-slip）。对靠电流估算力的腿来说，摩擦更是直接的误差来源：Cheetah 3 的论文坦白写着，它的执行器静态力矩误差约 <b>±10%，主要来自齿轮摩擦</b>。设计者用这 10% 的精度，换来了高力带宽、大力矩和高速度——这是一笔明码标价的交易。</p>
+
+<div class="box cold"><div class="t">冷知识：最早写下摩擦定律的，是达·芬奇</div>
+<p>剑桥大学的 Ian Hutchings 教授在 2016 年发表的研究里考证：维多利亚与阿尔伯特博物馆收藏的一本巴掌大的达·芬奇笔记本（9.2 × 6.3 厘米），在标着 1493 年的一页上，用红粉笔和镜像字写着摩擦的规律，旁边画着被绳子经滑轮拉动的小方块。他写下了两条至今仍在用的规律：摩擦力与压力成正比、与接触面积无关；后来还反复用“摩擦等于重量的四分之一”来做计算。</p>
+<p>可惜这些笔记没人读到。将近两百年后的 1699 年，法国人 Amontons 重新发现了同样的规律——他的样品是用猪油润滑的，测出的系数约三分之一。所以教科书里，这两条定律以 Amontons 的名字流传。</p>
+</div>
+
+<h2><span class="n">04</span>从腿上往回推，电机能被推得动吗？</h2>
+<p>前面三个词讲的都是“电机→腿”这个方向。可 Cheetah 3 要“摸”到台阶，需要的是反方向：台阶顶了腿一下，这个力要能<b>推着减速器、推着电机转子往回走</b>。这种能力叫<b>反驱性</b>（backdrivability）。</p>
+<p>反方向上，摩擦依然在收“过路费”，而且收得更狠。一个常用的简化估算是：假设同样大小的负载，不管往哪个方向传，被摩擦吃掉的功率一样多——</p>
+<p class="say">用一句人话说：正向效率差一点，反向效率就差很多；正向低到一半以下，反向就“推不动”了。</p>
+<div class="formula">η<sub>反</sub> ≈ 2 − 1/η<sub>正</sub><small>η<sub>正</sub> = 90% → η<sub>反</sub> ≈ 89%；73% → 63%；50% → 0；低于 50% 为负值：自锁</small></div>
+
+<div class="analogy"><div class="t">类比：汽车随车的剪式千斤顶</div>
+<p>换胎时你摇千斤顶的手柄，车一点点被顶起来；一松手，几百公斤的车压在上面，手柄却不会自己倒转、车也不会掉下来。螺杆的摩擦大到“只许人推它、不许它推人”——这就是<b>自锁</b>（self-locking）。蜗杆减速器同理，常用在需要“断电也别动”的地方。</p>
+<p class="off">哪里不准：自锁不是绝对的。剧烈振动可能让自锁螺纹慢慢“溜”；而上面那条 2 − 1/η 的估算也只是简化模型——行业杂志 Gear Solutions 就介绍过正向效率超过 50% 仍能自锁的特殊齿形设计。</p></div>
+
+<p>效率只是一半。另一半是上一课讲的“平方税”：减速比 N 会把电机自己的摩擦放大 N 倍、把转子惯量放大 N² 倍，再一起压到你手上。下面这个“掰关节”模拟器把它们合在一起算。</p>
+
+<figure>
+<svg viewBox="0 0 640 290" id="bdsvg" role="img" aria-label="反驱模拟：手在连杆末端推动关节，显示需要的推力">
+<defs><linearGradient id="bdl" x1="0" x2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient></defs>
+<rect x="40" y="70" width="70" height="150" rx="10" class="s-can" opacity=".5"/>
+<circle cx="150" cy="140" r="54" fill="url(#bdl)" stroke="var(--ink2)" stroke-width="2"/>
+<circle cx="150" cy="140" r="36" class="s-bg2" stroke="var(--ink2)"/>
+<g id="bdgear"><circle cx="150" cy="140" r="26" class="nofill st-acc" stroke-width="7" stroke-dasharray="6 4"/><circle cx="150" cy="140" r="8" class="s-acc"/></g>
+<g id="bdlink"><rect x="146" y="128" width="300" height="24" rx="12" fill="url(#bdl)" stroke="var(--ink2)"/><circle cx="436" cy="140" r="9" class="s-bg2" stroke="var(--ink2)"/></g>
+<g id="bdhand" transform="translate(436,140)">
+<path d="M0 22 L0 70" class="st-acc" stroke-width="6" stroke-linecap="round"/><path d="M-10 30 L0 14 L10 30 Z" class="s-acc"/>
+<text x="14" y="62" class="s-acc" font-size="13" font-weight="700">手往上推</text></g>
+<text x="290" y="120" text-anchor="middle" class="s-ink2" font-size="12">连杆长 0.3 m</text>
+<text id="bdlock" x="150" y="44" text-anchor="middle" class="s-acc" font-size="15" font-weight="700"></text>
+<rect x="470" y="40" width="150" height="210" rx="10" class="s-bg" stroke="var(--line)"/>
+<text x="545" y="62" text-anchor="middle" class="s-ink2" font-size="12">手上要用的力</text>
+<rect x="530" y="72" width="30" height="160" rx="6" class="s-bg2" stroke="var(--line)"/>
+<rect id="bdbar" x="530" y="232" width="30" height="0" rx="6" class="s-acc"/>
+<g class="s-ink2" font-size="11"><text x="566" y="226">1 N</text><text x="566" y="178">10 N</text><text x="566" y="130">100 N</text><text x="566" y="82">1000 N</text></g>
+</svg>
+<div class="seg" id="bdseg"><button data-n="1" data-e="100">直驱</button><button data-n="8" data-e="90" class="on">单级行星 8:1</button><button data-n="36" data-e="78">两级行星 36:1</button><button data-n="100" data-e="73">谐波 100:1</button><button data-n="40" data-e="45">蜗杆 40:1</button></div>
+<div class="ctrl"><label for="bdn">减速比 N</label><input type="range" id="bdn" min="1" max="120" value="8" step="1"><output id="bdnv">8</output></div>
+<div class="ctrl"><label for="bde">正向效率</label><input type="range" id="bde" min="40" max="100" value="90" step="1"><output id="bdev">90%</output></div>
+<div class="ctrl"><button id="bdplay">用手掰一下</button></div>
+<div class="readout"><div>反向效率<b id="bd-eb">–</b></div><div>输出端起动力矩<b id="bd-t">–</b></div><div>手上推力<b id="bd-f">–</b></div><div>手感受到的惯量<b id="bd-j">–</b></div></div>
+<figcaption><b>看图要看什么：</b>把减速比从 8 拉到 100，推力和惯量是怎么“起飞”的；再点“蜗杆”，反向效率变成负数——不管多大力，都只是把齿压得更紧。计算假设：电机自身阻力矩 0.05 N·m、转子惯量 1×10⁻⁴ kg·m²，均为教学假设；效率预设值见正文出处。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：跳交谊舞时的好舞伴</div>
+<p>好的舞伴“一带就走”，你手上稍微给点力，对方立刻跟上；差的舞伴要么僵着不动，要么你得使出全身力气拖。反驱性好的关节就像前者，工程师管这叫“<b>透明</b>”（transparency）：外力几乎无损地穿过传动，到达电机。</p>
+<p class="off">哪里不准：舞伴是主动配合你，而“反驱”说的是关节在不通电或零力矩指令时被动地被推着走；通电以后，控制器还可以主动“补偿”一部分摩擦，让关节显得比实际更透明。</p></div>
+
+<h2><span class="n">05</span>翻车现场：太空里那把没撑开的伞</h2>
+<div class="box fail"><div class="t">翻车现场：伽利略号的高增益天线</div>
+<p>1991 年 4 月 11 日，飞往木星的伽利略号探测器收到指令，展开它那面直径近 5 米（16 英尺）、像伞一样折叠的高增益天线。按设计，三分钟以内就该张开。结果，它只张开了一部分，一边开得多一边开得少。</p>
+<p>JPL 当时的新闻稿描述了展开机构：冗余的电机带动一个<b>蜗杆</b>，蜗杆推动螺母，螺母通过杠杆把 18 根石墨环氧伞骨撑开。工程师后来判断，有三四根伞骨被销钉“粘”在了中心杆上。最可能的原因是：探测器早年用卡车横穿美国南部运输时一路颠簸，几根伞骨销钉上的润滑剂被磨掉了，到佛罗里达后也没人检查。在真空里，干摩擦的金属面一旦咬住，就再也滑不开。</p>
+<p>地面团队想尽了办法：反复驱动电机、让探测器以最高 10 rpm 自旋去“甩”、把天线朝向和背向太阳轮流冷热……都没成功。伽利略号最终只能靠慢得多的低增益天线，加上大量数据压缩，完成了木星任务。</p>
+<p>回到今天的主题：一个静摩擦失控的点，加上一套只许“正着推”的自锁蜗杆机构——即使电机有力气，也没有任何办法从另一头把卡住的地方“晃”开。</p>
+</div>
+
+<figure class="photo">
+<img src="https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia23/pia23616/PIA23616.jpg" loading="lazy" referrerpolicy="no-referrer" alt="1984 年 JPL 洁净间里正在组装的伽利略号探测器，顶部的高增益天线完全张开，像一把倒置的伞" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://science.nasa.gov/photojournal/galileo-in-high-bay-1/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>这是 1984 年在地面完全张开时的样子——留意那一圈细长的伞骨，它们本该在木星附近也这样撑开。JPL 说明里提到，洁净间墙上的任务徽章画的是它“半开”的样子，正如它在木星时那样。<br>图：Courtesy NASA/JPL-Caltech（PIA23616）/ <a href="https://science.nasa.gov/photojournal/galileo-in-high-bay-1/">NASA Photojournal</a>，按 JPL 图像使用政策可用于教育用途</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 640 260" role="img" aria-label="伽利略号天线展开机构示意：电机带动蜗杆，蜗杆推动螺母，螺母经杠杆撑开伞骨，其中三根伞骨被卡住">
+<g transform="translate(200,140)">
+<g class="st-steel" stroke-width="3" fill="none" id="ribs"></g>
+<circle r="10" class="s-ink2"/>
+</g>
+<g id="ribs-js"></g>
+<rect x="420" y="60" width="200" height="150" rx="12" class="s-bg" stroke="var(--line)"/>
+<text x="520" y="82" text-anchor="middle" class="s-ink" font-size="13" font-weight="700">展开机构（按描述示意）</text>
+<rect x="436" y="112" width="40" height="40" rx="6" class="s-can" stroke="var(--ink2)"/><text x="456" y="170" text-anchor="middle" class="s-ink2" font-size="11">电机</text>
+<g class="st-acc" stroke-width="2.5" fill="none"><path d="M476 132 h12 m0 -10 l6 20 l6 -20 l6 20 l6 -20 l6 20 l6 -20"/></g>
+<text x="512" y="170" text-anchor="middle" class="s-acc" font-size="11" font-weight="700">蜗杆</text>
+<rect x="540" y="118" width="22" height="28" rx="3" class="s-acc2"/><text x="551" y="170" text-anchor="middle" class="s-ink2" font-size="11">螺母</text>
+<path d="M562 132 L598 100 M562 132 L598 164" class="st-ink2" stroke-width="2.5"/><text x="600" y="190" text-anchor="end" class="s-ink2" font-size="11">杠杆→伞骨</text>
+<text x="520" y="202" text-anchor="middle" class="s-acc" font-size="11">只许电机推伞骨，伞骨推不回电机</text>
+<text x="200" y="252" text-anchor="middle" class="s-ink2" font-size="12">红色：被销钉卡住的伞骨（约 3–4 根）</text>
+</svg>
+<figcaption><b>看图要看什么：</b>18 根伞骨里只要几根卡住，整把伞就歪着张不开；而右边这条传动链是单向的——蜗杆自锁让机构在发射振动中稳稳收拢，却也让“从伞骨那头晃一晃”成了不可能。（按 JPL 1991 年新闻稿文字描述绘制，非工程图。）</figcaption>
+</figure>
+
+<h2><span class="n">06</span>所以 Cheetah 3 为什么偏偏选 7.67:1？</h2>
+<p>把四个词合起来，就能读懂这个看起来“不大不小”的数字。论文里写，它的前代 Cheetah 2 用的是 5.8:1，到 Cheetah 3 提高到 7.67:1，理由是提高负重能力和低速时的效率。也就是说，设计师在两头之间拉锯：</p>
+<p>减速比再低，电机得更大更重才能扛住 45 公斤的身体；减速比再高，摩擦被放大、惯量按平方膨胀、反向效率下降，腿就“摸不到地”了，落地冲击也更伤齿轮。<b>单级、低减速比的行星</b>，背隙不算最小、效率不算最高，但它在“能反驱”这一项上站稳了，换来的是不用力传感器就能感知世界的腿。</p>
+<p>这也是“本体感知执行器”（proprioceptive actuator）这个名字的由来。Westwood 的 THEMIS 用户手册 v0.2.4 第 4.1 节写明，THEMIS 全身的执行器都是 BEAR 系列 proprioceptive actuators——走的正是这条思路。</p>
+
+<div class="box work"><div class="t">工作里会在哪遇到</div>
+<p><b>规格书上：</b>Backlash（常用 arcmin，注意看是“总量”还是“±”，以及在多大负载下测的）；Efficiency（注意测试转速、负载和温度）；Backdrive torque / Starting torque（从输出端推动所需的最小力矩）；有的还会写 “self-locking: yes/no”。</p>
+<p><b>本项目能查到的资料：</b>THEMIS 用户手册 v0.2.4 表 4.1 列了各 BEAR 型号的反射惯量、Kt、Kv 和堵转力矩，但没有背隙、传动效率和反驱力矩这几栏。这三项客户问到时，标 [待技术确认]，不要凭印象给数。</p>
+<p><b>客户邮件里：</b>最常见的是 “What is the backlash?”、“Is the actuator backdrivable?”、“What torque is needed to backdrive it?”。可以先这样回，同时把测量条件问清楚：</p>
+<p class="en">Thank you for your questions. The backlash, transmission efficiency and backdrive torque values are not listed in our current manual, so I will confirm them with our engineering team and get back to you. To make sure we give you comparable numbers, could you let us know under what load you would like the backlash specified, and what positioning accuracy you need at the end of the link?</p>
+</div>
+
+<h2>自测：三个真实场景</h2>
+<p class="q">1. 展会上，一位客户问：“你们关节的减速比这么低，换成 100:1 不是力矩大得多吗？”你怎么用两三句话回答？</p>
+<details><summary>看答案</summary><p>力矩确实能放大，但代价是：摩擦被放大约 100 倍、转子惯量被放大约 10000 倍，反向效率也会下降，关节就很难被外力推动。腿式和人形机器人要靠电机电流感知地面和碰撞（本体感知），也要扛落地冲击，所以宁可用更大的电机、更低的减速比，换来好的反驱性。</p></details>
+
+<p class="q">2. 一封邮件写着：“Your competitor's gearbox has 0.5° backlash. Our arm link is 0.6 m. We need ±1 mm at the tip.” 这个要求和 0.5° 背隙兼容吗？</p>
+<details><summary>看答案</summary><p>末端空程 ≈ 0.6 × 0.5 × π/180 ≈ 5.2 mm（若 0.5° 是总量，约等于 ±2.6 mm），远超 ±1 mm。要满足，需要更小背隙的减速器、预紧/消隙设计，或在末端加外部位置反馈。同时应问清 0.5° 是总量还是 ±、在什么负载下测的。我们自己产品的背隙数值，标 [待技术确认]。</p></details>
+
+<p class="q">3. 同事说：“这个蜗杆减速器正向效率才 45%，无非多费点电。客户想拉着机械臂手动示教，没问题吧？”</p>
+<details><summary>看答案</summary><p>有问题。按 η<sub>反</sub> ≈ 2 − 1/η<sub>正</sub> 估算，45% 对应负值，也就是自锁——从手臂那头怎么推都推不动，手动拖拽示教做不了（除非另加离合或改用别的传动）。效率低不只是费电，还决定了“能不能反着推”。</p></details>
+
+<h2>术语对照</h2>
+<table class="terms">
+<tr><td>背隙</td><td>backlash（单位常用 arcmin，角分）</td></tr>
+<tr><td>传动效率</td><td>transmission efficiency</td></tr>
+<tr><td>反向效率</td><td>backdrive efficiency / reverse efficiency</td></tr>
+<tr><td>反驱性</td><td>backdrivability</td></tr>
+<tr><td>反驱力矩 / 起动力矩</td><td>backdrive torque / breakaway (starting) torque</td></tr>
+<tr><td>静摩擦</td><td>static friction；stiction</td></tr>
+<tr><td>库仑摩擦</td><td>Coulomb friction</td></tr>
+<tr><td>粘滞摩擦</td><td>viscous friction</td></tr>
+<tr><td>粘滑</td><td>stick-slip</td></tr>
+<tr><td>自锁</td><td>self-locking</td></tr>
+<tr><td>本体感知</td><td>proprioception（proprioceptive actuator）</td></tr>
+<tr><td>透明度</td><td>transparency</td></tr>
+</table>
+
+<div class="tease"><b>下一课预告：</b>如果背隙和摩擦注定躲不掉，有人想了个反直觉的办法——干脆在减速器后面<b>故意串一根弹簧</b>，用弹簧的变形来“称”力。另一派则说：把减速比降到个位数，让电机直接扛。还有一派坚持高减速比，再加力矩传感器。三条路，谁对？下周一，第 2 单元第 4 课：准直驱 QDD、高减速比与串联弹性 SEA。</div>
+
+<h2>来源</h2>
+<ol class="src">
+<li><a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">MIT News（2018-07-05）：“Blind” Cheetah 3 robot can climb stairs littered with obstacles</a>（约 90 磅、无摄像头、接触检测算法、Sangbae Kim 的话；图片授权条款）</li>
+<li><a href="https://dspace.mit.edu/bitstream/1721.1/126619/2/IROS.pdf">Bledt et al., MIT Cheetah 3: Design and Control of a Robust, Dynamic Quadruped Robot（IROS 2018）</a>（45 kg、单级 7.67:1 行星、可反驱、无力传感器、静态力矩误差约 ±10% 主要来自齿轮摩擦、Cheetah 2 为 5.8:1）</li>
+<li><a href="https://www.maxongroup.com/medias/sys_master/root/9406758879262/Cataloge-Page-EN-399.pdf">maxon GPX 32 行星减速器样本页</a>（单级 90% / 三级 75% 最高效率，平均空载背隙 0.55° / 0.9°）</li>
+<li><a href="https://www.harmonicdrive.net/_hd/content/documents1/CSG-CSF_GearUnits.pdf">Harmonic Drive LLC：CSG/CSF Gear Units 产品样本</a>（效率算例，见上一课）</li>
+<li><a href="https://www.eng.cam.ac.uk/node/3496">University of Cambridge：Leonardo da Vinci's notes on friction</a> 与 <a href="https://www.ifm.eng.cam.ac.uk/uploads/Hutchings_Leonardo_Friction_2016_v2.pdf">I. M. Hutchings, Leonardo da Vinci's studies of friction, Wear (2016)</a></li>
+<li><a href="https://gearsolutions.com/features/applications-for-self-locking-gears/">Gear Solutions：Applications for self-locking gears</a>（蜗杆自锁、效率高于 50% 的自锁齿轮设计）</li>
+<li><a href="https://www.jpl.nasa.gov/news/galileo-antenna-deployment-problem-under-analysis/">NASA JPL 新闻稿（1991-04-19）：Galileo antenna deployment problem under analysis</a>（16 英尺、18 根伞骨、电机—蜗杆—螺母—杠杆机构）</li>
+<li><a href="https://spaceflightnow.com/galileo/030921galileohistory.html">Spaceflight Now：The Galileo trials</a>（3–4 根伞骨卡住、卡车运输磨掉润滑剂、自旋至 10 rpm、冷热交替）</li>
+<li><a href="https://science.nasa.gov/photojournal/galileo-in-high-bay-1/">NASA Photojournal PIA23616：Galileo in High Bay 1</a>；<a href="https://jpl.nasa.gov/jpl-image-use-policy">JPL Image Use Policy</a></li>
+<li>Westwood Robotics：《THEMIS User Manual》v0.2.4 第 4.1 节与表 4.1（本项目资料）</li>
+</ol>
+</main>
+
+<script>
+(function(){
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function segInit(id,cb){var s=$(id);var bs=s.querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');cb(this);});}}
+
+/* ---------- 1. backlash ---------- */
+(function(){
+  var cx=170,cy=150,gap=8,inA=0,outA=0,trace=[],playing=false,t=0,raf=null;
+  var teeth=$('blteeth');
+  for(var i=0;i<36;i++){var a=i*10;el('rect',{x:cx-5,y:cy-134,width:10,height:14,rx:2,class:'s-acc2',transform:'rotate('+a+' '+cx+' '+cy+')'},teeth);}
+  function drawLugs(){var g=$('bllugs');while(g.firstChild)g.removeChild(g.firstChild);
+    // input tooth half-width ~6deg at r~89; lugs sit at +-(gap/2 + 6 + 5)
+    var off=gap/2+8.6;
+    [-off,off].forEach(function(a){el('rect',{x:cx-6,y:cy-102,width:12,height:28,rx:2,class:'s-acc2',stroke:'var(--ink2)','stroke-width':1,transform:'rotate('+a+' '+cx+' '+cy+')'},g);});
+  }
+  function px(a){return 497+a*2.8;} function py(a){return 150-a*2.8;}
+  function upd(){
+    var h=gap/2;
+    if(inA-outA>h)outA=inA-h; if(inA-outA<-h)outA=inA+h;
+    $('blin').setAttribute('transform','rotate('+inA+' '+cx+' '+cy+')');
+    $('blout').setAttribute('transform','rotate('+outA+' '+cx+' '+cy+')');
+    trace.push(px(inA).toFixed(1)+','+py(outA).toFixed(1)); if(trace.length>400)trace.shift();
+    $('bltrace').setAttribute('points',trace.join(' '));
+    $('bldot').setAttribute('cx',px(inA));$('bldot').setAttribute('cy',py(outA));
+    $('bl-in').textContent=inA.toFixed(1)+'°';$('bl-out').textContent=outA.toFixed(1)+'°';
+    var d=inA-outA,c=Math.abs(Math.abs(d)-h)<0.01;
+    $('bl-st').textContent=(gap===0||c)?'贴合，一起转':'空程，输出不动';
+    $('blv').textContent=inA.toFixed(1)+'°';
+  }
+  drawLugs();
+  segInit('blseg',function(b){gap=+b.getAttribute('data-g');outA=inA;trace=[];drawLugs();upd();});
+  $('blr').addEventListener('input',function(){stop();inA=+this.value;upd();});
+  function frame(){t+=0.025;inA=32*Math.sin(t);$('blr').value=inA;upd();if(playing)raf=requestAnimationFrame(frame);}
+  function stop(){playing=false;if(raf)cancelAnimationFrame(raf);$('blplay').textContent='播放来回摆';}
+  $('blplay').addEventListener('click',function(){
+    if(playing){stop();return;}
+    if(reduce){ // draw one static loop
+      trace=[];for(var k=0;k<=160;k++){inA=32*Math.sin(k/160*2*Math.PI+Math.PI/2);upd();}return;}
+    playing=true;this.textContent='暂停';frame();});
+  // initial static loop so the picture explains itself without interaction
+  for(var k=0;k<=160;k++){inA=32*Math.sin(k/160*2*Math.PI);upd();}
+  inA=0;outA=Math.max(Math.min(outA,gap/2),-gap/2);upd();
+})();
+
+/* ---------- 3. friction ---------- */
+(function(){
+  var m=20,g=9.8,Fs=0.4*m*g,Fk=0.3*m*g,b=4,x=0,v=0,F=0,moving=false,last=null,raf=null;
+  var X0=392,Y0=240,sx=70,sy=1.9; // v up to ~3.2 m/s
+  function fy(f){return Y0-f*sy;}
+  function fric(vv){return Fk+(Fs-Fk)*Math.exp(-vv/0.15)+b*vv;}
+  var d='M'+X0+' '+Y0+' L'+X0+' '+fy(Fs).toFixed(1);
+  for(var i=1;i<=60;i++){var vv=i*0.055;d+=' L'+(X0+vv*sx).toFixed(1)+' '+fy(fric(vv)).toFixed(1);}
+  $('frcurve').setAttribute('d',d);
+  $('frfs').setAttribute('y1',fy(Fs));$('frfs').setAttribute('y2',fy(Fs));$('frfst').setAttribute('y',fy(Fs)-5);
+  var grid=$('frgrid');for(var k=0;k<12;k++)el('line',{x1:10+k*30,y1:200,x2:22+k*30,y2:214},grid);
+  function draw(fr){
+    var bx=60+(x%180);
+    $('frbox').setAttribute('transform','translate('+bx.toFixed(1)+',0)');
+    var len=Math.max(F*0.6,0);
+    $('frline').setAttribute('x1',bx-4-len);$('frline').setAttribute('x2',bx-4);
+    $('frhead').setAttribute('d','M'+(bx-4)+' 150 L'+(bx+10)+' 160 L'+(bx-4)+' 170 Z');
+    $('frarrow').style.opacity=F>0?1:0;
+    $('frlabel').setAttribute('x',Math.max(bx-40,4));$('frlabel').textContent=F>0?('推力 '+F+' N'):'';
+    $('frdot').setAttribute('cx',X0+Math.min(v,3.2)*sx);$('frdot').setAttribute('cy',fy(fr));
+    $('fr-f').textContent=fr.toFixed(0)+' N';$('fr-v').textContent=v.toFixed(2)+' m/s';
+    $('fr-s').textContent=moving?(F<fric(v)?'在减速':'在滑动'):(F>0?'静止（被静摩擦拉住）':'静止');
+  }
+  function step(dt){
+    var fr;
+    if(!moving){ if(F>Fs){moving=true;v=0.001;} else {fr=F;draw(fr);return false;} }
+    fr=fric(v); var a=(F-fr)/m; v+=a*dt;
+    if(v<=0){v=0;moving=false;fr=Math.min(F,Fs);draw(fr);return false;}
+    x+=v*dt*60; draw(fr); return true;
+  }
+  function loop(ts){var dt=last?Math.min((ts-last)/1000,0.05):0.016;last=ts;var go=step(dt);if(go||moving){raf=requestAnimationFrame(loop);}else{raf=null;last=null;}}
+  $('frf').addEventListener('input',function(){F=+this.value;$('frv').textContent=F+' N';
+    if(reduce){ // jump to steady state
+      if(!moving&&F>Fs){moving=true;}
+      if(moving){ if(F<=Fk+0.5){moving=false;v=0;draw(Math.min(F,Fs));return;}
+        var lo=0,hi=20;for(var i=0;i<50;i++){var mid=(lo+hi)/2;if(fric(mid)<F)lo=mid;else hi=mid;}v=lo;x+=30;draw(fric(v));}
+      else draw(F);return;}
+    if(!raf){last=null;raf=requestAnimationFrame(loop);}});
+  draw(0);
+})();
+
+/* ---------- 4. backdrive ---------- */
+(function(){
+  var N=8,E=90,Tm=0.05,Jm=1e-4,L=0.3,anim=null;
+  function upd(){
+    var eta=E/100,eb=2-1/eta;
+    $('bdnv').textContent=N;$('bdev').textContent=E+'%';
+    $('bd-eb').textContent=eb>0?(eb*100).toFixed(0)+'%':'≤ 0（自锁）';
+    var J=N*N*Jm;$('bd-j').textContent=(J<0.01?J.toExponential(1):J.toFixed(J<1?3:2))+' kg·m²';
+    var bar=$('bdbar');
+    if(eb<=0.02){$('bd-t').textContent='推不动';$('bd-f').textContent='推不动';
+      bar.setAttribute('y',72);bar.setAttribute('height',160);bar.style.fill='var(--warnline)';$('bdlock').textContent='自锁：外力只会把齿压得更紧';}
+    else{var T=N*Tm/eb,F=T/L;$('bd-t').textContent=T.toFixed(T<1?2:1)+' N·m';$('bd-f').textContent=F.toFixed(F<10?1:0)+' N';
+      var lg=Math.log10(Math.max(F,1));var h=Math.min(lg/3,1)*160;bar.setAttribute('y',232-h);bar.setAttribute('height',h);bar.style.fill='';
+      $('bdlock').textContent=F<5?'手指一拨就动':F<50?'得使点劲':F<200?'要两只手':'几乎推不动';}
+    $('bdn').value=N;$('bde').value=E;
+  }
+  segInit('bdseg',function(b){N=+b.getAttribute('data-n');E=+b.getAttribute('data-e');upd();});
+  $('bdn').addEventListener('input',function(){N=+this.value;upd();});
+  $('bde').addEventListener('input',function(){E=+this.value;upd();});
+  $('bdplay').addEventListener('click',function(){
+    if(reduce||anim)return; var eb=2-1/(E/100); var F=eb>0.02?N*Tm/eb/L:Infinity;
+    var amp=eb<=0.02?0:Math.max(2,22-Math.log10(Math.max(F,1))*7); // degrees
+    var dur=900+Math.min(N*N*Jm,1)*1500, t0=null;
+    function f(ts){if(!t0)t0=ts;var p=(ts-t0)/dur;if(p>1){p=1;}
+      var a=-amp*Math.sin(p*Math.PI);
+      $('bdlink').setAttribute('transform','rotate('+a+' 150 140)');
+      var rad=a*Math.PI/180,hx=150+286*Math.cos(rad),hy=140+286*Math.sin(rad);
+      $('bdhand').setAttribute('transform','translate('+hx.toFixed(1)+','+hy.toFixed(1)+')');
+      $('bdgear').setAttribute('transform','rotate('+(a*Math.min(N,20))+' 150 140)');
+      if(p<1)anim=requestAnimationFrame(f);else anim=null;}
+    anim=requestAnimationFrame(f);});
+  upd();
+})();
+
+/* ---------- 5. Galileo ribs ---------- */
+(function(){
+  var g=$('ribs'),stuck={2:1,3:1,4:1};
+  for(var i=0;i<18;i++){var a=i*20*Math.PI/180;var r=stuck[i]?34:95;
+    el('line',{x1:0,y1:0,x2:(r*Math.cos(a)).toFixed(1),y2:(r*Math.sin(a)).toFixed(1),stroke:stuck[i]?'var(--accent)':'var(--steel)','stroke-width':stuck[i]?5:3,'stroke-linecap':'round'},g);}
+  var pts=[];for(var j=0;j<18;j++){var a2=j*20*Math.PI/180,r2=stuck[j]?34:95;pts.push((r2*Math.cos(a2)).toFixed(1)+','+(r2*Math.sin(a2)).toFixed(1));}
+  el('polygon',{points:pts.join(' '),fill:'var(--glow)','fill-opacity':'.18',stroke:'var(--copper)','stroke-width':1.2},g);
+})();
+})();
+</script>
+</body>
+</html>
