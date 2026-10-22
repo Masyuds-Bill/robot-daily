@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W2-2｜行星、谐波、摆线：三种减速器</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 2 单元「减速与传动」· 第 2 课</div>
+<h1>行星、谐波、摆线：三种减速器</h1>
+<p class="sub">月球车轮毂里的“软钢杯”、火星车手臂上的同款，和工业机器人腰里那朵会滚的“花”。约 18 分钟。</p>
+
+<div class="lead">
+<p>1971 年 7 月 31 日，阿波罗 15 号的指令长 David Scott 和登月舱驾驶员 James Irwin 解开了一辆折叠在登月舱侧面的“车”，开着它去了哈德利月溪（Hadley Rille）的边缘。这是人类第一次在月球上开车。下面这张照片就是 Irwin 当天拍的：Scott 站在车旁，背后是一道巨大的峡谷。</p>
+<p>这辆月球车（Lunar Roving Vehicle，LRV）有个很“机器人”的设计：它没有发动机和传动轴，而是<strong>每个轮子里各藏一台电机</strong>。NASA 的资料写得很清楚：每台是 0.25 马力的直流电机，转速约每分钟一万转；电机后面紧跟着一个 80:1 的谐波减速器（harmonic drive），再加一个机械刹车。轮子直径只有 81.8 厘米，所有这些东西都得塞进轮毂那一小圈空间里，还得轻——整车自重只有 210 公斤。</p>
+<p>问题来了：要把一万转降到一百多转，用我们熟悉的普通齿轮，至少得串两三级，又大又重。工程师选的那个“谐波减速器”，靠的是一只会被挤成椭圆的薄壁钢杯，一级就搞定了 80 倍。今天我们就跟着“一个关节该装哪种减速器”这个问题，把三位主角——行星、谐波、摆线——挨个拆开看。</p>
+</div>
+
+<figure class="photo">
+<img src="https://images-assets.nasa.gov/image/as15-85-11451/as15-85-11451~large.jpg" loading="lazy" referrerpolicy="no-referrer" alt="阿波罗15号指令长 David Scott 站在停在哈德利月溪边缘的月球车旁，背景是月面峡谷" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/image-detail/amf-as15-85-11451">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>留意那四个网状的轮子——轮毂中央不是空的，每一个里面都有“电机 + 80:1 谐波减速器 + 刹车”一整套。车上没有一根贯穿的传动轴。<br>图：NASA（James Irwin 摄，AS15-85-11451）/ <a href="https://www.nasa.gov/image-detail/amf-as15-85-11451">NASA Image Detail</a>，公有领域（NASA 图像）</figcaption>
+</figure>
+
+<div class="box work"><div class="t">先更正昨天的一句话</div>
+<p style="margin:4px 0">昨天预告里我写了“BEAR 为什么选了摆线”。今天回头核对《BEAR-Product-Manual-1.3.0-EN.pdf》，手册里<strong>没有写明 BEAR 用的是哪种减速器</strong>，所以那句话是我说过头了，收回。手册能确认的是：表 1 里各型号的减速比（Gear Ratio）在 6:1 到 20:1 之间；第 3.2.6 节把 Mountain BEAR（TB01）定位为“准直驱（QDD）执行器”。具体哪种减速结构，客户问到时请找工程团队确认。</p></div>
+
+<h2><span class="n">01</span>一个减速器，到底要满足几个愿望？</h2>
+<p>上一课我们说过，减速器的本职工作是“把快而没劲，换成慢而有劲”：减速比 N 让力矩乘 N、转速除 N，代价是电机转子的惯量被放大 N² 倍。可真到选型的时候，工程师心里通常有一张愿望清单：</p>
+<p>① <strong>一级能减多少</strong>（级数越少越小越轻）；② <strong>齿间有没有晃荡</strong>，也就是背隙（backlash）；③ <strong>扛不扛得住冲击</strong>，比如机器人摔一跤；④ <strong>能不能从输出端“倒推”回去</strong>，也就是反驱性（backdrivability）；⑤ 效率、体积、重量；⑥ 价格。</p>
+<p>没有一种减速器能同时拿满分。三位主角其实是三种不同的“偏科生”。</p>
+
+<div class="analogy"><div class="t">类比：骑车上坡换挡</div>
+<p style="margin:4px 0">山地车爬坡时你换到前小盘、后大飞，脚蹬得飞快，车走得很慢，但腿不累——这就是减速比在帮你放大力矩。减速器就是关节里一套“永远挂在低速挡”的变速器。</p>
+<p class="off">哪里不准：自行车是链条传动，链条本身松垮，有明显空程；而且你可以换挡，关节减速器的减速比是焊死的一个数。</p></div>
+
+<figure>
+<svg viewBox="0 0 640 330" role="img" aria-label="月球车轮毂剖面示意：电机、谐波减速器、刹车依次排列在轮毂内">
+<defs>
+<pattern id="mesh" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H10M0 0V10" stroke="var(--steel)" stroke-width="1.4"/></pattern>
+<linearGradient id="cu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--copper)"/><stop offset="1" stop-color="var(--copper2)"/></linearGradient>
+<linearGradient id="al" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient>
+</defs>
+<!-- wheel -->
+<circle cx="160" cy="170" r="130" fill="url(#mesh)" stroke="var(--ink2)" stroke-width="3"/>
+<circle cx="160" cy="170" r="122" fill="none" stroke="var(--steel)" stroke-width="2" stroke-dasharray="6 7"/>
+<g stroke="var(--ink2)" stroke-width="2.5"><path d="M30 170h46M244 170h46M160 40v46M160 254v46"/></g>
+<circle cx="160" cy="170" r="84" fill="var(--bg2)" stroke="var(--ink2)" stroke-width="2"/>
+<circle cx="160" cy="170" r="58" fill="url(#al)" stroke="var(--ink2)"/>
+<circle cx="160" cy="170" r="20" fill="var(--bg2)" stroke="var(--ink2)"/>
+<text x="160" y="320" text-anchor="middle" class="s-ink2" font-size="14">网状轮胎 · 直径 81.8 cm</text>
+<!-- zoom lines -->
+<path d="M200 128 L330 46 M200 212 L330 290" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 4" fill="none"/>
+<!-- cutaway -->
+<rect x="330" y="46" width="296" height="244" rx="16" fill="var(--bg)" stroke="var(--line)" stroke-width="2"/>
+<text x="346" y="72" class="s-acc" font-size="14" font-weight="700">轮毂里装了什么（剖面示意）</text>
+<!-- motor -->
+<rect x="350" y="110" width="78" height="120" rx="10" fill="url(#al)" stroke="var(--ink2)"/>
+<g fill="url(#cu)"><rect x="358" y="122" width="62" height="14" rx="4"/><rect x="358" y="142" width="62" height="14" rx="4"/><rect x="358" y="184" width="62" height="14" rx="4"/><rect x="358" y="204" width="62" height="14" rx="4"/></g>
+<rect x="350" y="163" width="190" height="14" fill="var(--ink2)" opacity=".75"/>
+<text x="389" y="250" text-anchor="middle" class="s-ink" font-size="13" font-weight="600">电机</text>
+<text x="389" y="267" text-anchor="middle" class="s-ink2" font-size="12">≈10 000 rpm</text>
+<!-- harmonic -->
+<rect x="440" y="100" width="56" height="140" rx="8" fill="var(--soft)" stroke="var(--accent)" stroke-width="2"/>
+<ellipse cx="468" cy="170" rx="16" ry="54" fill="none" stroke="var(--accent)" stroke-width="3"/>
+<ellipse cx="468" cy="170" rx="9" ry="44" fill="var(--accent)" opacity=".35"/>
+<text x="468" y="258" text-anchor="middle" class="s-acc" font-size="13" font-weight="700">谐波 80:1</text>
+<!-- brake -->
+<rect x="506" y="118" width="30" height="104" rx="6" fill="var(--can)" stroke="var(--ink2)"/>
+<g stroke="var(--bg2)" stroke-width="2"><path d="M512 130v80M520 130v80M528 130v80"/></g>
+<text x="521" y="240" text-anchor="middle" class="s-ink" font-size="13" font-weight="600">刹车</text>
+<!-- output -->
+<path d="M540 140 h40 v60 h-40" fill="none" stroke="var(--accent2)" stroke-width="5" stroke-linejoin="round"/>
+<text x="590" y="165" class="s-acc2" font-size="13" font-weight="700">轮子</text>
+<text x="590" y="183" class="s-acc2" font-size="12">≈125 rpm</text>
+<!-- arrow -->
+<path d="M360 92 H600" stroke="var(--ink2)" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink2)"/></marker></defs>
+<text x="480" y="86" text-anchor="middle" class="s-ink2" font-size="12">转速被除以 80，力矩被乘以约 80 × 效率</text>
+</svg>
+<figcaption><b>看图要看什么：</b>右边剖面里，真正“一级就降 80 倍”的只有那一小段橙色的谐波减速器，它的厚度和刹车差不多。换成普通齿轮，这里得排两三对大小齿轮。（结构按 NASA 资料描述绘制的示意，非工程图纸。）</figcaption>
+</figure>
+
+<p>顺手算一笔账，全部用 NASA 公布的数字：一万转除以 80，是每分钟 125 转；轮子周长 π × 0.818 m ≈ 2.57 m，所以电机满转时轮子理论上每分钟走 321 米，约合时速 19 公里（实际行驶要看路况和电量，这只是齿轮比给出的上限）。力矩呢？0.25 马力约 186 瓦，一万转约等于 1047 rad/s，电机力矩 T = P/ω ≈ 0.18 N·m——比你拧矿泉水瓶盖的力还小。乘以 80，再按 75% 的效率（这是我的教学假设），轮子上大约能拿到 10.7 N·m。一个拧瓶盖级别的小电机，就这样推得动一辆载人月球车的一个轮子。</p>
+
+<h2><span class="n">02</span>小太阳系：行星齿轮为什么人人都爱用？</h2>
+<p>先说最常见的一位。行星减速器（planetary gearbox）长得就像一个太阳系：正中间是<strong>太阳轮</strong>（sun gear），电机直接带着它转；周围三四个<strong>行星轮</strong>（planet gears）一边自转、一边绕着太阳轮公转；最外圈是固定不动、齿长在内侧的<strong>齿圈</strong>（ring gear）；把几个行星轮串在一起的那块板叫<strong>行星架</strong>（carrier），它就是输出。</p>
+<p class="say">用一句人话说：齿圈越大、太阳轮越小，行星架就转得越慢。</p>
+<div class="formula">i = 1 + Z<sub>齿圈</sub> / Z<sub>太阳</sub><small>齿圈固定、太阳轮输入、行星架输出时的减速比；Z 是齿数</small></div>
+<p>下面这张图可以直接玩：点“播放”，看红色记号（太阳轮）跑了好几圈，绿色记号（行星架）才挪一点。再点不同的太阳轮齿数，感受一下减速比为什么很难做大。</p>
+
+<figure>
+<svg id="pg" viewBox="0 0 360 300" role="img" aria-label="可交互的行星齿轮动画"></svg>
+<div class="seg" id="pgseg"><button data-z="30">太阳轮 30 齿</button><button data-z="24">24 齿</button><button data-z="18" class="on">18 齿</button><button data-z="12">12 齿</button></div>
+<div class="ctrl"><button id="pgplay">播放转动</button></div>
+<div class="readout"><div>减速比<b id="pg-i">–</b></div><div>太阳轮转 1 圈，输出转<b id="pg-o">–</b></div><div>行星轮齿数<b id="pg-p">–</b></div></div>
+<figcaption><b>看图要看什么：</b>齿圈固定 60 齿。太阳轮从 30 齿缩到 12 齿，减速比从 3 涨到 6，但太阳轮也越来越小、越来越细——再往下缩，它的轴和齿都会弱得扛不住力矩。这就是单级行星通常停在 10 倍以内的原因。（齿形为示意，非真实渐开线。）</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：城市自行车的“内变速花鼓”</div>
+<p style="margin:4px 0">有些城市自行车后轮中间那个鼓鼓的花鼓，里面装的就是行星齿轮组：外面看不到齿轮，换挡却很顺。它的好处和关节里一样——同轴、紧凑、力被几个行星轮分摊。</p>
+<p class="off">哪里不准：花鼓里有好几组可切换的行星组，靠锁住不同零件来换挡；机器人关节里通常只有一组、只有一个固定减速比。</p></div>
+
+<p>行星齿轮受欢迎有三个原因。第一，<strong>同轴、扁平</strong>，可以和一个大直径电机叠成一块“饼”——昨天照片里 MIT Mini Cheetah 腿根那些圆饼，就是电机加 6:1 行星减速器。第二，<strong>力被三个行星轮分着扛</strong>，冲击来了不至于压在一颗齿上。第三，减速比低，反射惯量小、能被外力推回去，这正是准直驱（QDD）路线需要的。</p>
+<p>它的短板也在齿上：普通齿轮之间必须留一点间隙才能转得动，这点间隙就是背隙。想做到几十倍，只能两级、三级地串起来，背隙和体积跟着叠加。</p>
+
+<h2><span class="n">03</span>会变形的钢杯：谐波凭什么一级就到一百倍？</h2>
+<p>回到月球车。谐波减速器（也叫应变波齿轮，strain wave gearing）由美国发明家 C. Walton Musser 在 1950 年代发明，Harmonic Drive 公司的说法是他在 1955 年取得成功。它只有三个零件：</p>
+<p>① <strong>波发生器</strong>（wave generator）：一个椭圆形的凸轮，外面套着一圈很薄、能跟着变形的轴承，电机带它转；② <strong>柔轮</strong>（flexspline）：一只薄壁钢杯，杯口外侧有齿，被波发生器从里面撑成椭圆；③ <strong>刚轮</strong>（circular spline）：一个刚性的内齿圈，比柔轮<strong>多两颗齿</strong>。</p>
+<p>椭圆的长轴两端，柔轮的齿顶进刚轮的齿槽；短轴两端则完全脱开。波发生器转一圈，啮合的位置绕着走一圈——但因为柔轮少两颗齿，转完一圈它就被刚轮“推着”往回挪了两颗齿的距离。</p>
+<p class="say">用一句人话说：柔轮有多少颗齿，就要被“挤”多少半圈，它自己才转完一整圈。</p>
+<div class="formula">i = Z<sub>柔轮</sub> / (Z<sub>刚轮</sub> − Z<sub>柔轮</sub>) = Z<sub>柔轮</sub> / 2<small>刚轮固定、波发生器输入、柔轮输出；例如 200 齿柔轮 → 100:1</small></div>
+
+<figure>
+<svg id="hd" viewBox="0 0 360 300" role="img" aria-label="可交互的谐波减速器动画：椭圆波发生器挤压柔轮"></svg>
+<div class="seg" id="hdseg"><button data-z="40" class="on">柔轮 40 齿（20:1）</button><button data-z="60">60 齿（30:1）</button><button data-z="100">100 齿（50:1）</button></div>
+<div class="ctrl"><button id="hdplay">播放转动</button></div>
+<div class="readout"><div>波发生器（输入）已转<b id="hd-in">0 圈</b></div><div>柔轮（输出）已转<b id="hd-out">0°</b></div></div>
+<figcaption><b>看图要看什么：</b>红色长轴（波发生器）转得飞快，带着“啮合的鼓包”一起绕圈；可柔轮上那颗绿色记号齿却在慢慢地<b>倒着</b>走。为了看得清，这里用了很少的齿数，并且把变形夸张了几十倍——真实柔轮的变形肉眼几乎看不出来。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：大手镯里套个硅胶手环</div>
+<p style="margin:4px 0">把一个周长略短的软硅胶手环放进一个硬手镯里，两根手指从里面把手环撑成椭圆、贴住手镯，然后手指绕圈转。手指转一圈，你会发现手环并没有跟着转一圈，而是相对手镯慢慢“爬”回去一点点——差的就是两者周长之差。</p>
+<p class="off">哪里不准：手环靠摩擦，会打滑；谐波靠齿啮合，每一圈精确地挪两颗齿，不会“打滑”——除非力矩大到让齿跳过去，下面的“翻车现场”就讲这个。</p></div>
+
+<p>这个设计好在哪？一级就是几十到几百倍（Harmonic Drive 给的单级范围是 30:1 到 320:1）；同时总有很多颗齿处在啮合中，而且是预压着的，所以厂家宣传它“零背隙”、定位精度能到 1 角分以内。它中心还能做成空心，走线方便。难怪它不只上了月球车，现在火星上也有：Harmonic Drive 说，“毅力号”火星车的机械臂上一共用了 5 个他们的减速器，肩部 2 个、肘部 1 个、腕部 2 个。</p>
+
+<figure class="photo">
+<img src="https://photojournal.jpl.nasa.gov/jpeg/PIA24831.jpg" loading="lazy" referrerpolicy="no-referrer" alt="毅力号火星车用避障相机拍下的机械臂末端转塔，正靠近一块名为 Rochette 的岩石" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.jpl.nasa.gov/images/pia24831-perseverance-gets-to-know-rochette/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>画面里那个挂满仪器的“拳头”就是机械臂末端的转塔，它要贴着岩石精确地停住。让它停得准、不晃的，正是肩、肘、腕里的谐波减速器。2021 年 8 月 27 日拍摄。<br>图：NASA/JPL-Caltech（PIA24831）/ <a href="https://www.jpl.nasa.gov/images/pia24831-perseverance-gets-to-know-rochette/">NASA JPL</a>，NASA 公开图像，注明出处使用</figcaption>
+</figure>
+
+<p>那它的软肋呢？就在“柔”字上。柔轮每转一圈要被弯两次，靠的是钢的弹性，所以它怕疲劳；低力矩区扭转刚度偏软、而且不完全线性；效率也不算高，还随温度和负载变——厂家样本里的一个算例，20°C、1000 rpm、某个负载下效率只有约 73%。另外，减速比动辄 50、100，按上一课的“平方税”，反射惯量会非常大，几乎推不回去。</p>
+
+<div class="box fail"><div class="t">翻车现场：“零背隙”不等于“不怕摔”</div>
+<p style="margin:4px 0">很多人看到“零背隙、高精度”，就以为谐波减速器是全能选手。可 Harmonic Drive 自己的产品样本里专门写了三种“过载翻车”：运转中力矩超过额定值约 8–9 倍，齿可能<strong>跳齿</strong>（ratcheting），柔轮被挤偏；之后如果继续带着这种错位运转（样本叫 dedoidal 状态），会振动并损坏柔轮；输入端不动时，输出端力矩达到额定值约 16–17 倍，柔轮可能<strong>屈曲</strong>（buckling），发生塑性变形。样本还强调，碰撞、急停这类瞬时峰值力矩“绝不应出现在正常工作循环中”，允许的次数有明确的计算公式。</p>
+<p style="margin:4px 0">对一台会摔跤、会落地冲击的腿式机器人，这几句话很要命。这也是为什么讲究“抗摔”的腿上，常能看到低减速比的行星齿轮，而精密的机械臂手腕上，谐波是常客。</p></div>
+
+<h2><span class="n">04</span>一朵花在针圈里滚：摆线为什么守着工业机器人的“腰”？</h2>
+<p>第三位主角样子最怪。摆线减速器（cycloidal drive）的核心是一片边缘像花瓣一样起伏的<strong>摆线轮</strong>（cycloidal disc），它被一根<strong>偏心轴</strong>带着，在一圈固定的<strong>针齿</strong>（ring pins）里贴着“滚”。关键在数字上：针齿有 N 根，摆线轮只有 N−1 个“花瓣”。</p>
+<p>偏心轴转一圈，摆线轮的中心就画一个小圆，所有花瓣依次滚过所有针齿；滚完一圈，因为少了一个花瓣，摆线轮本身就反方向转过了一个“花瓣”的角度。</p>
+<p class="say">用一句人话说：少一个瓣，偏心轴就得转 N−1 圈，花瓣轮才倒着转一整圈。</p>
+<div class="formula">i = (N − 1) / 1 = N − 1<small>单片摆线轮、针齿固定、偏心轴输入；N 为针齿数</small></div>
+
+<figure>
+<svg id="cy" viewBox="0 0 360 300" role="img" aria-label="可交互的摆线减速器动画：摆线轮在针齿圈里偏心滚动"></svg>
+<div class="seg" id="cyseg"><button data-n="10">10 根针齿</button><button data-n="12" class="on">12 根</button><button data-n="16">16 根</button></div>
+<div class="ctrl"><button id="cyplay">播放转动</button></div>
+<div class="readout"><div>减速比<b id="cy-i">–</b></div><div>偏心轴（输入）已转<b id="cy-in">0 圈</b></div><div>摆线轮（输出）已转<b id="cy-out">0°</b></div></div>
+<figcaption><b>看图要看什么：</b>红色短线是偏心轴，它带着摆线轮的中心画小圆；仔细看，<b>每一根针齿</b>始终都贴着花瓣的边缘——许多处同时接触、一起分担力，这就是摆线“扛冲击、刚度高”的来源。为看清楚，偏心量画得比真实大。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：硬币在瓶盖里贴边滚</div>
+<p style="margin:4px 0">把一枚一元硬币放进一个略大的塑料瓶盖里，用手指按着它贴着内壁滚一整圈。手指绕了一大圈，硬币自己却只转了一点点，而且是<strong>反着</strong>转的。两者周长差得越少，硬币自转得越慢——摆线轮就是这枚硬币，针齿圈就是瓶盖。</p>
+<p class="off">哪里不准：硬币和瓶盖只有一个接触点，还会打滑；摆线轮靠花瓣和针齿啮合，同一时刻有很多处接触，不会打滑。</p></div>
+
+<div class="box cold"><div class="t">冷知识：摆线减速器的灵感来自相机快门</div>
+<p style="margin:4px 0">住友重机械的德国公司在 2025 年的百年纪念新闻稿里讲了它的来历：德国工程师 Lorenz Braren 在 1925 年发明了 Cyclo 摆线减速原理，灵感来自他当时所在的 Friedrich Deckel 公司生产的 COMPUR 相机快门。1932 年，住友重机械取得了在日本生产的许可。半个多世纪后，日本的 Nabtesco（纳博特斯克）在 1985 年推出了用于机器人的 RV 精密摆线减速器——前面加一级普通齿轮、后面接摆线，两级串联。</p></div>
+
+<p>摆线的优点几乎就是谐波缺点的反面：多齿同时接触，<strong>刚度高、抗冲击</strong>；没有会疲劳的薄壁零件，寿命长。Nabtesco 自称在工业机器人减速器领域占约六成份额（这是公司自己的说法），宣称背隙 0.1–0.2 角分。所以在搬运几十上百公斤的工业机械臂里，最吃力的底座、肩、肘这些关节，常常交给 RV 摆线；轻小的手腕再交给谐波。</p>
+<p>代价是什么？零件多、加工精度要求高（偏心轴、针齿、轴承都得精磨），又重又贵；减速比也高，基本推不回去。</p>
+
+<h2><span class="n">05</span>三兄弟放在一起，关节到底选谁？</h2>
+<figure>
+<svg viewBox="0 0 640 380" role="img" aria-label="行星、谐波、摆线三种减速器的定性对比卡片">
+<g font-size="13">
+<!-- headers with icons -->
+<g transform="translate(250,46)"><circle r="22" fill="none" stroke="var(--ink2)" stroke-width="5" stroke-dasharray="3 3"/><circle r="8" class="s-acc"/><circle cx="0" cy="-15" r="5" class="s-acc2"/><circle cx="13" cy="8" r="5" class="s-acc2"/><circle cx="-13" cy="8" r="5" class="s-acc2"/></g>
+<g transform="translate(400,46)"><circle r="22" fill="none" stroke="var(--ink2)" stroke-width="5" stroke-dasharray="3 3"/><ellipse rx="10" ry="18" fill="none" class="st-acc" stroke-width="4"/></g>
+<g transform="translate(550,46)"><circle r="22" fill="none" stroke="var(--ink2)" stroke-width="2"/><g class="s-ink2"><circle cx="22" r="3"/><circle cx="-22" r="3"/><circle cy="22" r="3"/><circle cy="-22" r="3"/><circle cx="15.6" cy="15.6" r="3"/><circle cx="-15.6" cy="15.6" r="3"/><circle cx="15.6" cy="-15.6" r="3"/><circle cx="-15.6" cy="-15.6" r="3"/></g><circle cx="3" r="14" fill="var(--soft2)" class="st-acc2" stroke-width="2.5"/></g>
+<text x="250" y="90" text-anchor="middle" class="s-ink" font-weight="700" font-size="15">行星</text>
+<text x="400" y="90" text-anchor="middle" class="s-ink" font-weight="700" font-size="15">谐波</text>
+<text x="550" y="90" text-anchor="middle" class="s-ink" font-weight="700" font-size="15">摆线（RV）</text>
+<line x1="20" y1="102" x2="620" y2="102" class="s-line" stroke="var(--line)"/>
+</g>
+<g id="cmpbars" font-size="14"></g>
+<text x="20" y="368" class="s-ink2" font-size="12">定性比较，表示常见产品的大致倾向，不同厂家、不同型号差别很大；格子越满越占优。</text>
+</svg>
+<figcaption><b>看图要看什么：</b>没有一列是全满的。行星赢在“轻、能倒推、扛摔”，谐波赢在“一级减得多、准、小”，摆线赢在“刚、扛重载冲击”。选减速器其实是在选：这个关节最怕什么。</figcaption>
+</figure>
+
+<p>把这张图翻译成三句工程师的口头禅：</p>
+<p><strong>要会摔、要能感知外力的腿</strong>——低减速比行星，配大力矩电机，走准直驱路线；<strong>要停得准、又小又轻的手臂和手腕</strong>——谐波；<strong>要扛几十公斤、天天三班倒的工业机械臂大关节</strong>——RV 摆线。人形机器人身上，经常三种同时出现在不同关节上。</p>
+
+<div class="box work"><div class="t">工作里会在哪遇到</div>
+<p style="margin:4px 0"><strong>规格书上：</strong>“Gear Ratio”（减速比）和“Reflected Inertia”（反射惯量）是两栏挨着看的——减速比低，反射惯量一般也小。“Backlash”（背隙）通常以角分（arcmin）为单位，下一课细讲。</p>
+<p style="margin:4px 0"><strong>客户邮件里：</strong>最常见的问法是“Is the gearbox planetary, harmonic or cycloidal?”，以及“What is the backlash?”。BEAR 产品手册 1.3.0 没写减速器类型和背隙数值，这两题都不要凭印象答，先标 [待技术确认] 问工程团队。可以先这样回：</p>
+<p class="en">Thank you for your question. The gear ratio of each BEAR model is listed in Table 1 of the BEAR Product Manual (v1.3.0). Regarding the gearbox type and backlash, I will confirm the details with our engineering team and get back to you shortly.</p></div>
+
+<h2>自测：三个真实场景</h2>
+<p class="q">1. 展会上，一位客户指着一台工业机械臂问：“为什么底座关节用一种减速器，手腕又换了一种？”你怎么用一句话解释？</p>
+<details><summary>看答案</summary><p>底座关节要扛整条手臂加负载的重量和冲击，常用刚度高、抗冲击的 RV 摆线；手腕负载小、要求又小又准，常用谐波。不同关节“最怕的东西”不一样，所以选不同的减速器。</p></details>
+<p class="q">2. 一封邮件写着：“We need 100:1 in a single stage, very compact, zero backlash. Can a planetary gearbox do it?” 你的第一反应是什么？</p>
+<details><summary>看答案</summary><p>单级行星通常只做到 10:1 以内，100:1 得串两三级，体积和背隙都会上去；“单级 100:1、紧凑、低背隙”更像谐波减速器的特点。但要提醒客户：100:1 意味着反射惯量很大、几乎不能反驱，也更怕冲击——先问清楚这个关节会不会受到冲击、是否需要力控。</p></details>
+<p class="q">3. 同事说：“谐波减速器零背隙，所以装在四足机器人腿上肯定最好。”哪里有问题？</p>
+<details><summary>看答案</summary><p>零背隙只说明齿间不晃，不代表扛得住冲击。厂家样本写明，力矩超过额定值约 8–9 倍可能跳齿、约 16–17 倍可能屈曲，碰撞类瞬时峰值的次数也有限制；加上高减速比带来的大反射惯量，落地冲击会被放大。腿式机器人常选低减速比行星就是这个原因。</p></details>
+
+<h2>术语对照</h2>
+<table class="terms">
+<tr><td>行星减速器</td><td>planetary gearbox</td></tr>
+<tr><td>太阳轮 / 行星轮 / 齿圈 / 行星架</td><td>sun gear / planet gear / ring gear / carrier</td></tr>
+<tr><td>谐波减速器</td><td>harmonic drive；strain wave gearing</td></tr>
+<tr><td>波发生器</td><td>wave generator</td></tr>
+<tr><td>柔轮 / 刚轮</td><td>flexspline / circular spline</td></tr>
+<tr><td>摆线减速器</td><td>cycloidal drive（工业机器人里常见 RV reducer）</td></tr>
+<tr><td>摆线轮 / 针齿</td><td>cycloidal disc / ring pins</td></tr>
+<tr><td>偏心轴</td><td>eccentric shaft</td></tr>
+<tr><td>背隙</td><td>backlash（单位常用 arcmin，角分）</td></tr>
+<tr><td>扭转刚度</td><td>torsional stiffness</td></tr>
+<tr><td>跳齿 / 屈曲</td><td>ratcheting / buckling</td></tr>
+</table>
+
+<div class="tease">下一课预告：今天谐波样本里那个 73% 的效率，剩下 27% 的能量去哪了？为什么有的关节你用手一掰就动，有的掰到手疼也纹丝不动——而“掰得动”恰恰是腿式机器人梦寐以求的能力？明天，第 2 单元第 3 课：背隙、效率、摩擦与反驱性。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>NASA NSSDCA：<a href="https://nssdc.gsfc.nasa.gov/planetary/lunar/apollo_lrv.html">The Apollo Lunar Roving Vehicle</a>（每轮 0.25 hp 电机、10 000 rpm、80:1 谐波、轮径 81.8 cm、自重 210 kg）</li>
+<li>NASA：<a href="https://www.nasa.gov/image-detail/amf-as15-85-11451">AS15-85-11451 图片说明</a>（1971-07-31，哈德利月溪）</li>
+<li>Harmonic Drive SE：<a href="https://newdrive.harmonicdrive.de/en/home/edition-one/apollo-15-harmonic-drive-on-the-moon">Apollo 15 – Harmonic Drive on the Moon</a></li>
+<li>Harmonic Drive SE：<a href="https://newdrive.harmonicdrive.de/en/home/edition-one/the-secret-of-the-strain-wave-gear">The secret of the strain wave gear</a>（结构、少两齿、30:1–320:1、效率最高 85%）</li>
+<li>Harmonic Drive SE：<a href="https://harmonicdrive.de/en/company/walton-musser">Walton Musser: Inventor of strain wave gearing</a></li>
+<li>Harmonic Drive LLC：<a href="https://www.harmonicdrive.net/_hd/content/documents1/CSG-CSF_GearUnits.pdf">CSG/CSF Gear Units 产品样本</a>（跳齿、屈曲、瞬时峰值力矩、效率算例）</li>
+<li>Harmonic Drive SE：<a href="https://newdrive.harmonicdrive.de/en/home/edition-one/rover-perseverance-and-harmonic-drive-discover-mars">Rover Perseverance and Harmonic Drive discover Mars</a>（机械臂 5 个减速器）</li>
+<li>NASA JPL：<a href="https://www.jpl.nasa.gov/images/pia24831-perseverance-gets-to-know-rochette/">PIA24831: Perseverance Gets to Know Rochette</a></li>
+<li>Sumitomo Drive Technologies：<a href="https://emeia.sumitomodrive.com/en-gb/news/100-years-cyclor">100 years Cyclo</a>（Braren、1925、COMPUR 快门、1932 年许可）</li>
+<li>Nabtesco：<a href="https://www.nabtesco.de/en/company/news/history-100-years-of-cycloidal-gears">History: 100 years of cycloidal gears</a>（RV 1985 年推出、两级结构、约 60% 份额为公司说法、背隙 0.1–0.2 arcmin）</li>
+<li>Westwood Robotics：《BEAR-Product-Manual-1.3.0-EN.pdf》表 1（Gear Ratio）与第 3.2.6 节（Mountain BEAR 为 QDD）</li>
+<li>MIT News：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">Mini cheetah is the first four-legged robot to do a backflip</a>（见上一课）</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function polar(cx,cy,f,n){var d='';for(var i=0;i<=n;i++){var t=i/n*2*Math.PI,r=f(t);d+=(i?'L':'M')+(cx+r*Math.cos(t)).toFixed(2)+' '+(cy+r*Math.sin(t)).toFixed(2);}return d+'Z';}
+function fmtRev(x){return (x<10?x.toFixed(2):x.toFixed(1))+' 圈';}
+function fmtDeg(x){return x.toFixed(1)+'°';}
+function makeLoop(btn,step,label){
+  var playing=false,last=0;
+  function tick(t){if(!playing)return;if(last)step(Math.min(0.05,(t-last)/1000));last=t;requestAnimationFrame(tick);}
+  btn.addEventListener('click',function(){
+    if(reduce){step(0.6);return;}
+    playing=!playing;btn.textContent=playing?'暂停':label;last=0;if(playing)requestAnimationFrame(tick);
+  });
+}
+
+/* ---------- planetary ---------- */
+(function(){
+  var svg=$('pg'),cx=180,cy=150,Zr=60,m=3.7,a=0.42*m,Zs=18,ts=0.4;
+  var gRing=el('g',{},svg),gCar=el('g',{},svg),gPl=el('g',{},svg),gSun=el('g',{},svg);
+  var ringPath,ringOuter,carrier,carMark,planets=[],sunPath,sunMark,thr=0;
+  var Rr=m*Zr/2;
+  ringOuter=el('circle',{cx:cx,cy:cy,r:Rr+18,fill:'var(--can)',opacity:'.35'},gRing);
+  ringPath=el('path',{fill:'var(--bg2)',stroke:'var(--ink2)','stroke-width':1.5},gRing);
+  el('text',{x:cx,y:cy-Rr-24+2,'text-anchor':'middle','font-size':12,fill:'var(--ink2)'},gRing).textContent='齿圈（固定，60 齿）';
+  carrier=el('path',{fill:'var(--soft2)',stroke:'var(--accent2)','stroke-width':2,opacity:.9},gCar);
+  carMark=el('circle',{r:6,fill:'var(--accent2)'},gCar);
+  for(var i=0;i<3;i++){var g=el('g',{},gPl);planets.push({g:g,p:el('path',{fill:'var(--steel)',stroke:'var(--ink2)','stroke-width':1.2},g),hub:el('circle',{r:4,fill:'var(--accent2)'},g)});}
+  sunPath=el('path',{fill:'var(--copper)',stroke:'var(--copper2)','stroke-width':1.2},gSun);
+  sunMark=el('circle',{r:4.5,fill:'var(--accent)',stroke:'var(--bg2)','stroke-width':1.5},gSun);
+  var lg=el('g',{'font-size':12},svg);
+  el('circle',{cx:16,cy:286,r:5,fill:'var(--accent)'},lg);el('text',{x:26,y:290,fill:'var(--ink2)'},lg).textContent='太阳轮（输入）';
+  el('circle',{cx:124,cy:286,r:5,fill:'var(--accent2)'},lg);el('text',{x:134,y:290,fill:'var(--ink2)'},lg).textContent='行星架（输出）';
+  function draw(){
+    var Zp=(Zr-Zs)/2,Rs=m*Zs/2,Rp=m*Zp/2,C=Rs+Rp;
+    var wc=ts*Zs/(Zs+Zr);
+    ringPath.setAttribute('d',polar(cx,cy,function(t){return Rr-a*Math.cos(Zr*(t-thr));},720));
+    sunPath.setAttribute('d',polar(cx,cy,function(t){return Rs+a*Math.cos(Zs*(t-ts));},360));
+    sunMark.setAttribute('cx',cx+(Rs-8)*Math.cos(ts));sunMark.setAttribute('cy',cy+(Rs-8)*Math.sin(ts));
+    var d='';
+    for(var i=0;i<3;i++){
+      var b=wc+i*2*Math.PI/3,tp=b+Math.PI-(Math.PI-Zs*(b-ts))/Zp;
+      var px=cx+C*Math.cos(b),py=cy+C*Math.sin(b);
+      (function(tp){planets[i].p.setAttribute('d',polar(px,py,function(t){return Rp+a*Math.cos(Zp*(t-tp));},240));})(tp);
+      planets[i].hub.setAttribute('cx',px);planets[i].hub.setAttribute('cy',py);
+      d+=(i?'L':'M')+px.toFixed(1)+' '+py.toFixed(1);
+    }
+    carrier.setAttribute('d',d+'Z');
+    carrier.setAttribute('stroke-width',10);carrier.setAttribute('stroke-linejoin','round');
+    carMark.setAttribute('cx',cx+C*0.5*Math.cos(wc+Math.PI/3));carMark.setAttribute('cy',cy+C*0.5*Math.sin(wc+Math.PI/3));
+  }
+  function setZ(z){
+    Zs=z;var Zp=(Zr-Zs)/2,b0=0,tp0=b0+Math.PI-(Math.PI-Zs*(b0-ts))/Zp;
+    // keep planet 0 in mesh with ring: Zr(b-thr) = pi - Zp(b-tp)
+    var wc=ts*Zs/(Zs+Zr);b0=wc;tp0=b0+Math.PI-(Math.PI-Zs*(b0-ts))/Zp;
+    thr=b0-(Math.PI-Zp*(b0-tp0))/Zr;
+    var i=1+Zr/Zs;$('pg-i').textContent=(Math.abs(i-Math.round(i))<.01?i.toFixed(0):i.toFixed(2))+' : 1';
+    $('pg-o').textContent=(1/i).toFixed(3)+' 圈';$('pg-p').textContent=Zp+' 齿';
+    draw();
+  }
+  var bs=document.querySelectorAll('#pgseg button');
+  for(var k=0;k<bs.length;k++)bs[k].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');setZ(+this.getAttribute('data-z'));});
+  makeLoop($('pgplay'),function(dt){ts+=dt*1.6;draw();},'播放转动');
+  setZ(18);
+})();
+
+/* ---------- harmonic ---------- */
+(function(){
+  var svg=$('hd'),cx=180,cy=145,Rc=112,h=7,e=7,Zf=40,phi=0.5,total=0;
+  el('circle',{cx:cx,cy:cy,r:Rc+20,fill:'var(--can)',opacity:'.35'},svg);
+  var cs=el('path',{fill:'var(--bg2)',stroke:'var(--ink2)','stroke-width':1.3},svg);
+  var fsTeeth=el('path',{fill:'var(--soft)',stroke:'var(--accent)','stroke-width':1.3},svg);
+  var fsIn=el('path',{fill:'var(--bg2)',stroke:'var(--accent)','stroke-width':1},svg);
+  var bearing=el('path',{fill:'none',stroke:'var(--steel)','stroke-width':6,'stroke-dasharray':'3 4'},svg);
+  var wg=el('path',{fill:'var(--steel)',stroke:'var(--ink2)','stroke-width':1.2},svg);
+  var axis=el('line',{stroke:'var(--accent)','stroke-width':4,'stroke-linecap':'round'},svg);
+  var mark=el('circle',{r:6,fill:'var(--accent2)',stroke:'var(--bg2)','stroke-width':2},svg);
+  el('circle',{cx:cx,cy:cy,r:9,fill:'var(--ink2)'},svg);
+  var lg=el('g',{'font-size':12},svg);
+  el('text',{x:cx,y:18,'text-anchor':'middle',fill:'var(--ink2)'},lg).textContent='刚轮（固定，比柔轮多 2 齿）';
+  el('rect',{x:8,y:281,width:14,height:4,fill:'var(--accent)'},lg);el('text',{x:28,y:288,fill:'var(--ink2)'},lg).textContent='波发生器长轴（输入）';
+  el('circle',{cx:176,cy:283,r:5,fill:'var(--accent2)'},lg);el('text',{x:186,y:288,fill:'var(--ink2)'},lg).textContent='柔轮上的一颗齿（输出）';
+  function draw(){
+    var Zc=Zf+2,R0=Rc-h-e,psi=-2*phi/Zf;
+    cs.setAttribute('d',polar(cx,cy,function(t){return Rc-h*(0.5-0.5*Math.cos(Zc*t));},1440));
+    function base(t){return R0+e*Math.cos(2*(t-phi));}
+    fsTeeth.setAttribute('d',polar(cx,cy,function(t){return base(t)+h*(0.5+0.5*Math.cos(Zf*(t-psi)));},1440));
+    fsIn.setAttribute('d',polar(cx,cy,function(t){return base(t)-9;},360));
+    bearing.setAttribute('d',polar(cx,cy,function(t){return base(t)-16;},360));
+    wg.setAttribute('d',polar(cx,cy,function(t){return base(t)-22;},360));
+    var L=R0+e-24;
+    axis.setAttribute('x1',cx-L*Math.cos(phi));axis.setAttribute('y1',cy-L*Math.sin(phi));
+    axis.setAttribute('x2',cx+L*Math.cos(phi));axis.setAttribute('y2',cy+L*Math.sin(phi));
+    var rm=base(psi)+h;mark.setAttribute('cx',cx+rm*Math.cos(psi));mark.setAttribute('cy',cy+rm*Math.sin(psi));
+    $('hd-in').textContent=fmtRev(total/(2*Math.PI));
+    $('hd-out').textContent='倒转 '+fmtDeg(total*2/Zf*180/Math.PI);
+  }
+  var bs=document.querySelectorAll('#hdseg button');
+  for(var k=0;k<bs.length;k++)bs[k].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');Zf=+this.getAttribute('data-z');phi=0.5;total=0;draw();});
+  makeLoop($('hdplay'),function(dt){phi+=dt*2.2;total+=dt*2.2;draw();},'播放转动');
+  draw();
+})();
+
+/* ---------- cycloid ---------- */
+(function(){
+  var svg=$('cy'),cx=180,cy=145,R=108,Rr=8,E=5,N=12,a=0.6,total=0;
+  el('circle',{cx:cx,cy:cy,r:R+20,fill:'var(--can)',opacity:'.35'},svg);
+  el('circle',{cx:cx,cy:cy,r:R+6,fill:'var(--bg2)',stroke:'var(--ink2)','stroke-width':1.2},svg);
+  var pins=el('g',{},svg),disc=el('g',{},svg);
+  var prof=el('path',{fill:'var(--soft2)',stroke:'var(--accent2)','stroke-width':2},disc);
+  var holes=el('g',{},disc),dmark=el('circle',{r:6,fill:'var(--accent2)',stroke:'var(--bg2)','stroke-width':2},disc);
+  var crank=el('line',{stroke:'var(--accent)','stroke-width':5,'stroke-linecap':'round'},svg);
+  var hub=el('circle',{r:18,fill:'none',stroke:'var(--accent)','stroke-width':2,'stroke-dasharray':'4 3'},svg);
+  el('circle',{cx:cx,cy:cy,r:4,fill:'var(--ink)'},svg);
+  var lg=el('g',{'font-size':12},svg);
+  el('text',{x:cx,y:14,'text-anchor':'middle',fill:'var(--ink2)'},lg).textContent='针齿圈（固定）';
+  el('rect',{x:8,y:281,width:14,height:4,fill:'var(--accent)'},lg);el('text',{x:28,y:288,fill:'var(--ink2)'},lg).textContent='偏心轴（输入）';
+  el('circle',{cx:132,cy:283,r:5,fill:'var(--accent2)'},lg);el('text',{x:142,y:288,fill:'var(--ink2)'},lg).textContent='摆线轮上的记号（输出）';
+  var pts=[];
+  function build(){
+    pts=[];for(var i=0;i<720;i++){var t=i/720*2*Math.PI,psi=Math.atan2(Math.sin((1-N)*t),(R/(E*N))-Math.cos((1-N)*t));
+      pts.push([R*Math.cos(t)-Rr*Math.cos(t+psi)-E*Math.cos(N*t),-R*Math.sin(t)+Rr*Math.sin(t+psi)+E*Math.sin(N*t)]);}
+    var d='';for(var j=0;j<pts.length;j++)d+=(j?'L':'M')+pts[j][0].toFixed(2)+' '+pts[j][1].toFixed(2);
+    prof.setAttribute('d',d+'Z');
+    while(pins.firstChild)pins.removeChild(pins.firstChild);
+    for(var k=0;k<N;k++){var an=2*Math.PI*k/N;el('circle',{cx:cx+R*Math.cos(an),cy:cy+R*Math.sin(an),r:Rr,fill:'var(--steel)',stroke:'var(--ink2)','stroke-width':1.2},pins);}
+    while(holes.firstChild)holes.removeChild(holes.firstChild);
+    for(var q=0;q<6;q++){var aq=q*Math.PI/3;el('circle',{cx:52*Math.cos(aq),cy:52*Math.sin(aq),r:11,fill:'var(--bg2)',stroke:'var(--accent2)','stroke-width':1.2},holes);}
+    el('circle',{cx:0,cy:0,r:24,fill:'var(--bg2)',stroke:'var(--accent2)','stroke-width':1.2},holes);
+    dmark.setAttribute('cx',R-26);dmark.setAttribute('cy',0);
+    $('cy-i').textContent=(N-1)+' : 1';
+  }
+  function draw(){
+    var dx=cx+E*Math.cos(a),dy=cy+E*Math.sin(a),rot=-a/(N-1)*180/Math.PI;
+    disc.setAttribute('transform','translate('+dx.toFixed(2)+' '+dy.toFixed(2)+') rotate('+rot.toFixed(3)+')');
+    var k=3.2; // exaggerate crank length for visibility
+    crank.setAttribute('x1',cx);crank.setAttribute('y1',cy);crank.setAttribute('x2',cx+E*k*Math.cos(a));crank.setAttribute('y2',cy+E*k*Math.sin(a));
+    hub.setAttribute('cx',dx);hub.setAttribute('cy',dy);
+    $('cy-in').textContent=fmtRev(total/(2*Math.PI));
+    $('cy-out').textContent='倒转 '+fmtDeg(total/(N-1)*180/Math.PI);
+  }
+  var bs=document.querySelectorAll('#cyseg button');
+  for(var k=0;k<bs.length;k++)bs[k].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');N=+this.getAttribute('data-n');a=0.6;total=0;build();draw();});
+  makeLoop($('cyplay'),function(dt){a+=dt*2.4;total+=dt*2.4;draw();},'播放转动');
+  build();draw();
+})();
+
+/* ---------- comparison bars ---------- */
+(function(){
+  var g=$('cmpbars');if(!g)return;
+  var rows=[['一级能减多少',[2,5,4]],['背隙小、定位准',[2,5,5]],['抗冲击',[4,2,5]],['能被外力推回去',[5,1,1]],['轻、结构简单',[5,4,2]]];
+  var cols=[250,400,550];
+  rows.forEach(function(r,i){
+    var y=134+i*44;
+    el('text',{x:20,y:y+5,fill:'var(--ink)'},g).textContent=r[0];
+    cols.forEach(function(x,c){for(var s=0;s<5;s++){el('rect',{x:x-55+s*22,y:y-8,width:18,height:16,rx:4,fill:s<r[1][c]?(c===0?'var(--accent2)':c===1?'var(--accent)':'var(--blue)'):'var(--line)'},g);}});
+    if(i<rows.length-1)el('line',{x1:20,y1:y+22,x2:620,y2:y+22,stroke:'var(--line)','stroke-dasharray':'2 4'},g);
+  });
+})();
+})();
+
+</script>
+</body>
+</html>
