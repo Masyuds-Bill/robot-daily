@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W2-4｜三条执行器路线：准直驱、高减速比、串联弹簧</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 2 单元「减速与传动」· 第 4 课</div>
+<h1>三条执行器路线：准直驱、高减速比、串联弹簧</h1>
+<p class="sub">一台会被人“手把手教”的红色机器人，一根 1995 年的弹簧，和一场打了三十年的路线之争。约 18 分钟。</p>
+
+<div class="lead">
+<p>2012 年 9 月，波士顿一家叫 Rethink Robotics 的公司发布了一台长得很不像工业机器人的机器人：Baxter。红色躯干，两条手臂，脑袋是一块屏幕，上面画着一双会眨的卡通眼睛。标价 22,000 美元，不需要护栏，不需要会编程——工人直接上手摆弄它的手臂，把夹爪放到零件上方、合上，它就照着学。创始人是 Rodney Brooks，扫地机器人公司 iRobot 的联合创始人、MIT 人工智能实验室的前主任。</p>
+<p>它敢跟人肩并肩干活，秘密藏在每个关节里：<b>电机和手臂之间串着一根弹簧</b>。撞到人，弹簧先软下来；弹簧被拧了多少，就说明受了多大的力。这个点子不是 Rethink 发明的，它出自 1995 年 MIT 的一篇硕士论文，原本是给 Brooks 实验室里一台叫 Cog 的人形机器人的手臂设计的。</p>
+<p>六年后，2018 年 10 月 3 日，Rethink 关门了。烧掉了约 1.5 亿美元融资，专利和剩下的 Sawyer 机器人卖给了德国的 HAHN 集团。一位早期投资人事后说了一句很扎心的话：串联弹性执行器，“大概不是世界上最好的主意”。</p>
+<p>有意思的是，几乎同一时期、同一所 MIT，另一个实验室造的机器猎豹走了完全相反的路：关节里不放弹簧，减速比砍到个位数。而工厂里的协作机械臂又是第三条路：高减速比，再在每个关节里塞一个力矩传感器。三条路都有人走通，也都有人翻车。今天就跟着“一个关节要怎么既有劲、又能感觉到力”这个问题，把三条路一条条走一遍。</p>
+</div>
+
+<h2><span class="n">01</span>一个关节，到底想要什么？</h2>
+<p>先别急着站队。把机器人的一个关节想象成一位员工，老板对它有五个愿望：<b>力气大</b>（同样重量下出更多力矩）；<b>摸得出力</b>（知道自己此刻在推多大的力）；<b>扛得住撞</b>（落地、碰撞时不把自己的齿轮砸坏）；<b>站得准</b>（让它停在 30.00° 就别停在 30.4°）；<b>反应快</b>（力的指令变了，几毫秒内就跟上）。</p>
+<p>上一单元讲过，电机本身“又快又没劲”；第 1 课讲过，加减速比能换来力矩，但会让反射惯量按平方涨；第 3 课讲过，齿轮越多，摩擦和背隙越多，力从腿上传回电机的路越难走。把这些拼在一起，你会发现五个愿望没法同时满分。三条路线，就是三种“先保哪几个”的取舍。</p>
+
+<figure>
+<div class="seg" id="rdseg"><button class="on" data-k="all">三条一起看</button><button data-k="hi">高减速比</button><button data-k="sea">串联弹性 SEA</button><button data-k="qdd">准直驱 QDD</button></div>
+<svg viewBox="0 0 600 400" role="img" aria-label="三条执行器路线在五个指标上的定性雷达图">
+  <g id="rdgrid"></g>
+  <g id="rdpolys"></g>
+  <g id="rdlabels"></g>
+</svg>
+<div id="rdnote" style="font-size:15px;color:var(--ink2);min-height:3.2em"></div>
+<figcaption><b>看图要看什么：</b>没有哪一块形状能把五边形填满。高减速比“力气”和“站得准”两角最尖，QDD 胜在“扛撞”和“反应快”，SEA 把“摸得出力”和“扛撞”拉满、代价是“反应快”。点上面的按钮单独看一条。分数是定性示意，帮你记住取舍方向，不是任何产品的实测值。</figcaption>
+</figure>
+
+<h2><span class="n">02</span>路线一：高减速比——大力士，可惜“耳背”</h2>
+<p>最直觉的做法：电机小、转得快，那就配一个减速比 100:1 左右的谐波减速器（第 2 课讲过，谐波一级就能做到几十到一百多倍）。力矩放大一百倍，定位误差也被缩小一百倍，又有劲又精准。工业机器人和很多机械臂几十年来都这么做。</p>
+<div class="analogy"><div class="t">类比：手摇千斤顶</div>
+<p>换轮胎用的千斤顶，你轻轻摇几十圈，一吨重的车被稳稳顶起来，还“自锁”——松手车也不会掉。这就是高减速比的味道：小力换大力，而且很稳。可是反过来，你站到车上往下压，能把千斤顶的摇把压得转起来吗？压不动。力从输出端传不回输入端，这就叫<b>反驱性差</b>。</p>
+<p class="off">哪里不准：千斤顶是丝杠，自锁很彻底；谐波减速器一般还是能被硬掰动的，只是要很大的力，而且掰的时候电机那头“感觉”得很模糊。</p></div>
+<p>“耳背”是这条路最大的问题。上一课说过，电机想靠电流估算外力，前提是外力能清清楚楚传回电机。隔着一个 100:1 的减速器，摩擦被放大、效率打了折，腿上那一下轻轻的碰撞，到电机那头可能被摩擦整个吞掉。</p>
+<p>更麻烦的是落地和碰撞。反射惯量随减速比的<b>平方</b>增长：</p>
+<p class="say">人话：电机转子那点小小的惯性，透过减速器看过去，会被放大 N×N 倍。</p>
+<div class="formula">J<sub>反射</sub> = N² · J<sub>转子</sub><small>N = 减速比；J = 转动惯量（kg·m²）</small></div>
+<p>下面这张图让你自己拧减速比。我们用一颗<b>假设的电机</b>（教学假设：峰值 1.5 N·m、最高 3000 rpm、转子惯量 1×10⁻⁴ kg·m²，大致是一颗手掌大小的外转子电机的量级），看看换不同的减速比会发生什么。</p>
+
+<figure>
+<div class="ctrl"><label for="gr">减速比 N</label><input type="range" id="gr" min="1" max="160" step="1" value="6"><output id="grv">6 : 1</output></div>
+<div class="seg" id="grseg"><button data-n="6" class="on">6:1 像 Mini Cheetah</button><button data-n="30">30:1</button><button data-n="100">100:1 典型谐波</button></div>
+<svg viewBox="0 0 600 250" role="img" aria-label="减速比对输出力矩、转速、反射惯量和反驱力矩的影响">
+  <defs><linearGradient id="motg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9aa1ab"/><stop offset="1" stop-color="#5f6670"/></linearGradient></defs>
+  <!-- motor -->
+  <rect x="24" y="70" width="86" height="110" rx="12" fill="url(#motg)"/>
+  <rect x="34" y="80" width="66" height="90" rx="8" class="s-cu" opacity=".85"/>
+  <g class="st-ink2" stroke-width="1" opacity=".5"><line x1="40" y1="85" x2="40" y2="165"/><line x1="52" y1="85" x2="52" y2="165"/><line x1="64" y1="85" x2="64" y2="165"/><line x1="76" y1="85" x2="76" y2="165"/><line x1="88" y1="85" x2="88" y2="165"/></g>
+  <text x="67" y="200" text-anchor="middle" font-size="13" class="s-ink2">电机</text>
+  <!-- gearbox scaled -->
+  <rect id="gbox" x="114" y="80" width="40" height="90" rx="8" class="s-steel"/>
+  <text id="gboxt" x="134" y="200" text-anchor="middle" font-size="13" class="s-ink2">减速器</text>
+  <!-- link -->
+  <g id="glink"><rect x="160" y="117" width="190" height="16" rx="8" class="s-ink2"/><circle cx="350" cy="125" r="13" class="s-acc"/></g>
+  <!-- ghost dumbbell -->
+  <g id="gdb" opacity=".8"><rect x="336" y="140" width="28" height="6" rx="2" class="s-ink"/><rect id="gdbw1" x="326" y="132" width="10" height="22" rx="3" class="s-acc"/><rect id="gdbw2" x="364" y="132" width="10" height="22" rx="3" class="s-acc"/></g>
+  <text id="gdbt" x="350" y="178" text-anchor="middle" font-size="13" class="s-acc">腿尖等效多挂 0.04 kg</text>
+  <!-- bars -->
+  <g font-size="13">
+   <text x="400" y="34" class="s-ink2">输出峰值力矩</text><rect x="400" y="40" width="180" height="10" rx="5" class="s-bg" stroke="var(--line)"/><rect id="b1" x="400" y="40" width="10" height="10" rx="5" class="s-acc"/>
+   <text x="400" y="80" class="s-ink2">输出最高转速</text><rect x="400" y="86" width="180" height="10" rx="5" class="s-bg" stroke="var(--line)"/><rect id="b2" x="400" y="86" width="10" height="10" rx="5" class="s-acc2"/>
+   <text x="400" y="126" class="s-ink2">反射惯量（对数刻度）</text><rect x="400" y="132" width="180" height="10" rx="5" class="s-bg" stroke="var(--line)"/><rect id="b3" x="400" y="132" width="10" height="10" rx="5" class="s-blue"/>
+   <text x="400" y="172" class="s-ink2">掰动它要的力（对数刻度）</text><rect x="400" y="178" width="180" height="10" rx="5" class="s-bg" stroke="var(--line)"/><rect id="b4" x="400" y="178" width="10" height="10" rx="5" fill="var(--warnline)"/>
+  </g>
+</svg>
+<div class="readout">
+  <div>输出峰值力矩<b id="r1">–</b></div>
+  <div>输出最高转速<b id="r2">–</b></div>
+  <div>反射惯量<b id="r3">–</b></div>
+  <div>从腿上掰动约需<b id="r4">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>从 6:1 拉到 100:1，力矩涨了约 13 倍（效率随减速比下降，所以不到 17 倍），但反射惯量涨了 <b>278 倍</b>：换算到 0.3 米长的腿尖，相当于从多挂 40 克变成多挂 11 公斤的隐形哑铃。“掰动所需力”按假设的齿轮摩擦估算，只看趋势。全部数字基于教学假设，不是任何产品规格。</figcaption>
+</figure>
+
+<p>那工业界怎么让这位大力士“不耳背”？办法是<b>给它装助听器</b>：在减速器输出端再加一个关节力矩传感器，直接量输出的力，不再指望电机去猜。德国宇航中心 DLR 从 1990 年代起做的轻型机械臂 LWR 就是这个思路，第三代 2004 年授权给 KUKA，后来演变成 LBR iiwa——KUKA 官网写着它“七个轴都带关节力矩传感器”，一碰到东西就能立刻察觉、减力减速。代价是：传感器贵、要标定、多一层线缆和故障点，而且它解决的是“听不见”，没解决“隐形哑铃”——落地那一下的冲击，力矩传感器量得到，却挡不住。</p>
+
+<h2><span class="n">03</span>路线二：在齿轮后面串一根弹簧——拿弹簧当秤</h2>
+<p>1995 年 1 月，MIT 人工智能实验室的研究生 Matthew Williamson 交出了他的硕士论文，题目就叫《Series Elastic Actuators》（串联弹性执行器），导师是 Gill Pratt。论文开头把两种信条摆在一起：传统机器人学相信“越硬越好”，他们的前提是“刚度不是一切”。</p>
+<div class="analogy"><div class="t">类比：菜市场的弹簧秤</div>
+<p>菜贩子称一兜土豆，不用什么精密传感器：挂上去，弹簧拉长几厘米，指针就告诉你几斤。SEA 的思路一模一样——在减速器和负载之间放一根已知刚度的弹簧，用两个编码器量出弹簧两头转角差 Δθ，力矩就是 k × Δθ。<b>测力变成了测角度</b>，而角度是编码器最擅长的事。</p>
+<p class="off">哪里不准：弹簧秤是静止着称的；SEA 的弹簧一直在动，弹簧自己也会跟负载一起来回晃，控制器得一边称一边把晃动压住。</p></div>
+<p>Williamson 在论文里列了几条好处：弹簧像一个低通滤波器，突然的冲击先被它“吃软”，保护齿轮箱；力矩只看弹簧变形，齿轮的摩擦、背隙、力矩波动大部分被绕过去了；碰到硬墙时弹簧天然是“软”的，接触更稳定。Cog 要跟人互动，这些正是它需要的。</p>
+<p>可论文也写得很老实：这个设计是<b>拿可达到的带宽，去换稳定、低噪声的力控和抗冲击</b>。为什么会丢带宽？拖一下下面的滑块就明白了。</p>
+
+<figure>
+<div class="ctrl"><label for="sk">弹簧刚度</label><input type="range" id="sk" min="0" max="100" value="35"><output id="skv">–</output></div>
+<div class="ctrl"><label for="sf">指令频率</label><input type="range" id="sf" min="1" max="60" value="5"><output id="sfv">–</output></div>
+<div class="ctrl"><button id="seaplay" type="button">▶ 播放</button><span style="font-size:14px;color:var(--ink2)">让关节对着一堵墙，按正弦规律推出 20 N·m 的力</span></div>
+<svg viewBox="0 0 600 300" role="img" aria-label="串联弹性执行器推墙的动画与力曲线">
+  <!-- wall -->
+  <rect x="520" y="30" width="60" height="140" class="s-wood"/>
+  <g class="st-ink2" stroke-width="1" opacity=".4"><line x1="520" y1="55" x2="580" y2="45"/><line x1="520" y1="85" x2="580" y2="75"/><line x1="520" y1="115" x2="580" y2="105"/><line x1="520" y1="145" x2="580" y2="135"/></g>
+  <!-- motor+gear -->
+  <rect x="20" y="62" width="100" height="76" rx="12" fill="url(#motg)"/>
+  <rect x="120" y="72" width="40" height="56" rx="6" class="s-steel"/>
+  <text x="90" y="160" text-anchor="middle" font-size="13" class="s-ink2">电机 + 减速器</text>
+  <rect id="sear" x="160" y="94" width="40" height="12" rx="4" class="s-ink2"/>
+  <path id="seaspring" d="" class="nofill st-acc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect id="seaplate" x="460" y="70" width="14" height="60" rx="3" class="s-acc2"/>
+  <rect id="seapush" x="474" y="94" width="46" height="12" rx="3" class="s-acc2"/>
+  <text x="330" y="60" text-anchor="middle" font-size="13" class="s-acc">弹簧：变形量 × 刚度 = 力</text>
+  <text id="seadx" x="330" y="150" text-anchor="middle" font-size="13" class="s-ink2"></text>
+  <!-- plot -->
+  <rect x="30" y="185" width="550" height="100" rx="8" class="s-bg" stroke="var(--line)"/>
+  <line x1="30" y1="235" x2="580" y2="235" class="st-ink2" stroke-width=".5" stroke-dasharray="3 4"/>
+  <polyline id="seacmd" fill="none" class="st-ink2" stroke-width="2" stroke-dasharray="5 4" points=""/>
+  <polyline id="seaout" fill="none" class="st-acc" stroke-width="2.5" points=""/>
+  <text x="40" y="202" font-size="12" class="s-ink2">虚线：想要的力　实线：实际推出的力</text>
+</svg>
+<div class="readout">
+  <div>力分辨率<b id="sr1">–</b></div>
+  <div>能跟上的最高频率<b id="sr2">–</b></div>
+  <div>此频率下实际/想要<b id="sr3">–</b></div>
+  <div>撞击尖峰（相对最硬）<b id="sr4">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>弹簧越软，同样 20 N·m 需要电机多转越多的角度——频率一高，电机来回跑不过来，实线就追不上虚线。弹簧越硬，跟得越快，但编码器的一格对应的力变大（分辨率变差），撞击尖峰也更高。左右为难，这就是 SEA 的核心取舍。教学假设：14 位编码器、减速后最高 10 rad/s、刚度 50–2000 N·m/rad。</figcaption>
+</figure>
+
+<p>SEA 后来真的上了大舞台。NASA 约翰逊航天中心为 2013 年 DARPA 机器人挑战赛造的人形机器人 Valkyrie（R5），身高 1.88 米、约 136 公斤、44 个自由度，NASA 的介绍页一路列下来：上臂、腰、髋、大腿、脚踝……几乎全是串联弹性的旋转或直线执行器。</p>
+
+<figure class="photo">
+<img src="https://www.nasa.gov/wp-content/uploads/2015/11/valkyrie-robot-4.jpg" loading="lazy" referrerpolicy="no-referrer" alt="NASA 的 Valkyrie（R5）人形机器人站立全身照，白色外壳，胸口有 NASA 标志" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/technology/r5/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>白色软质外壳底下，几乎每个关节都串着弹簧。注意它的大腿和小腿都很粗壮——SEA 要多装一根弹簧和第二个编码器，体积和重量都要算进去。<br>图：NASA / Bill Stafford, James Blair, Regan Geeseman / <a href="https://www.nasa.gov/technology/r5/">NASA R5 介绍页</a>，NASA 图片，公有领域（依 NASA 媒体使用规定）</figcaption>
+</figure>
+
+<div class="box cold"><div class="t">冷知识：发明弹簧的人，后来当了考官</div>
+<p>Williamson 的导师 Gill Pratt 后来在 MIT 主持过腿部实验室（Leg Lab），2010 到 2015 年去 DARPA 当项目经理，牵头的正是 DARPA 机器人挑战赛。也就是说，2013 年那场比赛里浑身串联弹簧的 Valkyrie，站在了 SEA 发明人主持的考场上。（顺便说清楚：Valkyrie 那年初赛得了 0 分，IEEE Spectrum 的复盘说主要原因是赛场上网络工具出错、操作员连不上机器人，跟弹簧无关。）Pratt 2016 年起担任丰田研究院（TRI）的创始 CEO。</p></div>
+
+<h2><span class="n">04</span>翻车现场：会被手把手教的 Baxter</h2>
+<div class="box fail"><div class="t">翻车现场：安全换来了“软”，也换来了“不准”</div>
+<p>回到开头的 Baxter。弹簧让它安全、能被人推着教，这是真本事。但工厂要的东西不太一样。美国机械工程师学会（ASME）2019 年的复盘文章里，密歇根一家金属加工厂 2015 年买了两台 Baxter 给数控机床上下料，客户经理的评价是：不够精确，经常“够不着该到的位置”，花了大把时间排故障，后来订单变了就把它们卖了。</p>
+<p>The Robot Report 采访的前经销商和集成商说法一致：弹性关节提升了安全性，却牺牲了精度和运动性能。投资人 Paul Maeder 的总结更直接：客户最想要的是便宜、快、重复精度高；补偿弹簧带来的误差，软件又难又贵；弹簧长在整个设计里，想改就得推倒重来。</p>
+<p class="off" style="font-size:15px;color:var(--ink2)">公平地说，Rethink 倒闭的原因不止这一条：同一篇文章也提到双臂造型不受欢迎、系统太封闭、收购方临门退出等。弹簧是“之一”，不是“唯一”。</p></div>
+<p>这个教训值得记住：<b>SEA 不是错，而是选错了战场</b>。在需要“站得准、跑得快”的上下料工位，它最弱的两项恰好被考到了。</p>
+
+<h2><span class="n">05</span>路线三：准直驱——把电机做粗，把齿轮砍到个位数</h2>
+<p>MIT 仿生机器人实验室的 Sangbae Kim 团队给出了第三个答案。2017 年他们在 IEEE Transactions on Robotics 发表论文，题目里就有一个词：<b>本体感知执行器</b>（proprioceptive actuator）。思路是：不要弹簧，也不要力矩传感器，用一颗又扁又粗、力矩很大的电机，配一级 5.8:1 的行星减速器。减速比低，摩擦小、反射惯量小，外力能干干净净地传回电机，电机电流本身就是一台足够好的“力传感器”。</p>
+<p>他们算了一笔账：用一个叫“冲击缓解系数”的指标衡量抗撞能力，MIT Cheetah 的腿平均能达到“假如给它装上 SEA”的 90%；腿端力控带宽约 104 Hz；跑步落地时接触时间短到 85 毫秒、峰值地面力超过 450 N，关节照样扛得住。后来的 Mini Cheetah 沿用同一路线，减速比 6:1——这就是“准直驱”（Quasi-Direct Drive, QDD）：不是完全没有齿轮的直驱，但接近。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，每条腿的髋部和膝部有圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>和 Valkyrie 对比一下关节的形状：Mini Cheetah 的执行器是一块块扁平的“圆饼”，大直径电机贴着一级行星减速器，没有弹簧，也没有单独的力矩传感器。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：推一辆没电的电动车</div>
+<p>很多电动自行车的电机就装在后轮轮毂里，又扁又大，直接带着轮子转——这几乎就是“直驱”。电量耗光了，你下车推着走，虽然有点涩，但推得动：力从车轮能反过来带动电机。要是轮子和电机之间隔着一个 100:1 的减速器，你就只能扛着车走了。QDD 就是在这个“扁大电机”后面只加一级小小的减速，多要一点力气，又不丢掉“推得动”。</p>
+<p class="off">哪里不准：有些电动车用的是带单向离合的齿轮轮毂电机，推起来轻松是因为离合器脱开了，并不是真的反驱；而且电动车不需要“感觉”路面的力，关节需要。</p></div>
+<p>QDD 的短板也很清楚：电机要做大做粗，力矩密度很难跟高减速比比；长时间出大力，电机电流大，发热是主要瓶颈（第 5 单元会专门讲热）；没有弹簧缓冲，冲击全靠低惯量和控制硬扛。</p>
+<p>说到这里，你可能已经猜到 Westwood 站在哪条路上。THEMIS 用户手册里写着：THEMIS 上所有执行器都是 Westwood 的 <b>BEAR 系列本体感知执行器</b>（proprioceptive actuators）——和 MIT Cheetah 论文里是同一个词。具体每个型号的减速比、力矩等参数，以 BEAR 产品手册为准，这里不展开。</p>
+
+<h2><span class="n">06</span>落地那一下：三种关节谁更扛摔？</h2>
+<p>把三条腿从同样高度扔到地上，看看地面“回敬”给关节的冲击有多大。</p>
+<figure>
+<div class="ctrl"><button id="dropbtn" type="button">▶ 扔下去</button><span style="font-size:14px;color:var(--ink2)">再按一次可重来</span></div>
+<svg viewBox="0 0 600 330" role="img" aria-label="三种执行器腿从同一高度落地的冲击对比动画">
+  <rect x="0" y="262" width="600" height="68" class="s-bg"/>
+  <line x1="0" y1="262" x2="600" y2="262" class="st-ink2" stroke-width="2"/>
+  <g class="st-ink2" stroke-width="1" opacity=".35"><line x1="20" y1="272" x2="40" y2="262"/><line x1="80" y1="272" x2="100" y2="262"/><line x1="140" y1="272" x2="160" y2="262"/><line x1="200" y1="272" x2="220" y2="262"/><line x1="260" y1="272" x2="280" y2="262"/><line x1="320" y1="272" x2="340" y2="262"/><line x1="380" y1="272" x2="400" y2="262"/><line x1="440" y1="272" x2="460" y2="262"/><line x1="500" y1="272" x2="520" y2="262"/><line x1="560" y1="272" x2="580" y2="262"/></g>
+  <g id="leg0"></g><g id="leg1"></g><g id="leg2"></g>
+  <g font-size="14" text-anchor="middle">
+   <text x="100" y="292" class="s-ink">高减速比</text><text x="300" y="292" class="s-ink">准直驱 QDD</text><text x="500" y="292" class="s-ink">串联弹性 SEA</text>
+   <text id="pk0" x="100" y="314" class="s-acc"></text><text id="pk1" x="300" y="314" class="s-acc"></text><text id="pk2" x="500" y="314" class="s-acc"></text>
+  </g>
+</svg>
+<figcaption><b>看图要看什么：</b>冲击尖峰（红色竖条）主要由“落地瞬间要被立刻刹住的等效质量”决定。高减速比的腿尖背着一个 11 公斤的隐形哑铃，尖峰最高；QDD 的隐形哑铃只有几十克；SEA 的弹簧把电机和腿隔开，尖峰最矮、但腿会弹一下才稳住。条的高度是按简化模型算的示意，不是实测。</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 600 260" role="img" aria-label="三种执行器结构剖面对比">
+  <g font-size="13">
+  <!-- hi ratio -->
+  <text x="100" y="22" text-anchor="middle" class="s-ink" font-weight="600">高减速比 + 力矩传感器</text>
+  <rect x="30" y="40" width="58" height="120" rx="8" fill="url(#motg)"/><rect x="38" y="50" width="42" height="100" rx="5" class="s-cu" opacity=".8"/>
+  <rect x="90" y="48" width="44" height="104" rx="6" class="s-steel"/><ellipse cx="112" cy="100" rx="16" ry="44" class="nofill st-ink2" stroke-dasharray="3 3"/>
+  <rect x="136" y="70" width="18" height="60" rx="3" class="s-acc2"/>
+  <rect x="154" y="92" width="36" height="16" rx="4" class="s-ink2"/>
+  <text x="59" y="180" text-anchor="middle" class="s-ink2">细长电机</text><text x="112" y="196" text-anchor="middle" class="s-ink2">谐波 ~100:1</text><text x="150" y="214" text-anchor="middle" class="s-acc2">力矩传感器</text>
+  <!-- qdd -->
+  <text x="300" y="22" text-anchor="middle" class="s-ink" font-weight="600">准直驱 QDD</text>
+  <rect x="238" y="34" width="44" height="132" rx="10" fill="url(#motg)"/><rect x="244" y="42" width="32" height="116" rx="6" class="s-cu" opacity=".8"/>
+  <rect x="284" y="52" width="30" height="96" rx="6" class="s-steel"/>
+  <circle cx="299" cy="74" r="7" class="nofill st-ink2"/><circle cx="299" cy="126" r="7" class="nofill st-ink2"/><circle cx="299" cy="100" r="9" class="nofill st-ink2"/>
+  <rect x="314" y="92" width="50" height="16" rx="4" class="s-ink2"/>
+  <text x="260" y="186" text-anchor="middle" class="s-ink2">扁粗大电机</text><text x="300" y="204" text-anchor="middle" class="s-ink2">一级行星 ~6:1</text><text x="300" y="222" text-anchor="middle" class="s-acc">靠电流估力</text>
+  <!-- sea -->
+  <text x="500" y="22" text-anchor="middle" class="s-ink" font-weight="600">串联弹性 SEA</text>
+  <rect x="420" y="50" width="44" height="100" rx="8" fill="url(#motg)"/><rect x="426" y="58" width="32" height="84" rx="5" class="s-cu" opacity=".8"/>
+  <rect x="466" y="58" width="32" height="84" rx="6" class="s-steel"/>
+  <path d="M500 100 l5 -14 l8 28 l8 -28 l8 28 l8 -28 l8 28 l5 -14" class="nofill st-acc" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="550" y="92" width="34" height="16" rx="4" class="s-ink2"/>
+  <circle cx="482" cy="100" r="5" class="s-acc2"/><circle cx="552" cy="100" r="5" class="s-acc2"/>
+  <text x="442" y="170" text-anchor="middle" class="s-ink2">电机</text><text x="482" y="188" text-anchor="middle" class="s-ink2">减速器</text><text x="525" y="206" text-anchor="middle" class="s-acc">弹簧</text><text x="520" y="224" text-anchor="middle" class="s-acc2">两个编码器量 Δθ</text>
+  </g>
+</svg>
+<figcaption><b>看图要看什么：</b>三条路的“测力元件”不一样：高减速比靠额外的力矩传感器（绿色），QDD 靠电机电流（没有额外零件），SEA 靠弹簧加两个编码器（绿色圆点）。多一个零件，就多一份成本、体积和标定工作，这也是选路线时要算的账。</figcaption>
+</figure>
+
+<h2><span class="n">07</span>那么，谁赢了？</h2>
+<p>答案是：看你在给谁干活。三条路更像三种性格，而不是对错。</p>
+<table class="cmp">
+<tr><th>路线</th><th style="text-align:left">最擅长</th><th style="text-align:left">最怕</th><th style="text-align:left">典型例子</th></tr>
+<tr><td>高减速比（+力矩传感器）</td><td style="text-align:left">大力矩、定位准、体积小</td><td style="text-align:left">冲击、反驱、传感器成本</td><td style="text-align:left">工业臂；KUKA LBR iiwa</td></tr>
+<tr><td>串联弹性 SEA</td><td style="text-align:left">力控细腻、抗冲击、与人互动</td><td style="text-align:left">带宽低、精度、体积</td><td style="text-align:left">Cog、Valkyrie、Baxter</td></tr>
+<tr><td>准直驱 QDD</td><td style="text-align:left">动态运动、反驱、简单</td><td style="text-align:left">发热、力矩密度</td><td style="text-align:left">MIT Cheetah 系列</td></tr>
+</table>
+<div class="analogy"><div class="t">类比：推购物车 vs 推叉车 vs 推婴儿车</div>
+<p>空购物车一推就走、一拉就停，手上全是“路感”——这是 QDD。叉车力气大、停得准，但你不可能用手推着它感觉地面——这是高减速比。婴儿车有软软的悬挂，坑洼全被吃掉，宝宝很舒服，可你要它急转急停，它总是晃一下才跟上——这是 SEA。</p>
+<p class="off">哪里不准：真实执行器之间是连续的光谱，不是三个盒子。比如有的设计把减速比做到 10–20:1 之间，有的在 QDD 里加一点点柔性，有的 SEA 用很硬的弹簧，界线是模糊的。</p></div>
+
+<div class="box work"><div class="t">工作里会在哪遇到</div>
+<p><b>规格书上：</b>Gear Ratio（减速比）、Reflected Inertia（反射惯量）、Backdrive Torque（反驱力矩）这几栏，一起读就能看出一个执行器属于哪条路线。BEAR 的规格表里就有 Reflected Inertia 一栏（见 THEMIS 用户手册表 4.1）。</p>
+<p><b>客户邮件里常见的问法：</b></p>
+<p class="en">"Is your actuator backdrivable?"<br>"Do you have a joint torque sensor, or is torque estimated from current?"<br>"We are comparing QDD vs. harmonic-drive actuators for our humanoid leg. Which would you recommend?"</p>
+<p>第二个问题最容易答错。“proprioceptive”这个词的含义是靠电机本身感知力，但某个具体型号到底怎么估算力矩、精度多少，要以产品手册或工程师确认为准，别凭路线“推理”出一个规格。</p></div>
+
+<h2>自测：三个真实场景</h2>
+<p class="q">1. 展会上一位客户说：“你们 QDD 力矩密度不如谐波，为什么人形机器人腿上还要用？”你怎么用一句话回应？</p>
+<details><summary>看答案</summary><p>腿要频繁落地、被撞、需要力控，QDD 低减速比带来的低反射惯量和好反驱性，让关节扛得住冲击、电机能直接感知外力；牺牲的是一部分力矩密度和持续发热能力。核心是“动态和力控优先”，不是“力矩越大越好”。</p></details>
+<p class="q">2. 一封邮件写着：“We need ±0.01° positioning repeatability for a pick-and-place cell.” 三条路线里哪条最不适合？</p>
+<details><summary>看答案</summary><p>串联弹性 SEA 最不适合。弹簧让末端位置随负载变形，要靠控制补偿，Baxter 在上下料工位“够不着位置”就是现实教训。这种需求天然偏向高减速比路线。（具体能不能做到 0.01°，要看具体产品规格。）</p></details>
+<p class="q">3. 同一颗电机，从 8:1 换成 80:1 的减速器，反射惯量变成原来的多少倍？</p>
+<details><summary>看答案</summary><p>减速比变成 10 倍，反射惯量按平方涨，变成 <b>100 倍</b>。力矩只多了大约 10 倍（还要打效率的折扣）。</p></details>
+
+<h2>术语对照</h2>
+<table class="terms">
+<tr><td>准直驱</td><td>Quasi-Direct Drive (QDD)</td></tr>
+<tr><td>本体感知执行器</td><td>Proprioceptive Actuator</td></tr>
+<tr><td>串联弹性执行器</td><td>Series Elastic Actuator (SEA)</td></tr>
+<tr><td>高减速比</td><td>High Gear Ratio / High Reduction</td></tr>
+<tr><td>谐波减速器</td><td>Harmonic Drive / Strain Wave Gear</td></tr>
+<tr><td>关节力矩传感器</td><td>Joint Torque Sensor</td></tr>
+<tr><td>反驱性</td><td>Backdrivability</td></tr>
+<tr><td>反射惯量</td><td>Reflected Inertia</td></tr>
+<tr><td>刚度</td><td>Stiffness</td></tr>
+<tr><td>力控带宽</td><td>Force-Control Bandwidth</td></tr>
+<tr><td>冲击缓解</td><td>Impact Mitigation</td></tr>
+</table>
+
+<div class="tease"><b>下一课预告：</b>第 2 单元四节课到这里讲完了：减速比、三种减速器、背隙与反驱、三条路线。明天不讲新课，来一场复盘小测——其中一道题是：一位客户拿着两份规格书，一份写 6:1、一份写 100:1，两份的“峰值力矩”一样大，他问哪个更适合装在人形机器人的膝盖上。你能在五分钟内回他一封邮件吗？</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>Matthew M. Williamson, <a href="https://apps.dtic.mil/sti/tr/pdf/ADA299658.pdf">Series Elastic Actuators</a>, MIT AI Lab Technical Report AITR-1524, 1995（硕士论文，导师 Gill Pratt）；<a href="https://dspace.mit.edu/handle/1721.1/36966">MIT DSpace 记录</a></li>
+<li>Wensing, Wang, Seok, Otten, Lang, Kim, <a href="https://fab.cba.mit.edu/classes/865.18/motion/papers/mit-cheetah-actuator.pdf">Proprioceptive Actuator Design in the MIT Cheetah</a>, IEEE Transactions on Robotics, 2017</li>
+<li>MIT News, <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">Mini cheetah is the first four-legged robot to do a backflip</a>, 2019</li>
+<li>NASA, <a href="https://www.nasa.gov/technology/r5/">Valkyrie (R5)</a> 介绍页</li>
+<li>IEEE Spectrum, <a href="https://spectrum.ieee.org/update-nasa-valkyrie-robot">An Update on NASA's Valkyrie Robot</a></li>
+<li>Toyota Pressroom, <a href="https://pressroom.toyota.com/biographies/dr-gill-pratt/">Dr. Gill Pratt</a> 个人简介</li>
+<li>Association for Advancing Automation, <a href="https://www.automate.org/news/rethink-robotics-revolutionizes-manufacturing-with-humanoid-robot">Rethink Robotics revolutionizes manufacturing with humanoid robot</a>, 2012</li>
+<li>The Robot Report, <a href="https://www.therobotreport.com/rethink-robotics-shutdown/">Rethink Robotics shutdown</a>, 2018</li>
+<li>Hizook, <a href="https://www.hizook.com/baxter-robot-rethink-robotics-finally-unveiled/">Baxter Robot from Rethink Robotics Finally Unveiled</a>, 2012</li>
+<li>Carol Lawrence, ASME, <a href="https://www.asme.org/topics-resources/content/rise-fall-of-rethink-robotics">Rise and Fall of Rethink Robotics</a>, 2019</li>
+<li>DLR, <a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii/history-of-the-dlr-lwr">History of the DLR LWR</a>；KUKA, <a href="https://www.kuka.com/en-us/products/robotics-systems/industrial-robots/lbr-iiwa">LBR iiwa</a> 产品页</li>
+<li>Westwood Robotics, THEMIS User Manual（项目文件 user-manual.md），4.1 节 Actuators 与表 4.1</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+function segInit(id,cb){var s=$(id);var bs=s.querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');cb(this);});}}
+
+/* ---------- 1. radar ---------- */
+(function(){
+  var cx=300,cy=205,R=140;
+  var axes=['力气大','摸得出力','扛得住撞','站得准','反应快'];
+  var data={hi:{c:'var(--blue)',n:'高减速比',v:[5,2,1.5,5,3],t:'高减速比：力气和定位精度最强；加了力矩传感器后“摸得出力”能补到 3–4 分，但冲击仍然难扛。'},
+            sea:{c:'var(--accent)',n:'串联弹性 SEA',v:[3,5,5,2,1.5],t:'SEA：弹簧当秤，力控细腻、抗冲击最好；代价是带宽和定位精度。'},
+            qdd:{c:'var(--accent2)',n:'准直驱 QDD',v:[2.5,4,4,3,5],t:'QDD：低减速比带来好反驱、快响应和不错的抗冲击；短板是力矩密度和发热。'}};
+  function pt(i,r){var a=-Math.PI/2+i*2*Math.PI/5;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+  var g=$('rdgrid');
+  for(var l=1;l<=5;l++){var p=[];for(var i=0;i<5;i++){var q=pt(i,R*l/5);p.push(q[0].toFixed(1)+','+q[1].toFixed(1));}el('polygon',{points:p.join(' '),fill:'none',stroke:'var(--line)','stroke-width':1},g);}
+  for(var i=0;i<5;i++){var q=pt(i,R);el('line',{x1:cx,y1:cy,x2:q[0],y2:q[1],stroke:'var(--line)'},g);var t=pt(i,R+26);var tx=el('text',{x:t[0],y:t[1]+5,'text-anchor':'middle','font-size':15,class:'s-ink'},$('rdlabels'));tx.textContent=axes[i];}
+  function draw(k){var pg=$('rdpolys');clear(pg);var keys=k==='all'?['hi','sea','qdd']:[k];
+    keys.forEach(function(key){var d=data[key],p=[];for(var i=0;i<5;i++){var q=pt(i,R*d.v[i]/5);p.push(q[0].toFixed(1)+','+q[1].toFixed(1));}
+      el('polygon',{points:p.join(' '),fill:d.c,'fill-opacity':k==='all'?0.12:0.25,stroke:d.c,'stroke-width':2.5,'stroke-linejoin':'round'},pg);
+      for(var i=0;i<5;i++){var q=pt(i,R*d.v[i]/5);el('circle',{cx:q[0],cy:q[1],r:4,fill:d.c},pg);}});
+    if(k==='all'){var lg=0;['hi','sea','qdd'].forEach(function(key,j){el('rect',{x:18,y:20+j*22,width:14,height:14,rx:3,fill:data[key].c},pg);var tt=el('text',{x:38,y:32+j*22,'font-size':13,class:'s-ink2'},pg);tt.textContent=data[key].n;});$('rdnote').textContent='三块形状互相错开：谁在哪个角突出，就在哪个角让步。';}
+    else $('rdnote').textContent=data[k].t;}
+  segInit('rdseg',function(b){draw(b.getAttribute('data-k'));});
+  draw('all');
+})();
+
+/* ---------- 2. gear ratio ---------- */
+(function(){
+  var Tm=1.5,wm=3000,J=1e-4,L=0.3,fr=0.02;
+  function eta(N){return N<=10?0.95:Math.max(0.72,0.95-0.23*Math.log(N/10)/Math.log(16));}
+  function logw(v,lo,hi){var x=(Math.log(v)-Math.log(lo))/(Math.log(hi)-Math.log(lo));return Math.max(6,Math.min(180,6+174*x));}
+  function upd(N){
+    var T=Tm*N*eta(N),w=wm/N,Jr=N*N*J,m=Jr/(L*L),bd=fr*N/eta(N);
+    $('grv').textContent=N+' : 1';
+    $('r1').textContent=T.toFixed(T<20?1:0)+' N·m';
+    $('r2').textContent=w.toFixed(w<50?1:0)+' rpm';
+    $('r3').textContent=(Jr<0.01?Jr.toExponential(1):Jr.toFixed(Jr<1?3:2))+' kg·m²';
+    $('r4').textContent=bd.toFixed(bd<1?2:1)+' N·m';
+    $('b1').setAttribute('width',Math.max(6,180*T/(Tm*160*eta(160))));
+    $('b2').setAttribute('width',Math.max(6,180*w/wm));
+    $('b3').setAttribute('width',logw(Jr,J,160*160*J));
+    $('b4').setAttribute('width',logw(bd,fr/0.95,fr*160/eta(160)));
+    var gw=26+Math.min(60,10*Math.log(N+1));$('gbox').setAttribute('width',gw);$('gboxt').setAttribute('x',114+gw/2);
+    var lx=114+gw+6;$('glink').setAttribute('transform','translate('+(lx-160)+',0)');
+    var s=Math.max(0.35,Math.min(2.4,0.35+0.6*Math.log10(m*100+1)));
+    $('gdbw1').setAttribute('height',22*s);$('gdbw1').setAttribute('y',143-11*s);$('gdbw2').setAttribute('height',22*s);$('gdbw2').setAttribute('y',143-11*s);
+    $('gdb').setAttribute('transform','translate('+(lx-160)+',0)');$('gdbt').setAttribute('x',350+lx-160);
+    $('gdbt').textContent='腿尖等效多挂 '+(m<1?(m*1000).toFixed(0)+' g':m.toFixed(1)+' kg');
+  }
+  $('gr').addEventListener('input',function(){upd(+this.value);var bs=$('grseg').querySelectorAll('button');for(var i=0;i<bs.length;i++)bs[i].classList.toggle('on',+bs[i].getAttribute('data-n')===+this.value);});
+  segInit('grseg',function(b){var n=+b.getAttribute('data-n');$('gr').value=n;upd(n);});
+  upd(6);
+})();
+
+/* ---------- 3. SEA ---------- */
+(function(){
+  var F=20,vmax=10,res=2*Math.PI/16384,t=0,playing=false,last=0,hist=[];
+  function k(){return 50*Math.pow(40,+$('sk').value/100);}
+  function f(){return +$('sf').value;}
+  function spring(x1,x2,amp){var n=10,d='M'+x1+' 100',w=(x2-x1)/(n+1);d+=' L'+(x1+w/2)+' 100';for(var i=0;i<n;i++){d+=' L'+(x1+w/2+w*(i+0.5)).toFixed(1)+' '+(i%2?100+amp:100-amp);}d+=' L'+(x2-w/2)+' 100 L'+x2+' 100';return d;}
+  function gain(){var fm=k()*vmax/(2*Math.PI*F);return {fm:fm,g:Math.min(1,fm/f())};}
+  function stats(){var kk=k(),G=gain();
+    $('skv').textContent=kk.toFixed(0)+' N·m/rad';$('sfv').textContent=f()+' Hz';
+    $('sr1').textContent=(kk*res).toFixed(kk*res<0.1?3:2)+' N·m';
+    $('sr2').textContent=G.fm.toFixed(G.fm<10?1:0)+' Hz';
+    $('sr3').textContent=Math.round(G.g*100)+'%';
+    $('sr4').textContent=Math.round(100*Math.sqrt(kk/2000))+'%';}
+  function frame(tt){
+    var G=gain(),fr=f(),kk=k();
+    var phase=G.g<1?Math.acos(G.g)*0.9:0.15*fr/G.fm;
+    var cmd=F*Math.sin(2*Math.PI*fr*tt),out=F*G.g*Math.sin(2*Math.PI*fr*tt-phase);
+    // spring visual: compression proportional to force/k, scaled
+    var defl=(out+F)/kk; var px=Math.min(120,defl*1400);
+    var x2=460;
+    $('seaspring').setAttribute('d',spring(200+Math.min(150,px)*0.6,x2,14));
+    $('sear').setAttribute('width',40+Math.min(150,px)*0.6);
+    $('seadx').textContent='弹簧压缩 '+(defl*180/Math.PI).toFixed(2)+'°　推力 '+(out+F).toFixed(1)+' N·m';
+    // plot: 2 seconds window scaled to show ~3 cycles
+    var win=3/fr,N=180,pc=[],po=[];
+    for(var i=0;i<=N;i++){var s=tt-win+win*i/N,x=30+550*i/N;
+      pc.push(x.toFixed(1)+','+(235-45*Math.sin(2*Math.PI*fr*s)).toFixed(1));
+      po.push(x.toFixed(1)+','+(235-45*G.g*Math.sin(2*Math.PI*fr*s-phase)).toFixed(1));}
+    $('seacmd').setAttribute('points',pc.join(' '));$('seaout').setAttribute('points',po.join(' '));
+  }
+  function loop(ts){if(!playing)return;var dt=last?(ts-last)/1000:0;last=ts;
+    var fr=f();t+=dt*Math.min(1,2/fr); // slow motion for high frequency
+    frame(t);requestAnimationFrame(loop);}
+  $('seaplay').addEventListener('click',function(){playing=!playing;this.textContent=playing?'❚❚ 暂停':'▶ 播放';last=0;if(playing)requestAnimationFrame(loop);});
+  ['sk','sf'].forEach(function(id){$(id).addEventListener('input',function(){stats();if(!playing)frame(t||0.6/f());});});
+  stats();frame(0.6/f());
+})();
+
+/* ---------- 4. drop ---------- */
+(function(){
+  var cfg=[{x:100,peak:1.0,bounce:0,col:'var(--blue)',lab:'冲击尖峰 100%'},
+           {x:300,peak:0.42,bounce:0,col:'var(--accent2)',lab:'约 40%'},
+           {x:500,peak:0.25,bounce:1,col:'var(--accent)',lab:'约 25%（会回弹）'}];
+  var H=110,raf=null,start=0;
+  function legShape(g,c,y,squash,i){clear(g);var x=c.x;
+    // body block
+    el('rect',{x:x-40,y:y-70,width:80,height:34,rx:8,fill:'url(#motg)'},g);
+    el('circle',{cx:x,cy:y-36,r:14,class:'s-steel'},g);
+    if(i===2){var d='M'+x+' '+(y-24);var seg=6,len=(36-squash);for(var k=0;k<seg;k++){d+=' l'+(k%2?-9:9)+' '+(len/seg).toFixed(1);}el('path',{d:d,fill:'none',stroke:'var(--accent)','stroke-width':3,'stroke-linejoin':'round'},g);el('rect',{x:x-5,y:y-24+len,width:10,height:24+squash*0,rx:4,class:'s-ink2'},g);}
+    else{el('rect',{x:x-5,y:y-24,width:10,height:60,rx:4,class:'s-ink2'},g);}
+    el('circle',{cx:x,cy:y+36,r:8,fill:c.col},g);}
+  function bar(i,v){var g=$('leg'+i);var c=cfg[i];el('rect',{x:c.x+50,y:255-150*v,width:14,height:150*v,rx:3,fill:'var(--accent)',opacity:.85},g);}
+  function stat(){for(var i=0;i<3;i++){legShape($('leg'+i),cfg[i],218,0,i);bar(i,cfg[i].peak);$('pk'+i).textContent=cfg[i].lab;}}
+  function anim(ts){if(!start)start=ts;var t=(ts-start)/1000;var done=true;
+    for(var i=0;i<3;i++){var c=cfg[i],y,sq=0,v=0;
+      var tf=0.55;
+      if(t<tf){y=218-H*(1-Math.pow(t/tf,2));done=false;}
+      else{var u=t-tf;y=218;
+        if(c.bounce){var b=Math.max(0,Math.sin(u*9))*Math.exp(-u*4);sq=12*Math.exp(-u*4)*Math.abs(Math.cos(u*9));y=218-14*b;}
+        v=c.peak*Math.min(1,u/0.08);if(u<0.9)done=false;}
+      legShape($('leg'+i),c,y,sq,i);if(t>=tf){bar(i,v);$('pk'+i).textContent=c.lab;}else $('pk'+i).textContent='';}
+    if(!done)raf=requestAnimationFrame(anim);}
+  $('dropbtn').addEventListener('click',function(){if(reduce){stat();return;}cancelAnimationFrame(raf);start=0;raf=requestAnimationFrame(anim);});
+  stat();
+})();
+})();
+</script>
+</body>
+</html>
