@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W3-1｜编码器：关节怎么知道自己在哪</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+<style>.photo figcaption a{color:var(--accent2)}</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 3 单元「传感与驱动器」· 第 1 课</div>
+<h1>编码器：关节怎么知道自己在哪</h1>
+<p class="sub">一只开机前必须先“趴好”的机器猎豹，一位贝尔实验室的物理学家，和一颗指甲盖大小的芯片。约 18 分钟。</p>
+
+<div class="lead">
+<p>2019 年 3 月，MIT 新闻办放出一段视频：一只 20 磅（约 9 公斤）重的小四足机器人原地一蹲、一蹬，向后翻了一整圈，四脚落地，站稳。它叫 Mini Cheetah，出自 Sangbae Kim 的实验室，主要设计者是 Ben Katz。第 1 单元我们讲过它的关节：Katz 把航模、无人机用的外转子电机改造了一番，再配一级 6:1 的行星减速器，做成一个个“罐头盖大小”的模块，一共 12 个，坏了就像换乐高一样拆下来换。</p>
+<p>视频里看不到的，是一个很不起眼的小规矩。Katz 在他的硕士论文里写得很直白：每个关节只有<b>一个</b>位置传感器，装在电机转子上；所以开机那一刻，腿的输出角度只能确定到“转子的一圈之内”，也就是 <b>60°</b> 以内。解决办法也很朴素：机器人有一个规定的“开机姿势”，在这个姿势下开机，腿的零位就是对的；实在不对，用肉眼大致对一下就行。</p>
+<p>60° 是什么概念？假设小腿长 20 厘米（教学假设），膝盖猜错 60°，脚尖就会落在离正确位置大约 20 厘米远的地方。等于你早上醒来，不知道自己的腿是伸直的还是盘着的。</p>
+<p>后空翻那么酷的机器人，开机前要先老老实实趴好。这背后是一个所有关节都绕不开的问题：<b>断电再上电，关节怎么知道自己在哪？</b>今天就跟着这个问题往下走，顺路把编码器的三对概念讲清楚：增量与绝对、单圈与多圈、分辨率与精度。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，髋部和膝部是圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>髋和膝上那些圆饼就是关节模块，每个圆饼里都藏着一颗读转子角度的芯片，外加一级减速器——60° 的“迷糊”就是这级减速器带来的。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">1</span>最笨的办法：数格子，能数清吗？</h2>
+<p>想知道一根轴转了多少，最直接的办法是在轴上装一个带小窗的圆盘（码盘），旁边放一个“光电开关”：一边发光，一边收光。窗口转过来，光透过去，记 1；挡板转过来，光被挡住，记 0。转一格，就数一下。这就是<b>增量式编码器（incremental encoder）</b>：它不知道“现在在哪”，只知道“从刚才到现在走了多少格”。</p>
+<p>只放一个光电开关有个麻烦：脉冲一个接一个地来，可你分不清盘子是正着转还是倒着转。工程师的办法是放两个，彼此错开四分之一格，叫 A 相和 B 相。正转时 A 总比 B 早一步变化，反转时 B 比 A 早一步。看谁领先，就知道方向。这对信号叫<b>正交信号（quadrature）</b>。顺便还白赚了精度：A、B 的上升沿、下降沿一共 4 个，每个都能计一次数，所以“1000 线”的码盘转一圈能数出 4000 个计数。Mini Cheetah 用的那颗芯片 AS5047P 就有这样的 A/B 输出，按数据手册最多每圈 1000 个脉冲，对应 4000 步。</p>
+
+<figure>
+<svg id="qsvg" viewBox="0 0 640 300" role="img" aria-label="增量式编码器码盘与 A/B 两相波形">
+  <defs>
+    <radialGradient id="qdisk" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="var(--bg2)"/><stop offset="1" stop-color="var(--steel)"/></radialGradient>
+  </defs>
+  <circle cx="150" cy="160" r="122" fill="var(--bg)" stroke="var(--line)"/>
+  <g id="qdiskg"></g>
+  <circle cx="150" cy="160" r="20" class="s-can"/><circle cx="150" cy="160" r="7" class="s-bg2"/>
+  <g id="qsens"></g>
+  <text x="330" y="40" font-size="14" class="s-ink2">A 相</text>
+  <text x="330" y="140" font-size="14" class="s-ink2">B 相</text>
+  <line x1="370" y1="95" x2="630" y2="95" class="s-line" stroke-width="1"/>
+  <line x1="370" y1="195" x2="630" y2="195" class="s-line" stroke-width="1"/>
+  <polyline id="qwa" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+  <polyline id="qwb" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="630" y="225" font-size="12" text-anchor="end" class="s-ink2">← 越往左越早</text>
+  <text x="330" y="262" font-size="15" class="s-ink">计数：<tspan id="qcnt" font-weight="700">0</tspan>　方向：<tspan id="qdir" font-weight="700">—</tspan></text>
+  <text x="330" y="286" font-size="13" class="s-ink2" id="qmsg">换算角度 = 计数 × 7.5°</text>
+</svg>
+<div class="readout"><div>真实角度<b id="qtrue">0°</b></div><div>编码器以为<b id="qthink">0°</b></div></div>
+<div class="seg"><button id="qplay">▶ 播放</button><button id="qrev">换方向</button><button id="qcut">断电再上电</button></div>
+<div class="ctrl"><label>手动拧</label><input type="range" id="qman" min="-60" max="60" step="0.5" value="0"><output id="qmano">0°</output></div>
+<figcaption><b>看图要看什么：</b>正转时橙色 A 的跳变总比蓝色 B 早四分之一格；换个方向，领先的就变成 B。再点“断电再上电”：盘子一动没动，计数却归零了——增量式编码器的“失忆”就在这一下。（为了看得清，这里只画了 12 个窗口，一圈 48 个计数。）</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：坐地铁数站</div>
+<p>增量式编码器就像你坐地铁不看站名，只靠数“到站了”的次数判断自己在哪。只要一直醒着，数得很准；一旦打个盹（断电），醒来就不知道自己过了几站。</p>
+<p class="off">哪里不准：地铁其实有报站，你醒来竖起耳朵等一下就能找回位置。巧的是，很多增量式编码器也有这个功能：码盘上额外开一个“一圈只出现一次”的窗，叫 Z 相或零位脉冲（index）。但你得先转动起来才能等到它。</p></div>
+
+<p>所以用增量式编码器的设备，开机后通常要先做一件事：<b>回零（homing）</b>。机床、3D 打印机开机时“咔咔”地往一边走，碰到限位开关再退回来，就是在回零。对工厂设备，这几秒钟无所谓。对一台躺在地上的人形机器人可就不行了：让它在不知道自己腿在哪的情况下把每个关节甩到头去找零点？要么打到自己，要么打到旁边的人。</p>
+<p>这就是为什么腿足机器人几乎都偏爱下一种编码器。</p>
+
+<h2><span class="n">2</span>给每个位置发一张“门牌号”</h2>
+<p><b>绝对式编码器（absolute encoder）</b>的思路完全不同：不数格子，而是给每个位置一个独一无二的编号。上电那一刻直接读编号，就知道自己在哪，不用动一下。</p>
+<p>老式的光学绝对编码器长这样：码盘上有好几圈同心的“轨道”，每圈对应二进制的一位，一排光电开关沿半径排开，一次读出所有位。4 圈轨道能分 16 个位置，14 圈就能分 16384 个。</p>
+
+<div class="analogy"><div class="t">类比：高铁票上的座位号</div>
+<p>增量式是“从车头往后数第几排”，绝对式是票上直接印着“08 车 12F”。不管你什么时候上车、中途睡了多久，低头看一眼票就知道座位在哪。</p>
+<p class="off">哪里不准：座位号是离散的，你坐在 12F 和 13F 中间的过道上，票上没有这个号。编码器也一样，编号之间的位置读不出来——这就是“分辨率”，第 4 节再细说。</p></div>
+
+<p>但直接用普通二进制编号，会出一个很阴险的问题。看 7 到 8 这一步：0111 变成 1000，四位<b>同时</b>翻转。现实里四个光电开关不可能对得分毫不差，总有一个先翻、一个后翻。就在交界那一瞬间，读头可能读到 1111（15），也可能读到 0000（0）。关节明明只挪了一丁点，控制器却以为它突然跳了半圈，于是猛地给出一个巨大的纠正力矩。</p>
+<p>解决办法是换一种编号顺序：让<b>相邻两个位置只差一位</b>。这样不管读头怎么没对齐，交界处最多读成“隔壁那个号”，错一格而已。这种编码叫<b>格雷码（Gray code）</b>。下面这张图可以亲手试一下。</p>
+
+<figure>
+<svg id="gsvg" viewBox="0 0 640 395" role="img" aria-label="4 位绝对编码器码盘，可切换二进制与格雷码，并显示读数误差曲线">
+  <circle cx="160" cy="160" r="138" fill="var(--bg)" stroke="var(--line)"/>
+  <g id="gdisk"></g>
+  <circle cx="160" cy="160" r="26" class="s-can"/><circle cx="160" cy="160" r="9" class="s-bg2"/>
+  <rect x="152" y="8" width="16" height="122" rx="5" fill="var(--accent)" fill-opacity=".18" stroke="var(--accent)" stroke-width="1.5"/>
+  <g id="gdots"></g>
+  <text x="330" y="40" font-size="14" class="s-ink2">读头读到（内→外）</text>
+  <text x="330" y="76" font-size="30" font-weight="700" class="s-ink" id="gbits" style="font-variant-numeric:tabular-nums;letter-spacing:4px">0000</text>
+  <text x="330" y="110" font-size="15" class="s-ink">解码：<tspan id="gdec" font-weight="700">0</tspan>　真实格：<tspan id="gtrue" font-weight="700">0</tspan></text>
+  <text x="330" y="138" font-size="15" class="s-ink">误差：<tspan id="gerr" font-weight="700">0 格</tspan></text>
+  <text x="330" y="180" font-size="13" class="s-ink2" id="gnote">滑动角度，把读头停在两个格子的交界上看看。</text>
+  <text x="20" y="318" font-size="13" class="s-ink2">转一整圈的读数误差（格）</text>
+  <line x1="20" y1="350" x2="620" y2="350" class="s-line" stroke-width="1"/>
+  <text x="624" y="354" font-size="11" class="s-ink2">0</text>
+  <polyline id="gstrip" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+  <line id="gcur" x1="20" y1="300" x2="20" y2="392" stroke="var(--accent2)" stroke-width="1.5" stroke-dasharray="3 3"/>
+</svg>
+<div class="seg" id="gseg"><button data-k="bin" class="on">普通二进制</button><button data-k="gray">格雷码</button></div>
+<div class="ctrl"><label>转动角度</label><input type="range" id="gang" min="0" max="359.9" step="0.1" value="179.5"><output id="gango">179.5°</output></div>
+<div class="ctrl"><label>读头歪了</label><input type="range" id="gmis" min="0" max="3" step="0.1" value="1.5"><output id="gmiso">1.5°</output></div>
+<figcaption><b>看图要看什么：</b>底下那条线是“转一整圈，每个角度的读数错了几格”。普通二进制在 7→8、3→4 这些多位同时翻转的地方会冒出又高又尖的刺（最大能错 8 格，也就是半圈）；切到格雷码，刺全变成了最多 ±1 格的小毛边。把“读头歪了”拉到 0，两种编码都完美——问题只出在现实世界的“没对齐”。</figcaption>
+</figure>
+
+<div class="box cold"><div class="t">冷知识：格雷码不是格雷最先发明的</div>
+<p>格雷码以贝尔实验室物理学家 Frank Gray 命名。他在 1947 年提交、1953 年获批的美国专利 2,632,058《脉冲编码通信》里提出这种编码，用在同事 Raymond Sears 做的一种电子管上，目的是把模拟信号转成数字时少出错。Gray 自己给它起名叫“反射二进制码”（reflected binary code），因为它可以由普通二进制“照镜子”一样翻折出来，还在申请里说这种码“尚无公认的名字”。</p>
+<p>可早在 1870 年代，法国电报工程师 Émile Baudot 就在他的印字电报机里按这种顺序排字母了；贝尔实验室的另一位研究员 George Stibitz 在 1941 年的专利申请里也描述过它。名字最后落在了 Gray 头上。</p></div>
+
+<p>今天的机器人关节里，更常见的已经不是多圈轨道的光学码盘，而是<b>磁编码器（magnetic encoder）</b>。Mini Cheetah 就是：电机轴尾端粘一小块“径向充磁”的圆磁铁（一半 N、一半 S），正下方的电路板上焊一颗 AS5047P 芯片。芯片里有一组霍尔传感器，测的是磁场此刻朝哪个方向，直接算出一个 14 位的角度。没有轨道，也没有格雷码，但思路一样：<b>上电一读，就是绝对角度</b>。便宜、耐灰尘油污、不怕震，这是它在机器人里流行的原因。</p>
+
+<h2><span class="n">3</span>绝对式也会“失忆”：只认一圈的麻烦</h2>
+<p>说到这里，你可能会问：Mini Cheetah 用的明明是绝对式芯片，为什么开机还得趴好？</p>
+<p>因为那颗芯片是<b>单圈绝对（single-turn absolute）</b>的：它只能告诉你转子在一圈里的哪个角度，0° 到 360°，转过 360° 又回到 0°。电机到腿之间有 6:1 的减速，腿转 60°，电机就转满一圈。所以芯片读到“转子在 100°”，腿可能在 16.7°、76.7°、136.7°……一共 6 种可能，每种相隔 60°。单圈信息被减速器“稀释”了。</p>
+
+<div class="analogy"><div class="t">类比：只剩分针的钟</div>
+<p>单圈绝对编码器装在电机侧，就像一块只剩分针的钟。分针指着 12，你只知道“现在是整点”，几点不知道。减速比就是“一个钟头里分针转几圈”。想知道几点，得有个时针，或者有人一直帮你记着过了几个钟头。</p>
+<p class="off">哪里不准：真钟的时针和分针是齿轮硬连的，永远对得上；关节里如果在输出端另装一个编码器当“时针”，它和电机侧之间隔着有背隙、有弹性的减速器，两个读数之间会有一点“对不齐”，要靠算法去配。</p></div>
+
+<figure>
+<svg id="msvg" viewBox="0 0 640 320" role="img" aria-label="电机侧单圈编码器经减速后，输出端出现多种可能位置">
+  <g transform="translate(130,160)">
+    <circle r="108" fill="var(--bg)" stroke="var(--line)"/>
+    <circle r="92" fill="var(--bg2)" stroke="var(--steel)" stroke-width="3"/>
+    <g id="mticks"></g>
+    <line id="mneedle" x1="0" y1="0" x2="0" y2="-80" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <circle r="9" class="s-can"/>
+    <text y="132" text-anchor="middle" font-size="14" class="s-ink2">电机侧编码器（只认一圈）</text>
+  </g>
+  <g transform="translate(460,150)">
+    <circle r="132" fill="none" stroke="var(--line)" stroke-dasharray="3 5"/>
+    <g id="mghost"></g>
+    <g id="mleg"></g>
+    <circle r="18" fill="var(--steel)" stroke="var(--ink2)" stroke-width="1.5"/>
+    <circle r="6" class="s-bg2"/>
+    <text y="160" text-anchor="middle" font-size="14" class="s-ink2">关节输出端（腿）</text>
+  </g>
+  <text x="290" y="30" font-size="13" text-anchor="middle" class="s-ink2" id="mratio">减速 6:1</text>
+  <path d="M250 160 h70" stroke="var(--ink2)" stroke-width="2" marker-end="url(#marr)" fill="none"/>
+  <defs><marker id="marr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink2)"/></marker></defs>
+</svg>
+<div class="readout"><div>编码器读数<b id="mread">0°</b></div><div>腿的可能位置<b id="mcand">6 种</b></div><div>两两相隔<b id="mgap">60°</b></div></div>
+<div class="ctrl"><label>电机转了</label><input type="range" id="mang" min="0" max="2160" step="1" value="500"><output id="mango">500°</output></div>
+<div class="seg" id="mseg"><button data-k="6" class="on">6:1（Mini Cheetah）</button><button data-k="9">9:1</button><button data-k="1">1:1 不减速</button></div>
+<div class="seg"><button id="mmulti">加上“记圈”（电池 / 输出端编码器）</button></div>
+<figcaption><b>看图要看什么：</b>左边指针是编码器唯一看得到的东西；右边实线腿是真实位置，淡色的“幽灵腿”是控制器开机时排除不掉的其他可能。减速比越大，幽灵越多、挨得越近；减速比为 1 时幽灵消失——这也是减速器和编码器摆放位置必须一起考虑的原因。点“记圈”，幽灵全部消失。</figcaption>
+</figure>
+
+<p>工程上有几种办法给关节补上这根“时针”：</p>
+<p><b>办法一：规定开机姿势。</b>Mini Cheetah 的做法。最省钱，代价是每次开机要人配合，摔倒后断电重启就得重新摆。</p>
+<p><b>办法二：断电也继续记圈。</b>工业机械臂常见的做法：编码器旁边配一节电池，主电源断了，电池继续给计圈电路供电，连机器人被人推着转了几圈都记得住。这种叫<b>多圈绝对（multi-turn absolute）</b>。也有的多圈编码器在内部再加一组小齿轮，像钟表一样机械地记圈。</p>
+<p><b>办法三：输出端再装一个编码器。</b>电机侧一个管精细、管电机换相，输出端一个管“腿到底在哪”，叫<b>双编码器（dual encoder）</b>。贵一点、大一点，但开机即知道真实位置，还能顺便看出减速器里的背隙和变形。</p>
+
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="关节执行器剖面：电机侧编码器和输出侧编码器的位置">
+  <defs>
+    <linearGradient id="jhous" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient>
+    <linearGradient id="jmag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--magN)"/><stop offset=".5" stop-color="var(--magN)"/><stop offset=".5" stop-color="var(--magS)"/><stop offset="1" stop-color="var(--magS)"/></linearGradient>
+  </defs>
+  <rect x="80" y="60" width="420" height="180" rx="22" fill="url(#jhous)" opacity=".35"/>
+  <rect x="80" y="60" width="420" height="180" rx="22" fill="none" stroke="var(--ink2)" stroke-width="2"/>
+  <rect x="40" y="144" width="520" height="12" rx="4" fill="var(--steel)" stroke="var(--ink2)"/>
+  <rect x="190" y="74" width="120" height="152" rx="10" fill="var(--copper)" opacity=".85"/>
+  <g stroke="var(--copper2)" stroke-width="2" opacity=".7"><line x1="205" y1="80" x2="205" y2="220"/><line x1="225" y1="80" x2="225" y2="220"/><line x1="245" y1="80" x2="245" y2="220"/><line x1="265" y1="80" x2="265" y2="220"/><line x1="285" y1="80" x2="285" y2="220"/></g>
+  <text x="250" y="66" font-size="13" text-anchor="middle" class="s-ink">电机（定子+转子）</text>
+  <rect x="330" y="88" width="90" height="124" rx="8" fill="var(--bg2)" stroke="var(--ink2)" stroke-width="1.5"/>
+  <g fill="none" stroke="var(--ink2)" stroke-width="1.5"><circle cx="375" cy="120" r="14"/><circle cx="375" cy="180" r="14"/><circle cx="375" cy="150" r="9"/></g>
+  <text x="375" y="232" font-size="13" text-anchor="middle" class="s-ink">减速器 N:1</text>
+  <rect x="500" y="92" width="26" height="116" rx="5" fill="var(--steel)" stroke="var(--ink2)" stroke-width="1.5"/>
+  <text x="560" y="86" font-size="13" text-anchor="middle" class="s-ink">输出法兰</text>
+  <rect x="150" y="136" width="14" height="28" rx="2" fill="url(#jmag)"/>
+  <rect x="112" y="118" width="10" height="64" rx="2" fill="var(--accent2)"/>
+  <rect x="122" y="140" width="10" height="20" rx="1" fill="var(--ink)"/>
+  <path d="M137 150 h10" stroke="var(--accent)" stroke-dasharray="2 2"/>
+  <text x="110" y="270" font-size="13" text-anchor="middle" class="s-acc2" font-weight="700">① 电机侧编码器</text>
+  <text x="110" y="288" font-size="12" text-anchor="middle" class="s-ink2">磁铁＋霍尔芯片，读转子</text>
+  <line x1="122" y1="185" x2="112" y2="255" stroke="var(--accent2)" stroke-width="1.2"/>
+  <rect x="474" y="100" width="10" height="100" rx="2" fill="var(--accent)" fill-opacity=".85"/>
+  <text x="520" y="270" font-size="13" text-anchor="middle" class="s-acc" font-weight="700">② 输出侧编码器（可选）</text>
+  <text x="520" y="288" font-size="12" text-anchor="middle" class="s-ink2">读腿真正转到哪</text>
+  <line x1="480" y1="202" x2="510" y2="255" stroke="var(--accent)" stroke-width="1.2"/>
+  <text x="300" y="30" font-size="14" text-anchor="middle" class="s-ink">一个关节里，编码器可以装在两个地方</text>
+</svg>
+<figcaption><b>看图要看什么：</b>① 离电机近，转得快、读得细，是电机换相和 FOC 的“眼睛”，但隔着减速器看腿；② 直接盯着输出法兰，开机即知腿在哪、还能看见背隙，代价是多一个零件和一圈线。示意图，非任何具体产品的结构。</figcaption>
+</figure>
+
+<div class="box fail"><div class="t">翻车现场：一节没电的电池，让机械臂“忘了自己”</div>
+<p>FANUC 的工业机器人用的就是“电池记圈”的方案。它的控制柜里有一条报警叫 <b>SRVO-062 BZAL</b>，意思是编码器的备用电池电压掉到了零。一旦触发，编码器里保存的绝对位置数据就丢了，这台机器人必须重新做“零位标定”（FANUC 叫 mastering），之后往往还得重新校工具中心点和负载。</p>
+<p>最常见的原因朴素得让人哭笑不得：电池用到没电没人换；或者电池线在底座里松了。维修圈里流传的建议也很朴素：能带电换就带电换，别让编码器有一刻没人供电。一节几块钱的电池，可能换来产线停半天、重新示教一堆点位。</p></div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Ben Katz 手持并展示 Mini Cheetah 的关节电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>Ben Katz 和他改造的关节电机。这么扁的模块里塞了电机、减速器、驱动板和编码器芯片，再塞一个输出侧编码器就得加厚——“开机先趴好”其实是一个用操作换体积和成本的工程取舍。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">4</span>14 位就等于精确到 0.02°？</h2>
+<p>知道了“在哪”，下一个问题是“准不准”。规格书上最显眼的那个数字往往是“分辨率：14 bit”。14 位就是 2<sup>14</sup> = 16384 个编号，一圈 360° 分成 16384 份，每份约 <b>0.022°</b>。看上去非常准。</p>
+<p>但同一份 AS5047P 数据手册里还有另一个数：<b>积分非线性（INL）</b>，在 25°C、磁铁装得最理想的情况下是 <b>±0.8°</b>；考虑磁铁装偏 0.5 毫米和 −40 到 150°C 的温度变化，是 ±1.2°。0.8° 除以 0.022°，大约是 36 个“台阶”。也就是说，这把尺子刻度极细，但整把尺子可能印歪了几十个刻度那么多。Katz 在论文里还提到，他的芯片读数本身大约有 2 位的噪声在跳。</p>
+
+<p class="say">用人话说：分辨率是“刻度有多细”，精度是“读数离真值有多远”。</p>
+<div class="formula">分辨率 = 360° ÷ 2<sup>位数</sup><small>14 位：360° ÷ 16384 ≈ 0.022°　｜　精度要另看 INL / accuracy 那一栏</small></div>
+
+<figure>
+<svg viewBox="0 0 640 280" role="img" aria-label="编码器读数误差随角度变化的曲线，与分辨率台阶对比">
+  <rect x="60" y="30" width="560" height="200" rx="8" fill="var(--bg)" stroke="var(--line)"/>
+  <rect x="60" y="66" width="560" height="128" fill="var(--accent)" fill-opacity=".07"/>
+  <line x1="60" y1="130" x2="620" y2="130" stroke="var(--ink2)" stroke-width="1"/>
+  <text x="54" y="70" font-size="12" text-anchor="end" class="s-ink2">+0.8°</text>
+  <text x="54" y="134" font-size="12" text-anchor="end" class="s-ink2">0</text>
+  <text x="54" y="198" font-size="12" text-anchor="end" class="s-ink2">−0.8°</text>
+  <polyline id="errc" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="200" y="129" width="26" height="2" fill="var(--accent2)"/>
+  <line x1="213" y1="126" x2="250" y2="44" stroke="var(--accent2)" stroke-width="1.2"/>
+  <text x="254" y="46" font-size="13" class="s-acc2" font-weight="700">一个分辨率台阶 0.022°：在这张图上只有一根头发那么粗</text>
+  <text x="340" y="252" font-size="13" text-anchor="middle" class="s-ink2">转子转一圈（0°→360°）</text>
+  <text x="340" y="272" font-size="12" text-anchor="middle" class="s-ink2">橙线：示意的读数误差（偏心等造成，一圈起伏一两次），幅度取数据手册 INL ±0.8°</text>
+</svg>
+<figcaption><b>看图要看什么：</b>橙色曲线的起伏才是“读数和真值差多少”，那根青色细条才是“分辨率”。两者差了几十倍。好在这种误差大多随角度周期性重复，很多驱动器会在出厂标定时把这条曲线量下来、实时扣掉。曲线形状为教学示意。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比：显示到 0.1 克的厨房秤</div>
+<p>超市买的电子秤显示到 0.1 克，不代表它准到 0.1 克。没校准的秤，可能稳稳当当地每次都多显示 3 克。“显示几位小数”是分辨率，“和标准砝码差多少”是精度；“同一个苹果称十次是不是都一样”，叫<b>重复性（repeatability）</b>。</p>
+<p class="off">哪里不准：秤的误差常常是一个固定偏移，扣掉就行；编码器的误差会随角度起伏，在这个角度偏正、转半圈又偏负，补偿要查一整张表。</p></div>
+
+<p>减速器在这里又出来搅局，而且是两头搅。好的一头：电机侧编码器的误差，经 6:1 减速到输出端也缩小 6 倍。±0.8° 变成约 <b>±0.13°</b>，分辨率变成约 0.0037°。坏的一头：减速器自己的背隙和弹性变形（W2-3 讲过），电机侧编码器根本看不见。电机说“我转到了”，腿可能还在齿缝里晃。</p>
+<p>回到 20 厘米小腿的教学假设算一下：输出端 0.13° 的误差，脚尖偏差约 0.2 m × 0.13° × π/180 ≈ <b>0.45 毫米</b>，对走路完全够用；60° 的开机迷糊则是 20 厘米。前者是精度问题，后者是“单圈还是多圈”的问题。两件事不要混成一件。</p>
+
+<h2><span class="n">5</span>工作里会在哪遇到</h2>
+<div class="box work">
+<p><b>规格书上看这几栏：</b>编码器类型（magnetic / optical）、分辨率（bits，或 CPR / PPR）、绝对还是增量、单圈还是多圈、装在电机侧还是输出侧、精度（accuracy / INL）。只写了分辨率没写精度的，别替它补上精度。</p>
+<p><b>一个常见的坑：</b>PPR（pulses per revolution，每圈脉冲数）和 CPR（counts per revolution，每圈计数）差 4 倍。1000 PPR 的正交编码器，四倍频后是 4000 CPR。客户拿两家规格比较时，先确认两边是不是同一个单位。</p>
+<p><b>客户邮件常这么问：</b></p>
+<p class="en">"Does the actuator need a homing routine at startup, or is the output position absolute after a power cycle?"<br>"What is the encoder resolution and accuracy at the output shaft?"<br>"Is there an output-side encoder, or is the joint position derived from the motor-side encoder through the gear ratio?"</p>
+<p><b>回复时可以这样搭框架</b>（具体型号的数字一律以手册为准，查不到就标 [待技术确认]）：</p>
+<p class="en">"The encoder resolution is [x bits / x CPR] on the [motor / output] side. Absolute position after power-up is [available within one motor revolution / available at the output] — [待技术确认]. Please note that resolution and accuracy are different specifications; we can confirm the accuracy figure separately."</p>
+<p><b>和我们自己的产品有什么关系：</b>THEMIS 的用户手册在维护一节里写到：如果执行器的<b>绝对编码器数据</b>丢失或损坏（比如初始化后左右肢体明显不对称、重启几次也不恢复），需要做零位标定（来源：项目文件 user-manual.md）。BEAR 的固件校准工具里也有一个名为 EXTERNAL ENCODER 的校准步骤（来源：项目文件 firmware-calibration.md）。哪个 BEAR 型号用什么编码器配置、分辨率和精度多少，手册里没有直接写的，不要凭印象回答。</p>
+</div>
+
+<h2><span class="n">6</span>自测三题</h2>
+<p class="q">1. 展会上，一位客户指着规格书说：“你们编码器 14 位，那关节定位精度就是 0.02° 对吧？”你怎么回？</p>
+<details><summary>看答案</summary><p>不对。14 位说的是分辨率：一圈分成 16384 份、每份约 0.022°。精度要看 accuracy / INL 那一栏，比如 AS5047P 芯片的 INL 在理想安装下就是 ±0.8°，比分辨率大几十倍；关节输出端的定位精度还要叠加减速器的背隙和变形。稳妥的说法是：“14-bit is the resolution; accuracy is a separate figure, and I'll confirm it for you.”</p></details>
+<p class="q">2. 一封客户邮件写着：“Our robot powered up this morning and the left and right legs look asymmetric, even after several reboots.” 首先怀疑什么？</p>
+<details><summary>看答案</summary><p>重启几次都不恢复，说明不是一次性的通信抖动，而是“位置零点”本身错了。按 THEMIS 手册，这正是绝对编码器数据丢失或损坏的典型表现，需要做零位标定。回复时引用手册的标定流程，具体操作以 Robot Calibration Manual 为准，不要自己编步骤。</p></details>
+<p class="q">3. 某关节在电机侧装了单圈绝对编码器，减速比 9:1，没有输出侧编码器。开机时，输出端的位置能确定到多大范围以内？有几种可能？</p>
+<details><summary>看答案</summary><p>电机转一圈，输出转 360° ÷ 9 = <b>40°</b>。所以开机时输出位置只能确定到 40° 以内，一圈里有 <b>9 种</b>可能，每种相隔 40°。要消除歧义，得规定开机姿势、加电池记圈，或者加输出侧编码器。</p></details>
+
+<h2><span class="n">7</span>中英术语对照</h2>
+<table class="terms">
+<tr><th>中文</th><th>English</th><th>一句话</th></tr>
+<tr><td>编码器</td><td>encoder</td><td>把“转到哪”变成数字的传感器</td></tr>
+<tr><td>增量式编码器</td><td>incremental encoder</td><td>只数走了多少格，断电即失忆</td></tr>
+<tr><td>绝对式编码器</td><td>absolute encoder</td><td>每个位置有唯一编号，上电即知</td></tr>
+<tr><td>正交 A/B 信号</td><td>quadrature (A/B) signals</td><td>错开 1/4 格的两路脉冲，能判方向</td></tr>
+<tr><td>零位脉冲</td><td>index pulse (Z)</td><td>一圈只出现一次的参考点</td></tr>
+<tr><td>回零</td><td>homing</td><td>开机后先找到参考点</td></tr>
+<tr><td>单圈 / 多圈</td><td>single-turn / multi-turn</td><td>只认一圈之内 / 能记住转了几圈</td></tr>
+<tr><td>格雷码</td><td>Gray code (reflected binary)</td><td>相邻位置只差一位的编码</td></tr>
+<tr><td>分辨率</td><td>resolution (bits, CPR/PPR)</td><td>刻度有多细</td></tr>
+<tr><td>精度 / 积分非线性</td><td>accuracy / INL</td><td>读数离真值有多远</td></tr>
+<tr><td>重复性</td><td>repeatability</td><td>回到同一点，读数是否一致</td></tr>
+<tr><td>双编码器</td><td>dual encoder</td><td>电机侧＋输出侧各一个</td></tr>
+</table>
+
+<div class="tease">下一课预告：编码器告诉驱动器“转子此刻在 137.4°”。然后呢？驱动器要在每秒几万次的节奏里开关几只晶体管，把电池的直流电“剁”成三相交流，还得随时知道每一相流过了多少安培。一块巴掌大的板子是怎么做到的？明天讲逆变器、PWM 和电流采样。</div>
+
+<h2><span class="n">·</span>来源</h2>
+<ul class="src">
+<li><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News：MIT's mini cheetah is the first four-legged robot to do a backflip（2019-03-04，含图片授权说明）</a></li>
+<li><a href="https://dspace.mit.edu/bitstream/handle/1721.1/118671/1057343368-MIT.pdf">Benjamin G. Katz, A Low Cost Modular Actuator for Dynamic Robots, MIT 硕士论文（2018）：单个转子位置传感器、6:1 行星减速、开机 60° 歧义与开机姿势</a></li>
+<li><a href="https://www.infineon.com/row/public/documents/24/49/infineon-as5047p-datasheet-en.pdf">AS5047P 数据手册（ams，v2-00）：14 位、ABI 最多 1000 脉冲/4000 步、INL ±0.8° / ±1.2°</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Gray_code">Wikipedia：Gray code（Baudot、Stibitz、Gray 专利与命名）</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Frank_Gray_(researcher)">Wikipedia：Frank Gray (researcher)（US 2,632,058，1953-03-17 获批）</a></li>
+<li><a href="https://industrialmonitordirect.com/blogs/knowledgebase/fanuc-srvo-062-bzal-alarm-troubleshooting-resolution">Industrial Monitor Direct：Fanuc SRVO-062 BZAL Alarm Troubleshooting（引用 FANUC 维护手册 B-83225EN）</a></li>
+<li>项目文件 user-manual.md（THEMIS 用户手册，5.1 Regular Maintenance — Joint Calibration）</li>
+<li>项目文件 firmware-calibration.md（BEAR 固件更新与校准手册，校准步骤说明）</li>
+</ul>
+</main>
+<script>
+(function(){
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+function mod(a,n){return ((a%n)+n)%n;}
+function rad(d){return d*Math.PI/180;}
+function segInit(id,cb){var s=$(id);var bs=s.querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){for(var j=0;j<bs.length;j++)bs[j].classList.remove('on');this.classList.add('on');cb(this);});}}
+function sector(cx,cy,r0,r1,a0,a1){ /* angles: degrees clockwise from top */
+  function p(r,a){return [cx+r*Math.sin(rad(a)),cy-r*Math.cos(rad(a))];}
+  var A=p(r1,a0),B=p(r1,a1),C=p(r0,a1),D=p(r0,a0),lg=(a1-a0)>180?1:0;
+  return 'M'+A[0].toFixed(2)+' '+A[1].toFixed(2)+'A'+r1+' '+r1+' 0 '+lg+' 1 '+B[0].toFixed(2)+' '+B[1].toFixed(2)+'L'+C[0].toFixed(2)+' '+C[1].toFixed(2)+'A'+r0+' '+r0+' 0 '+lg+' 0 '+D[0].toFixed(2)+' '+D[1].toFixed(2)+'Z';}
+
+/* ---------- 1. quadrature ---------- */
+(function(){
+  var cx=150,cy=160,P=30,W=15; /* 12 windows */
+  var g=$('qdiskg');
+  var rot=el('g',{},g);
+  el('circle',{cx:cx,cy:cy,r:112,fill:'url(#qdisk)',stroke:'var(--ink2)','stroke-width':1.5},rot);
+  for(var k=0;k<12;k++){el('path',{d:sector(cx,cy,78,102,k*P,k*P+W),fill:'var(--bg)',stroke:'var(--ink2)','stroke-width':0.8},rot);}
+  el('circle',{cx:cx,cy:cy-90,r:3,fill:'var(--accent)'},rot);
+  var sA=0,sB=7.5; /* sensor screen angles, clockwise from top */
+  var sg=$('qsens');
+  function sensor(a,col,lab){var x=cx+90*Math.sin(rad(a)),y=cy-90*Math.cos(rad(a));
+    var gg=el('g',{transform:'translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+a+')'},sg);
+    el('rect',{x:-9,y:-30,width:18,height:14,rx:3,fill:col},gg);
+    el('rect',{x:-9,y:16,width:18,height:14,rx:3,fill:col,'fill-opacity':.6},gg);
+    var dot=el('circle',{cx:0,cy:0,r:5,fill:'var(--glow)',stroke:col,'stroke-width':1.5},gg);
+    var t=el('text',{x:0,y:-36,'text-anchor':'middle','font-size':13,'font-weight':700,fill:col},gg);t.textContent=lab;return dot;}
+  sA=-18;sB=19.5; /* one pitch + quarter pitch apart */
+  var dA=sensor(sA,'var(--accent)','A'),dB=sensor(sB,'var(--blue)','B');
+  function on(sa,th){return mod(sa-th,P)<W?1:0;}
+  function code(th){return (on(sA,th)<<1)|on(sB,th);}
+  /* derive forward sequence */
+  var seq=[],c0=code(0.25);seq.push(c0);for(var t=0.25;t<30.25;t+=0.25){var c=code(t);if(c!==seq[seq.length-1])seq.push(c);}
+  var fwd={};for(var i=0;i<4;i++)fwd[seq[i]]=seq[(i+1)%4];
+  var theta=0,count=0,last=code(0.0001),dir=1,playing=false,hist=[],H=130,cut=false,manBase=0;
+  function step(dth){var n=Math.max(1,Math.ceil(Math.abs(dth)/0.5));for(var i=0;i<n;i++){theta+=dth/n;var c=code(theta+0.0001);if(c!==last){if(fwd[last]===c)count++;else if(fwd[c]===last)count--;last=c;}}}
+  function push(){var c=code(theta+0.0001);hist.push([(c>>1)&1,c&1]);if(hist.length>H)hist.shift();}
+  function draw(){
+    rot.setAttribute('transform','rotate('+theta.toFixed(2)+' '+cx+' '+cy+')');
+    var a=on(sA,theta+0.0001),b=on(sB,theta+0.0001);
+    dA.setAttribute('fill-opacity',a?1:0.08);dB.setAttribute('fill-opacity',b?1:0.08);
+    var x0=370,dx=260/H,pa=[],pb=[];
+    for(var i=0;i<hist.length;i++){var x=x0+(H-hist.length+i)*dx;
+      var ya=hist[i][0]?55:90,yb=hist[i][1]?155:190;
+      if(i>0){pa.push(x.toFixed(1)+','+(hist[i-1][0]?55:90));pb.push(x.toFixed(1)+','+(hist[i-1][1]?155:190));}
+      pa.push(x.toFixed(1)+','+ya);pb.push(x.toFixed(1)+','+yb);}
+    $('qwa').setAttribute('points',pa.join(' '));$('qwb').setAttribute('points',pb.join(' '));
+    $('qcnt').textContent=count;
+    $('qtrue').textContent=theta.toFixed(1)+'°';
+    $('qthink').textContent=(count*7.5).toFixed(1)+'°';
+    if(cut&&Math.abs(count*7.5-theta)>3.75){$('qmsg').textContent='断电后计数从 0 重新数：差了 '+(theta-count*7.5).toFixed(1)+'°，它自己完全不知道';}
+    else $('qmsg').textContent='换算角度 = 计数 × 7.5°（一圈 48 个计数）';
+  }
+  /* prefill static history so the still frame is readable */
+  for(var i=0;i<H;i++){step(0.6);push();}
+  theta=mod(theta,360);count=Math.round(theta/7.5);last=code(theta+0.0001);
+  $('qdir').textContent='正转（A 领先）';
+  draw();
+  var raf=null,lt=0;
+  function loop(ts){if(!playing)return;var dt=lt?Math.min(50,ts-lt):16;lt=ts;step(dir*dt*0.04);push();draw();raf=requestAnimationFrame(loop);}
+  $('qplay').addEventListener('click',function(){playing=!playing;this.textContent=playing?'❚❚ 暂停':'▶ 播放';if(playing){lt=0;raf=requestAnimationFrame(loop);}});
+  $('qrev').addEventListener('click',function(){dir=-dir;$('qdir').textContent=dir>0?'正转（A 领先）':'反转（B 领先）';if(!playing){for(var i=0;i<20;i++){step(dir*0.6);push();}draw();}});
+  $('qcut').addEventListener('click',function(){count=0;cut=true;last=code(theta+0.0001);hist=[];for(var i=0;i<4;i++)push();draw();});
+  var mv=0;
+  $('qman').addEventListener('input',function(){var v=parseFloat(this.value);var d=v-mv;mv=v;$('qmano').textContent=v.toFixed(1)+'°';if(d){$('qdir').textContent=d>0?'正转（A 领先）':'反转（B 领先）';}step(d);push();draw();});
+})();
+
+/* ---------- 2. Gray vs binary ---------- */
+(function(){
+  var cx=160,cy=160,N=16,S=22.5,mode='bin';
+  var radii=[[40,62],[64,86],[88,110],[112,134]]; /* track 0 inner = MSB */
+  var disk=$('gdisk'),rot=el('g',{},disk);
+  var offs=[0.9,-0.6,0.3,-1.0];
+  function cod(s){return mode==='bin'?s:(s^(s>>1));}
+  function dec(c){if(mode==='bin')return c;var b=c;b^=b>>1;b^=b>>2;return b&15;}
+  function drawDisk(){clear(rot);
+    for(var s=0;s<N;s++){var c=cod(s);for(var t=0;t<4;t++){var bit=(c>>(3-t))&1;
+      el('path',{d:sector(cx,cy,radii[t][0],radii[t][1],s*S,(s+1)*S),fill:bit?'var(--ink)':'var(--bg2)',stroke:'var(--line)','stroke-width':0.6},rot);}
+      var lp=[cx+147*Math.sin(rad(s*S+S/2)),cy-147*Math.cos(rad(s*S+S/2))];
+    }
+    for(var s=0;s<N;s++){var a=s*S+S/2;var tx=el('text',{x:(cx+124*Math.sin(rad(a))).toFixed(1),y:(cy-124*Math.cos(rad(a))+4).toFixed(1),'text-anchor':'middle','font-size':10,fill:'var(--accent)','font-weight':700},rot);tx.textContent=s;}
+  }
+  var dots=[];for(var t=0;t<4;t++){dots.push(el('circle',{cx:cx,cy:cy-(radii[t][0]+radii[t][1])/2,r:5,fill:'var(--glow)',stroke:'var(--accent)','stroke-width':1.5},$('gdots')));}
+  function read(th,mis){var c=0;for(var t=0;t<4;t++){var s=Math.floor(mod(th+mis*offs[t],360)/S);var bit=(cod(s)>>(3-t))&1;c|=bit<<(3-t);}return c;}
+  function err(th,mis){var tr=Math.floor(mod(th,360)/S);var d=dec(read(th,mis))-tr;d=mod(d+8,16)-8;return d;}
+  function strip(mis){var pts=[];for(var i=0;i<=1200;i++){var th=i*0.3;var e=err(th,mis);pts.push((20+i*0.5).toFixed(1)+','+(350-e*4.5).toFixed(1));}$('gstrip').setAttribute('points',pts.join(' '));}
+  function upd(){var th=parseFloat($('gang').value),mis=parseFloat($('gmis').value);
+    $('gango').textContent=th.toFixed(1)+'°';$('gmiso').textContent=mis.toFixed(1)+'°';
+    rot.setAttribute('transform','rotate('+(-th).toFixed(2)+' '+cx+' '+cy+')');
+    for(var t=0;t<4;t++){var a=mis*offs[t];dots[t].setAttribute('transform','rotate('+a.toFixed(2)+' '+cx+' '+cy+')');}
+    var c=read(th,mis),s='';for(var t=0;t<4;t++)s+=(c>>(3-t))&1;
+    $('gbits').textContent=s;var d=dec(c),tr=Math.floor(mod(th,360)/S),e=err(th,mis);
+    $('gdec').textContent=d;$('gtrue').textContent=tr;$('gerr').textContent=(e>0?'+':'')+e+' 格';
+    $('gerr').setAttribute('fill',Math.abs(e)>1?'var(--accent)':'var(--ink)');
+    $('gnote').textContent=Math.abs(e)>1?'读错了 '+Math.abs(e)+' 格（'+(Math.abs(e)*S).toFixed(1)+'°）！控制器会以为关节瞬间跳了过去':(e!==0?'只错到隔壁一格，后面的滤波很容易吃掉':'读数正确');
+    $('gcur').setAttribute('x1',(20+th/0.6).toFixed(1));$('gcur').setAttribute('x2',(20+th/0.6).toFixed(1));
+  }
+  var lastMis=-1;
+  function full(){var mis=parseFloat($('gmis').value);if(mis!==lastMis||full.force){strip(mis);lastMis=mis;full.force=false;}upd();}
+  segInit('gseg',function(b){mode=b.getAttribute('data-k');drawDisk();full.force=true;full();});
+  $('gang').addEventListener('input',full);$('gmis').addEventListener('input',full);
+  drawDisk();full.force=true;full();
+})();
+
+/* ---------- 3. multi-turn ambiguity ---------- */
+(function(){
+  var ratio=6,multi=false;
+  var tk=$('mticks');
+  for(var i=0;i<36;i++){var a=i*10,L=i%9===0?14:7;el('line',{x1:(92*Math.sin(rad(a))).toFixed(1),y1:(-92*Math.cos(rad(a))).toFixed(1),x2:((92-L)*Math.sin(rad(a))).toFixed(1),y2:(-(92-L)*Math.cos(rad(a))).toFixed(1),stroke:'var(--ink2)','stroke-width':i%9===0?2:1},tk);}
+  ['0°','90°','180°','270°'].forEach(function(s,i){var a=i*90;var t=el('text',{x:(64*Math.sin(rad(a))).toFixed(1),y:(-64*Math.cos(rad(a))+5).toFixed(1),'text-anchor':'middle','font-size':12,class:'s-ink2'},tk);t.textContent=s;});
+  function leg(g,a,ghost){var gg=el('g',{transform:'rotate('+a.toFixed(2)+')',opacity:ghost?0.22:1},g);
+    el('path',{d:'M-9 0 L-6 112 L6 112 L9 0 Z',fill:ghost?'var(--ink2)':'var(--accent2)'},gg);
+    el('ellipse',{cx:0,cy:120,rx:16,ry:9,fill:ghost?'var(--ink2)':'var(--accent)'},gg);}
+  function upd(){var m=parseFloat($('mang').value);$('mango').textContent=m.toFixed(0)+'°（'+(m/360).toFixed(2)+' 圈）';
+    var rd=mod(m,360);$('mneedle').setAttribute('transform','rotate('+rd.toFixed(1)+')');
+    var out=m/ratio;var gh=$('mghost'),lg=$('mleg');clear(gh);clear(lg);
+    var n=multi?1:ratio;
+    if(!multi){for(var k=0;k<ratio;k++){var a=(rd+360*k)/ratio;if(Math.abs(mod(a,360)-mod(out,360))>0.5)leg(gh,a,true);}}
+    leg(lg,out,false);
+    $('mread').textContent=rd.toFixed(0)+'°';$('mcand').textContent=n+' 种';$('mgap').textContent=n>1?(360/ratio).toFixed(1)+'°':'—';
+    $('mratio').textContent=ratio===1?'不减速 1:1':'减速 '+ratio+':1';}
+  segInit('mseg',function(b){ratio=parseInt(b.getAttribute('data-k'),10);upd();});
+  $('mmulti').addEventListener('click',function(){multi=!multi;this.textContent=multi?'去掉“记圈”（只剩单圈编码器）':'加上“记圈”（电池 / 输出端编码器）';this.classList.toggle('on',multi);upd();});
+  $('mang').addEventListener('input',upd);upd();
+})();
+
+/* ---------- 4. error curve ---------- */
+(function(){var pts=[];for(var i=0;i<=280;i++){var x=60+i*2,a=rad(i*360/280);var e=0.55*Math.sin(a+0.6)+0.25*Math.sin(2*a+1.9);pts.push(x.toFixed(1)+','+(130-e*80).toFixed(1));}$('errc').setAttribute('points',pts.join(' '));})();
+})();
+</script>
+</body>
+</html>
