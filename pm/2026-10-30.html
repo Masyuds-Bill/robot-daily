@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>论文精讲 10/30｜不换电机，关节怎么变强</title>
+<style>
+:root{
+  --bg:#f6f4ef; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5d574e; --line:#e1dbcf;
+  --accent:#b4441a; --accent2:#0f766e; --soft:#fbefe6; --soft2:#e5f1ef;
+  --metal:#9aa1ab; --metal2:#5b6370; --cable:#c2410c; --skin:#d9dde3; --floor:#cfc7b8;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --bg2:#1d2024; --ink:#ebe7df; --ink2:#a8a297; --line:#33373d;
+    --accent:#f08a4b; --accent2:#2dd4bf; --soft:#2a2019; --soft2:#14292a;
+    --metal:#7b838e; --metal2:#b3bbc6; --cable:#f59e5b; --skin:#4a5059; --floor:#3a3d42;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:10px 16px 60px}
+a{color:var(--accent2);word-break:break-word}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:8px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-size:28px;line-height:1.35;margin:6px 0 4px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 20px}
+h2{font-size:21px;line-height:1.45;margin:40px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+h3{font-size:16px;margin:18px 0 2px;color:var(--accent2)}
+p{margin:10px 0}
+.three{background:var(--soft);border-radius:14px;padding:12px 16px;margin:16px 0}
+.three ol{margin:6px 0;padding-left:1.3em}
+.three li{margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--soft2);color:var(--accent2);margin-right:6px;vertical-align:2px}
+.note{font-size:15px;color:var(--ink2);border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:14px 0}
+figure{margin:20px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px}
+figure img{width:100%;height:auto;display:block;border-radius:8px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.65;margin-top:8px}
+figcaption b{color:var(--accent)}
+.fail{display:none;font-size:14px;padding:10px 0}
+.src{font-size:14px;color:var(--ink2)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btns button{font:inherit;font-size:15px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.glossary{background:var(--soft2);border-radius:14px;padding:6px 16px 10px;margin-top:20px}
+.refs{font-size:14px;line-height:1.7;padding-left:1.2em}
+.refs li{margin:4px 0}
+footer{font-size:13px;color:var(--ink2);margin-top:30px}
+</style>
+
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<div class="kicker">本周论文精讲 · 2026 年 10 月 30 日 · 周五</div>
+<h1>不换电机，关节怎么变强？——一条旧人形腿的“体检报告”</h1>
+<p class="sub">约 15 分钟 · 关键词：减速比、扭矩-转速曲线、持续扭矩、负载分担</p>
+
+<div class="three">
+<b>一分钟版</b>
+<ol>
+<li>台湾明志科技大学的一篇期刊论文，拿一台退役的 134 cm 足球人形机器人做案例：<b>电机型号不变</b>，只靠“收窄站距 + 加一对齿轮”，把髋关节侧摆的扭矩余量从 0.70 倍拉到 2.03 倍。</li>
+<li>真正有意思的是台架实测：负载一大，关节实际速度比“空载速度”低了将近一半；扛 2 倍负载时，6 分钟左右电机就热到 70 °C 停机；两台“一起出力”的电机，其中一台扛了约七成电流。</li>
+<li>这三件事，正好是执行器规格表上最容易被误读的三件事：<b>空载速度 ≠ 带载速度，峰值扭矩 ≠ 能一直扛的扭矩，两台电机 ≠ 两倍力气</b>。</li>
+</ol>
+</div>
+
+<div class="note">
+<b>论文</b>：Upgrading a Humanoid Leg Without Replacing Actuators: Torque–Speed Limits and Bench Measurements<br>
+<b>作者</b>：Jeehyun Yang（独立作者），明志科技大学 工业设计系（Ming Chi University of Technology，新北）<br>
+<b>发表</b>：<i>Applied Sciences</i> 第 16 卷第 20 期，文章号 10145，2026 年 10 月 13 日在线，开放获取（CC BY）<br>
+<b>链接</b>：<a href="https://www.mdpi.com/2076-3417/16/20/10145">mdpi.com/2076-3417/16/20/10145</a>（DOI 10.3390/app162010145）
+</div>
+
+<p class="note" style="border-color:var(--accent2)">先说为什么选它：这周 arXiv 上人形机器人的热门论文几乎都是“大模型 + 数据”。这篇恰恰相反——没有神经网络，只有一根杠杆、几箱砝码和两台舵机。但它把“一个关节到底能干多少活”拆得特别干净，对每天回答客户“这颗关节扛不扛得住”的人来说，比很多高大上的论文更有用。它不是顶会大作，对行业的冲击有限，读它是为了读懂规格表。</p>
+
+<h2><span class="n">01</span>它想解决什么问题</h2>
+<p>主角叫 <b>Robinion Sr.</b>：身高 134 cm、38 个自由度（DOF，degree of freedom，可以独立转动的关节数）、最终重 13.2 kg，2017–2019 年参加 RoboCup 人形组成人尺寸（AdultSize）比赛。每条腿用 9 台 ROBOTIS 的 Dynamixel MX-106R 舵机——侧摆（roll）和俯仰（pitch）轴两台并联一起推，髋部偏航（yaw）一台，膝盖反而没有电机。</p>
+<p>问题出在<b>髋关节侧摆</b>（hip roll）：机器人单脚站立时，整个上身和抬起的那条腿都“挂”在支撑腿的髋关节外侧，这个关节要扛住一个把身体往侧边扳倒的力矩。第一代设计里，作者算出来的扭矩余量只有 <b>0.70</b>——也就是说，名义上电机能给的力还不够这个姿态需要的。目标是做到 <b>2 倍</b>余量。</p>
+<p>最直接的办法是换大电机。但大电机更重、更贵，更重又意味着髋关节要扛的力矩更大，整条腿要重新设计。论文的问题就是：<b>电机等级不变，靠几何和传动，能把余量做上去吗？代价是什么？</b></p>
+
+<h2><span class="n">02</span>之前的做法卡在哪</h2>
+<p>业余和学术的小型人形，常见做法是把舵机输出轴<b>直接</b>当关节轴（direct-mounted），结构最简单，但电机的扭矩就是关节的扭矩，没有放大。另一个惯性是“看规格表选型”：舵机的规格写着堵转扭矩（stall torque，电机被卡死不转时能输出的最大扭矩）10 N·m、空载转速（no-load speed，不带任何负载时的最高转速）5.76 rad/s——很多人就拿这两个数直接去算。</p>
+<p>这两个数都是<b>端点</b>：一个是转不动时的力，一个是不出力时的速度。真正干活的工作点在两者之间，而且能在那个点停留多久，还受发热限制。论文想把这条“从规格表到真实关节”的链条每一环都量一遍。</p>
+
+<h2><span class="n">03</span>核心思路：两个旋钮，一个是杠杆，一个是变速</h2>
+<p>打个比方：你要单手平端一箱书。<b>第一个办法</b>是把箱子贴近身体——力臂短了，同样的箱子手腕轻松得多，这就是“收窄站距”；<b>第二个办法</b>像骑自行车换低档——踩得更省力，但车速变慢，这就是“加减速比”。</p>
+
+<figure>
+<svg viewBox="0 0 680 420" role="img" aria-label="人形机器人单脚站立时髋关节侧摆受力示意图">
+  <defs>
+    <linearGradient id="mt" x1="0" x2="1"><stop offset="0" stop-color="var(--metal2)"/><stop offset=".5" stop-color="var(--metal)"/><stop offset="1" stop-color="var(--metal2)"/></linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+  </defs>
+  <rect x="0" y="388" width="680" height="32" fill="var(--floor)"/>
+  <!-- torso -->
+  <rect x="250" y="40" width="150" height="120" rx="18" fill="var(--skin)" stroke="var(--metal2)" stroke-width="2"/>
+  <rect x="280" y="62" width="90" height="40" rx="6" fill="var(--bg2)" stroke="var(--metal2)"/>
+  <text x="325" y="88" text-anchor="middle" font-size="13" fill="var(--ink2)">上身+电池</text>
+  <circle cx="325" cy="130" r="9" fill="var(--accent)"/><text x="340" y="134" font-size="13" fill="var(--accent)">质心</text>
+  <!-- pelvis -->
+  <rect x="235" y="160" width="180" height="34" rx="8" fill="url(#mt)"/>
+  <!-- stance leg (left on screen) -->
+  <g>
+    <rect x="248" y="194" width="44" height="38" rx="5" fill="#2b2f36"/>
+    <rect x="248" y="232" width="44" height="38" rx="5" fill="#2b2f36"/>
+    <text x="270" y="216" text-anchor="middle" font-size="10" fill="#e5e7eb">舵机</text>
+    <text x="270" y="254" text-anchor="middle" font-size="10" fill="#e5e7eb">舵机</text>
+    <circle cx="300" cy="232" r="20" fill="none" stroke="var(--cable)" stroke-width="3" stroke-dasharray="4 3"/>
+    <circle cx="300" cy="232" r="9" fill="var(--cable)"/>
+    <text x="300" y="285" text-anchor="middle" font-size="12" fill="var(--cable)">24:55 齿轮</text>
+    <rect x="258" y="290" width="26" height="70" rx="6" fill="url(#mt)"/>
+    <rect x="236" y="360" width="80" height="28" rx="6" fill="var(--metal2)"/>
+  </g>
+  <!-- swing leg lifted -->
+  <g transform="rotate(-12 395 194)">
+    <rect x="372" y="194" width="40" height="76" rx="6" fill="url(#mt)"/>
+    <rect x="376" y="270" width="32" height="70" rx="6" fill="url(#mt)"/>
+    <rect x="362" y="340" width="66" height="22" rx="6" fill="var(--metal2)"/>
+  </g>
+  <text x="440" y="330" font-size="13" fill="var(--ink2)">抬起的腿</text>
+  <!-- hip roll axis marker & lever arm -->
+  <line x1="270" y1="232" x2="270" y2="388" stroke="var(--ink2)" stroke-dasharray="3 4"/>
+  <line x1="325" y1="139" x2="325" y2="388" stroke="var(--accent)" stroke-dasharray="3 4"/>
+  <line x1="270" y1="378" x2="325" y2="378" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="298" y="404" text-anchor="middle" font-size="13" fill="var(--accent)">力臂 ∝ 站距 W</text>
+  <path d="M352,118 A60,60 0 0,1 372,170" fill="none" stroke="var(--accent)" stroke-width="3" marker-end="url(#ar)"/>
+  <text x="380" y="118" font-size="13" fill="var(--accent)">重力想把身体往外扳</text>
+  <!-- callouts -->
+  <g font-size="13" fill="var(--ink)">
+    <rect x="12" y="40" width="210" height="96" rx="10" fill="var(--soft)"/>
+    <text x="24" y="64">旋钮①：收窄站距</text>
+    <text x="24" y="86" fill="var(--ink2)">26.0 cm → 17.9 cm</text>
+    <text x="24" y="108" fill="var(--ink2)">力臂变短，要扛的</text>
+    <text x="24" y="126" fill="var(--ink2)">力矩变小</text>
+    <rect x="12" y="160" width="210" height="96" rx="10" fill="var(--soft2)"/>
+    <text x="24" y="184">旋钮②：外加齿轮</text>
+    <text x="24" y="206" fill="var(--ink2)">髋侧摆 24:55（≈2.29 倍）</text>
+    <text x="24" y="228" fill="var(--ink2)">扭矩放大，速度</text>
+    <text x="24" y="246" fill="var(--ink2)">按同样倍数变慢</text>
+  </g>
+  <line x1="222" y1="208" x2="282" y2="228" stroke="var(--accent2)" stroke-width="1.5"/>
+</svg>
+<figcaption><b>看图要看什么</b>：单脚站立时，支撑腿髋关节（虚线圈）要扛住“质心偏在外侧”带来的力矩。站距越宽，质心离关节轴越远，这个力矩越大。自绘示意图，比例经过简化，并非论文原图。</figcaption>
+</figure>
+
+<p>作者先用一个<b>准静态</b>（quasi-static，假设动作很慢、忽略加速度和冲击）的受力模型，把参考姿态下髋侧摆要扛的力矩算成 <b>11.59 N·m</b>，然后定义一个“能力比”（capacity ratio）：两台电机通过齿轮能给出的扭矩（考虑齿轮效率、两台电机分担是否均匀）除以这个参考力矩，目标是 2。</p>
+<p>结果很说明问题：</p>
+<ul>
+<li>只加齿轮：1.44–1.52（取决于是否算上齿轮带来的 0.7 kg 增重）；</li>
+<li>只收窄站距：1.02；</li>
+<li>两者都做：第二代 2.09，第三代（又加了一个轴承组件，变重了点）2.03。</li>
+</ul>
+<p>单个旋钮都不够，组合才过线。而且加齿轮会让整机变重，变重又会抬高要扛的力矩——这种“改一处、牵全身”的连锁关系，就是腿部设计难的地方。</p>
+
+<figure>
+<img src="https://mdpi-res.com/applsci/applsci-16-10145/article_deploy/html/images/applsci-16-10145-g003-550.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Robinion Sr. 第二代腿部结构：髋侧摆、俯仰、踝侧摆齿轮组件" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="fail" href="https://www.mdpi.com/2076-3417/16/20/10145">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么</b>：第二代腿的髋侧摆（右上）、俯仰（左）、踝侧摆（右下）展开图。注意舵机不再直接当关节，而是通过一对外加的正齿轮驱动关节轴，两台舵机并排推同一根轴。图中部分为 CAD 渲染、部分为作者实拍。<br>图：Jeehyun Yang / <a href="https://www.mdpi.com/2076-3417/16/20/10145">Applied Sciences（MDPI）论文 Figure 3</a>，CC BY 3.0，原图未修改</figcaption>
+</figure>
+
+<h2><span class="n">04</span>实验结果说明了什么</h2>
+<p>机器人已经退役，作者另搭了一个台架：两台同型号 MX-106 通过 24:55 齿轮推同一根轴，轴上一根 300 mm 的杠杆，挂不同重量的砝码箱，电源 14.8 V。测了三类东西。</p>
+
+<figure>
+<img src="https://mdpi-res.com/applsci/applsci-16-10145/article_deploy/html/images/applsci-16-10145-g005-550.jpg" loading="lazy" referrerpolicy="no-referrer" alt="髋侧摆台架：两台舵机经齿轮驱动杠杆，挂砝码箱" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="fail" href="https://www.mdpi.com/2076-3417/16/20/10145">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么</b>：整套台架就是“电机 + 齿轮 + 杠杆 + 砝码”，几百块钱的东西。砝码箱挂在杠杆末端，重量 × 力臂就是关节扭矩——这是测关节带载能力最朴素、也最难作弊的方法。<br>图：Jeehyun Yang / <a href="https://www.mdpi.com/2076-3417/16/20/10145">Applied Sciences（MDPI）论文 Figure 5</a>，CC BY 3.0，原图未修改</figcaption>
+</figure>
+
+<h3>发现一：带载速度远低于“空载速度”</h3>
+<p>空杠杆时关节最快约 2.58 rad/s；挂到 23.39 N·m（约 2 倍参考力矩）时，降到 <b>1.37 rad/s</b>，比“空载上限”低了 47.8%。电机的扭矩和转速近似是一条斜线：力出得越多，转得越慢。下面这张图可以自己拖一拖减速比试试。</p>
+
+<figure>
+<div class="btns" style="align-items:center;gap:10px">
+  <label for="gr" style="font-size:15px">减速比 N = <b id="nv">2.29</b></label>
+  <input id="gr" type="range" min="1" max="4" step="0.01" value="2.2917" style="flex:1;min-width:150px">
+</div>
+<svg id="tsv" viewBox="0 0 640 360" role="img" aria-label="可调减速比的扭矩-转速曲线">
+  <g font-size="12" fill="var(--ink2)">
+    <line x1="60" y1="300" x2="620" y2="300" stroke="var(--ink2)"/>
+    <line x1="60" y1="300" x2="60" y2="20" stroke="var(--ink2)"/>
+    <text x="340" y="340" text-anchor="middle">关节输出扭矩 (N·m)</text>
+    <text x="18" y="160" transform="rotate(-90 18 160)" text-anchor="middle">关节转速 (rad/s)</text>
+    <g id="ticks"></g>
+  </g>
+  <rect id="need" fill="var(--accent2)" opacity=".18"/>
+  <polyline id="power" fill="none" stroke="var(--ink2)" stroke-dasharray="2 4"/>
+  <line id="tsl" stroke="var(--accent)" stroke-width="3"/>
+  <circle id="m0" r="6" fill="var(--ink)"/><circle id="m1" r="6" fill="var(--ink)"/>
+  <circle id="dem" r="7" fill="var(--accent2)"/>
+  <text id="demt" font-size="12" fill="var(--accent2)">参考姿态需求×2</text>
+  <text id="mt1" font-size="12" fill="var(--ink)">实测 1.37</text>
+</svg>
+<div id="readout" style="font-size:15px;line-height:1.7"></div>
+<figcaption><b>看图要看什么</b>：橙线是“这颗关节能到达的所有工作点”的边界。减速比越大，线越往右（更有力）、越往下（更慢），但线下的面积形状不变——最大机械功率与减速比无关（灰色虚线是等功率线）。黑点是 N = 2.29 时的两个实测点，绿点是“2 倍参考力矩、0.37 rad/s 侧摆速度”的需求点。自绘交互图：参数按论文台架拟合值换算（双电机合计 n·β·η·τ<sub>s</sub> ≈ 21.22 N·m，电机侧空载速度由实测 2.58 rad/s × 2.29 反推约 5.9 rad/s），线性模型仅作示意。</figcaption>
+</figure>
+
+<p>论文还给了一个反直觉但很重要的结论：<b>最大机械功率（扭矩 × 角速度）与减速比无关</b>，只取决于电机本身。减速器不“生产”力气，只是把同样的功率在“力”和“快”之间重新分配。按需求反推，论文算出这个关节最多能满足约 1.18 rad/s 的侧摆速度要求，而走路时实际估算只需要约 0.37 rad/s，所以这次“速度换力气”是划算的。</p>
+
+<h3>发现二：能扛多少，取决于扛多久</h3>
+<p>第三类实验是让杠杆水平静止“端住”砝码，最长 600 秒，电机内部温度到 70 °C 就停。</p>
+
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="不同负载下的持续保持时间">
+  <g font-size="13" fill="var(--ink)">
+    <text x="20" y="30" fill="var(--ink2)">负载（相对参考力矩）</text>
+    <text x="20" y="72">1.01 倍</text><text x="20" y="122">1.52 倍</text><text x="20" y="172">2.02 倍</text>
+    <rect x="110" y="56" width="480" height="24" rx="5" fill="var(--accent2)" opacity=".75"/>
+    <text x="580" y="73" text-anchor="end" fill="#fff">3 次全部撑满 600 s</text>
+    <rect x="110" y="106" width="480" height="24" rx="5" fill="var(--accent2)" opacity=".75"/>
+    <text x="580" y="123" text-anchor="end" fill="#fff">3 次全部撑满 600 s</text>
+    <rect x="110" y="150" width="266" height="10" rx="3" fill="var(--accent)"/>
+    <rect x="110" y="162" width="281" height="10" rx="3" fill="var(--accent)"/>
+    <rect x="110" y="174" width="315" height="10" rx="3" fill="var(--accent)"/>
+    <text x="434" y="172" fill="var(--accent)">333 / 351 / 394 s 过热停机</text>
+    <line x1="590" y1="44" x2="590" y2="196" stroke="var(--ink2)" stroke-dasharray="3 3"/>
+    <text x="590" y="214" text-anchor="middle" fill="var(--ink2)" font-size="12">600 s 上限</text>
+    <line x1="110" y1="196" x2="110" y2="44" stroke="var(--ink2)"/>
+    <text x="110" y="238" font-size="12" fill="var(--ink2)">停机时：一台 70 °C，另一台只有 51–52 °C</text>
+  </g>
+</svg>
+<figcaption><b>看图要看什么</b>：1.5 倍以内能一直端着，2 倍就只能撑 5–6 分钟。注意最后一行——两台“同样”的电机，温度差了近 20 °C。自绘图，数据来自论文 Figure 10 与正文。</figcaption>
+</figure>
+
+<h3>发现三：两台电机并不平均出力</h3>
+<p>停机时，较热那台电机承担了约 <b>68–70%</b> 的电流。作者据此推算，负载分担系数（load sharing，两台电机各出多少力的比例）大约只有 0.73，如果代回去，能力比会从 2.03 掉到约 1.48。作者特别强调这是一个“有条件的估计”（假设两台电机的扭矩常数相同），不是测出来的值——这种克制很值得学。</p>
+
+<h2><span class="n">05</span>它没说明什么，以及存疑之处</h2>
+<ul>
+<li><b>不是动态性能</b>：模型是准静态的，没有惯性、地面冲击、躯干摆动。作者自己说，结果是“设计检查”，不能证明机器人比赛中跑跳时够用。</li>
+<li><b>台架不是原机</b>：机器人退役了，台架用的是另一批同型号电机，只测了一组电机、一个减速比，每种条件只重复 3 次。</li>
+<li><b>测量条件缺口</b>：环境温度没记录；空载扫描时母线电压没记录；保持实验里还混着约 0.61 N·m 的齿轮静摩擦，测的是“整套组件”而不只是电机。</li>
+<li><b>历史故障靠回忆</b>：比赛中的故障记录是作者事后凭记忆重建的，没有当时的维修日志。</li>
+<li><b>平台本身很旧</b>：位置控制的舵机 + 外加正齿轮，和今天主流人形用的准直驱或行星减速力控关节相去甚远，具体数字不能外推。</li>
+</ul>
+<p>说句公道话：这些局限大部分是作者自己在文中列出来的。一篇把“我没测到什么”写得这么全的论文，本身就是一种示范。</p>
+
+<h2><span class="n">06</span>和执行器 / 人形硬件的关系</h2>
+<p>把舵机换成任何一颗关节执行器，这三条教训都成立，也正是客户问询里最常见的误会来源：</p>
+<ol>
+<li><b>“这颗关节最快多快？”</b>——要追问是空载还是带载、带多大的载。规格表上的最高转速通常是不出力时的端点，真实工作点在扭矩-转速曲线的斜线上，还受供电电压影响。</li>
+<li><b>“能扛 X N·m 吗？”</b>——要追问扛多久、散热条件如何。峰值扭矩（peak torque）只能短时输出，能一直输出的是持续 / 额定扭矩（continuous / rated torque），两者之间差的就是发热。这篇论文的 600 s 实验就是一个微缩版的热测试。</li>
+<li><b>“我用两颗并联，是不是就两倍？”</b>——不一定。机械耦合的两台电机出力往往不均，设计余量要为不均留空间。</li>
+<li><b>减速比是取舍，不是升级。</b>减速比越大越有力、越慢，同时反向驱动性（backdrivability，从输出端反推电机转动的难易）和冲击承受方式也会变。功率上限由电机决定，减速器只负责分配。</li>
+</ol>
+<p class="note">对 Westwood 的读者：BEAR 系列每个型号的峰值 / 持续扭矩及其条件（时长、是否液冷、电压等）以 Product Manual 与已确认资料为准，本文不引用任何具体规格。这篇论文的价值在于提供一套追问清单，而不是拿来比较产品。</p>
+
+<h2><span class="n">07</span>想深入可以接着看</h2>
+<ul>
+<li><a href="https://arxiv.org/pdf/2203.00644">Tello Leg: The Study of Design Principles and Metrics for Dynamic Humanoid Robots</a>——同样讨论人形腿的设计指标，但面向高动态运动和准直驱执行器，可以和本文的“慢速、准静态”思路对照着读。</li>
+<li><a href="https://arxiv.org/pdf/2103.04675">Bipedal Humanoid Hardware Design: A Technology Review</a>——一篇双足人形硬件综述，适合补全执行器、传动、结构的大图景。</li>
+<li>近期 arXiv 上还有一篇 <a href="https://arxiv.org/abs/2610.16604">Design and Analysis of a Nonlinear Parallel Mechanism Coupling for Dynamic Humanoid Legs</a>，讨论用非线性并联机构给人形腿分配关节驱动。本次运行未能读到正文（arXiv 限流），这里只列标题，不做评价。</li>
+</ul>
+
+<div class="glossary">
+<h2 style="border:0;margin:8px 0 0;padding:0;font-size:19px">本文术语</h2>
+<h3>堵转扭矩（stall torque）与空载转速（no-load speed）</h3>
+<p>电机扭矩-转速斜线的两个端点：一头是卡死不转时的最大力，一头是不出力时的最高速。真实工作点永远在两者之间。</p>
+<h3>减速比（gear ratio / reduction ratio）</h3>
+<p>电机转几圈、关节转一圈。比值为 N 时，扭矩约放大 N 倍（再打个效率折扣），速度缩小 N 倍。</p>
+<h3>负载分担（load sharing）</h3>
+<p>多台电机推同一根轴时，各自实际出了多少力。理想是平均分，现实常常一台累一台闲。</p>
+</div>
+
+<h2>本周其他值得一看</h2>
+<ul>
+<li><b>96 台真机“互相当老师”</b>：清华大学、无问芯穹、智元 10 月 30 日公布群体经验学习（CEL）方案，让机器人从同伴的成功和失败经验里学，在 96 台真机集群上验证；据称手机包装任务成功率从 79.2% 提到 98.3%（120 次连续测试失败 2 次）。目前为合作方发布的稿件，未见论文链接，机器人型号也未写明。<a href="https://www.qbitai.com/2026/10/506662.html">量子位</a></li>
+<li><b>给机器人一份“任务进度记忆”</b>：上海交大团队的 Value as Memory（VaM）用价值估计充当长程任务的记忆，基于 π₀.₅ 做在线后训练；宣称纸盒组装任务连续自主运行 4 小时、成功率超 95%，视频为节选。<a href="https://arxiv.org/html/2610.22368">arXiv 2610.22368</a> · <a href="https://www.163.com/dy/article/LAGD73JA0511AQHO.html">中文报道</a></li>
+<li><b>人形通用 VLA 拿第一视角视频预训练</b>：HuGe 用超过 2000 小时的第一视角人类与机器人数据预训练，输出给全身控制器的潜在动作；在宇树 G1 上，加入经过外观适配的人类数据后抓放任务成功率明显提升。10 月 25 日提交。<a href="https://arxiv.org/abs/2610.34186">arXiv 2610.34186</a></li>
+</ul>
+
+<h2>来源</h2>
+<ol class="refs">
+<li>Jeehyun Yang, “Upgrading a Humanoid Leg Without Replacing Actuators: Torque–Speed Limits and Bench Measurements”, <i>Applied Sciences</i> 16(20):10145, 2026. <a href="https://www.mdpi.com/2076-3417/16/20/10145">https://www.mdpi.com/2076-3417/16/20/10145</a></li>
+<li>量子位：从学习人类到学习机器人同伴，清华大学联合无问芯穹、智元提出具身智能规模化落地新路径（2026-10-30）<a href="https://www.qbitai.com/2026/10/506662.html">https://www.qbitai.com/2026/10/506662.html</a></li>
+<li>Value as Memory: Online Value-Guided Post-training for General Robot Policies <a href="https://arxiv.org/html/2610.22368">https://arxiv.org/html/2610.22368</a></li>
+<li>网易：机器人终于有了「任务进度记忆」！连续干活4小时，成功率超95%（2026-10-30）<a href="https://www.163.com/dy/article/LAGD73JA0511AQHO.html">https://www.163.com/dy/article/LAGD73JA0511AQHO.html</a></li>
+<li>HuGe: Scaling Humanoid Generalist Vision-Language-Action Models with Egocentric Experience <a href="https://arxiv.org/abs/2610.34186">https://arxiv.org/abs/2610.34186</a></li>
+<li>Tello Leg <a href="https://arxiv.org/pdf/2203.00644">https://arxiv.org/pdf/2203.00644</a>；Bipedal Humanoid Hardware Design: A Technology Review <a href="https://arxiv.org/pdf/2103.04675">https://arxiv.org/pdf/2103.04675</a></li>
+<li>Design and Analysis of a Nonlinear Parallel Mechanism Coupling for Dynamic Humanoid Legs <a href="https://arxiv.org/abs/2610.16604">https://arxiv.org/abs/2610.16604</a></li>
+</ol>
+<footer>机器人晚报 · 2026-10-30 · 自绘图为示意，数据以原文为准</footer>
+</main>
+<script>
+(function(){
+  var X0=60,Y0=300,W=560,H=280,TM=60,WM=6;
+  function px(t){return X0+t/TM*W} function py(w){return Y0-w/WM*H}
+  var K=21.22, WMOT=2.58*2.2917, P=K*WMOT/4;
+  var ticks=document.getElementById('ticks'),s='';
+  for(var t=0;t<=60;t+=10){s+='<text x="'+px(t)+'" y="318" text-anchor="middle">'+t+'</text><line x1="'+px(t)+'" y1="300" x2="'+px(t)+'" y2="304" stroke="currentColor"/>';}
+  for(var w=0;w<=6;w+=1){s+='<text x="52" y="'+(py(w)+4)+'" text-anchor="end">'+w+'</text>';}
+  ticks.innerHTML=s;
+  var pts=[];for(var tt=5.5;tt<=60;tt+=1){var ww=P/tt;if(ww<=6)pts.push(px(tt).toFixed(1)+','+py(ww).toFixed(1));}
+  document.getElementById('power').setAttribute('points',pts.join(' '));
+  var need=document.getElementById('need');
+  need.setAttribute('x',X0);need.setAttribute('y',py(0.37));need.setAttribute('width',px(23.18)-X0);need.setAttribute('height',Y0-py(0.37));
+  var d=document.getElementById('dem');d.setAttribute('cx',px(23.18));d.setAttribute('cy',py(0.37));
+  var dt=document.getElementById('demt');dt.setAttribute('x',px(23.18)+10);dt.setAttribute('y',py(0.37)-8);
+  var m0=document.getElementById('m0'),m1=document.getElementById('m1'),mt1=document.getElementById('mt1');
+  m0.setAttribute('cx',px(0));m0.setAttribute('cy',py(2.58));
+  m1.setAttribute('cx',px(23.39));m1.setAttribute('cy',py(1.37));
+  mt1.setAttribute('x',px(23.39)+10);mt1.setAttribute('y',py(1.37)-8);
+  var l=document.getElementById('tsl'),r=document.getElementById('readout'),nv=document.getElementById('nv');
+  function draw(N){
+    var ts=K*N,w0=WMOT/N,te=Math.min(ts,TM),we=w0*(1-te/ts);
+    l.setAttribute('x1',px(0));l.setAttribute('y1',py(Math.min(w0,WM)));
+    l.setAttribute('x2',px(te));l.setAttribute('y2',py(we));
+    var wAt=23.18<ts? w0*(1-23.18/ts):0;
+    var on=Math.abs(N-2.2917)<0.03;
+    m0.style.opacity=m1.style.opacity=mt1.style.opacity=on?1:.15;
+    nv.textContent=N.toFixed(2);
+    r.innerHTML='输出堵转扭矩 ≈ <b>'+ts.toFixed(1)+' N·m</b>　空载转速 ≈ <b>'+w0.toFixed(2)+' rad/s</b><br>扛 23.2 N·m 时还能转 ≈ <b>'+wAt.toFixed(2)+' rad/s</b>'+(wAt>=0.37?'（满足 0.37 rad/s 需求）':'（<span style="color:var(--accent)">不满足需求</span>）')+'<br>最大机械功率 ≈ <b>'+P.toFixed(1)+' W</b>（不随 N 改变）';
+  }
+  var g=document.getElementById('gr');g.addEventListener('input',function(){draw(parseFloat(g.value))});
+  draw(2.2917);
+})();
+</script>
+</body>
+</html>
