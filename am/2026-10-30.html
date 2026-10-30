@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W3-3｜FOC 磁场定向控制</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+<style>
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .pcb2{fill:#24704f} .chip{fill:#202226} .lead{fill:#c9ccd1}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .pcb2{fill:#1c4c39} .chip{fill:#0d0e10} }
+.ontxt{fill:#f2efe8}
+.trace{fill:none;stroke-width:2.2;stroke-linejoin:round}
+.hide{display:none}
+.danger{fill:#dc2626;opacity:.18}
+.dangertxt{fill:#dc2626}
+.flow text{font-size:12px}
+.flow .bx{fill:var(--bg);stroke:var(--line);stroke-width:1.2}
+.flow .bxa{fill:var(--soft);stroke:var(--accent);stroke-width:1.2}
+.flow .bxb{fill:var(--soft2);stroke:var(--accent2);stroke-width:1.2}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:4px 2px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.status{font-weight:700}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">W3 传感与驱动器 · 第 3 课</div>
+<h1>早课 W3-3｜FOC 磁场定向控制</h1>
+<p class="sub">跳上转子，让三条翻滚的正弦波，变成两个几乎不动的数。约 18 分钟。</p>
+
+<div class="lead">
+<p>1920 年代的美国通用电气（GE），电子计算机还要二十多年才出现。那时候公司里有一种职位叫“计算员”（computer）——注意，这个词指的是人，大多是女性，每天用纸、笔和计算尺解电网方程。带领其中一组计算员的，是一位叫 Edith Clarke 的工程师。她嫌算得太慢，自己发明了一种专用计算尺，1925 年拿到专利。后来她成了美国第一位以电气工程师身份受雇的女性，1947 年又成为美国第一位女性电气工程教授。</p>
+<p>同一家公司里，一位二十多岁的年轻工程师 R. H. Park，在 1929 年发表了一篇论文，干了一件听起来很玄的事：把发电机里那些一刻不停翻滚的电流、磁通，换到一个“跟着转子一起转”的坐标系里去看——在那里，它们几乎是静止的。2000 年有学者统计 20 世纪电力工程论文的影响力，这篇排第二。1943 年，Clarke 在她的教材里又写下另一个换算：把三相变成两相，今天就叫 Clarke 变换。</p>
+<p>这两个换算在纸上躺了几十年。1971 年，西门子的 Felix Blaschke 申请专利，用“磁场定向”的思路控制交流电机；可这套方法要实时做大量三角函数，用当年的电路实现又贵又复杂，通用交流驱动器要等到 1980 年代初微处理器商用以后才普及。再往后三十多年，2016 年，MIT 本科生 Ben Katz 在毕业论文里把航模、无人机用的便宜电机拿来，自己做了位置传感、功率电路和一套“磁场定向控制”程序。三年后，装着 12 个这种关节的 Mini Cheetah，成了第一台会后空翻的四足机器人。</p>
+<p>这套从 1929 年一路传下来的算法，就是今天的主角：<b>FOC，磁场定向控制（Field-Oriented Control）</b>，也叫矢量控制（vector control）。昨天我们留了个悬念：驱动器已经有了转子角度和三相电流，可三相电流是三条飞速翻滚的正弦波，怎么让它们“刚好”产生你要的力矩？今天就一路追下去。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Ben Katz 与他为 Mini Cheetah 改造的关节电机" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>Ben Katz 和他改造的关节电机。外形是扁扁的“圆饼”，原本是给无人机和航模用的。每个关节里都有一块自己的驱动板，在跑今天要讲的 FOC。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">1</span>推门的时候，手该往哪个方向使劲？</h2>
+<p>先别管电机，想想推一扇沉重的旋转门。你的手放在门板上，往哪个方向推最省力？当然是<b>垂直于门板</b>推。如果你顺着门板方向往门轴那边推，使出吃奶的劲，门也纹丝不动，力气全白费了。</p>
+<p>电机里是同一个道理。转子上贴着永磁铁，它有一个 N 极方向；定子线圈通电后，也会产生一个磁场，方向可以用一支“电流箭头”来表示。两个磁场互相吸引、排斥，转子就受到力矩。<b>当电流箭头和磁铁方向垂直时，力矩最大；当两者平行时，力矩为零</b>——这时候电流只是把磁铁“往里压”或“往外拉”，转子不转，线圈却照样发热。</p>
+<p>工程师给这两个方向起了名字：和磁铁同方向的叫 <b>d 轴</b>（direct axis，直轴），比它超前 90° 的叫 <b>q 轴</b>（quadrature axis，交轴；quadrature 就是“相差 90°”）。电流箭头沿 q 轴的那一部分叫 I<sub>q</sub>，是“干活的”；沿 d 轴的那部分叫 I<sub>d</sub>，在普通工况下基本是“白费的”。</p>
+
+<figure>
+<svg id="f1" viewBox="0 0 360 250" role="img" aria-label="转子磁铁与电流箭头夹角示意，可拖动滑块改变夹角">
+  <defs>
+    <marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--accent)"/></marker>
+    <marker id="ah1b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--accent2)"/></marker>
+    <marker id="ah1c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--ink2)"/></marker>
+    <radialGradient id="g1" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></radialGradient>
+  </defs>
+  <circle cx="130" cy="125" r="108" fill="url(#g1)"/>
+  <circle cx="130" cy="125" r="84" class="s-bg2"/>
+  <g id="f1slots"></g>
+  <circle cx="130" cy="125" r="62" class="s-can"/>
+  <path d="M130,63 A62,62 0 0 1 130,187 Z" class="s-N"/>
+  <path d="M130,63 A62,62 0 0 0 130,187 Z" class="s-S"/>
+  <text x="168" y="130" fill="#fff" font-size="20" font-weight="700">N</text>
+  <text x="82" y="130" fill="#fff" font-size="20" font-weight="700">S</text>
+  <circle cx="130" cy="125" r="6" class="s-steel"/>
+  <line x1="130" y1="125" x2="232" y2="125" class="st-ink2" stroke-dasharray="3 4" stroke-width="1"/>
+  <text x="236" y="129" class="s-ink2" font-size="12">d 轴（磁铁方向）</text>
+  <line x1="130" y1="125" x2="130" y2="18" class="st-ink2" stroke-dasharray="3 4" stroke-width="1"/>
+  <text x="136" y="16" class="s-ink2" font-size="12">q 轴</text>
+  <line id="f1d" x1="130" y1="125" x2="130" y2="125" stroke="var(--ink2)" stroke-width="3" marker-end="url(#ah1c)"/>
+  <line id="f1q" x1="130" y1="125" x2="130" y2="125" stroke="var(--accent2)" stroke-width="3" marker-end="url(#ah1b)"/>
+  <line id="f1pd" class="st-ink2" stroke-dasharray="2 3" stroke-width="1"/>
+  <line id="f1pq" class="st-ink2" stroke-dasharray="2 3" stroke-width="1"/>
+  <line id="f1i" x1="130" y1="125" x2="210" y2="125" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" marker-end="url(#ah1)"/>
+  <text id="f1il" class="s-acc" font-size="13" font-weight="700">电流箭头 10 A</text>
+  <g transform="translate(262,150)">
+    <text x="0" y="0" class="s-ink2" font-size="12">力矩</text>
+    <rect x="0" y="8" width="16" height="80" rx="4" class="s-bg" stroke="var(--line)"/>
+    <rect id="f1bar" x="0" y="88" width="16" height="0" rx="4" class="s-acc2"/>
+    <text id="f1pct" x="24" y="52" class="s-ink" font-size="15" font-weight="700">0%</text>
+  </g>
+</svg>
+<div class="ctrl"><label for="f1s">夹角</label><input id="f1s" type="range" min="0" max="180" value="30" step="1"><output id="f1o">30°</output></div>
+<div class="readout"><div>干活的 I<sub>q</sub><b id="f1rq">5.0 A</b></div><div>白费的 I<sub>d</sub><b id="f1rd">8.7 A</b></div><div>线圈发热<b>和 10 A 一样</b></div></div>
+<figcaption><b>看图要看什么：</b>拖动滑块转动橙色电流箭头。绿色是它在 q 轴上的投影，只有这一段产生力矩；灰色是 d 轴投影，不出力却照样发热。90° 时力矩最大，0° 和 180° 时为零。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比①：推旋转门</div>
+<p>手垂直门板推最有效，顺着门板推全白费，这就是 q 轴和 d 轴。</p>
+<p class="off">哪里不准：门是不动地等你推的，电机的“门”却在一直转。你得一边追着门跑，一边始终保持垂直推——这正是后面所有麻烦的来源。</p></div>
+
+<p>所以控制力矩的目标，一句话就能说完：<b>让电流箭头永远垂直于转子磁铁，并且长度刚好是你要的那么长。</b>听起来简单。难点在于：驱动器手里没有“箭头”，只有三根线。</p>
+
+<h2><span class="n">2</span>三根线上的三条正弦波，怎么变成一支箭？</h2>
+<p>无刷电机的定子有三组线圈，A、B、C，在空间上互相隔开 120°。驱动器给每组线圈通电流，每组产生一个沿自己方向的磁场，三个一合成，就是那支电流箭头。</p>
+<p>如果给三组线圈通三条相位依次差 120° 的正弦电流，会发生一件很漂亮的事：每根线的电流都在正负之间来回摆，但合成出来的箭头<b>长度不变、匀速转圈</b>。点一下下面的播放键看看。</p>
+
+<figure>
+<svg id="f2" viewBox="0 0 520 250" role="img" aria-label="三相正弦电流合成旋转箭头的动画">
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--accent)"/></marker></defs>
+  <rect x="14" y="20" width="250" height="210" rx="10" class="s-bg"/>
+  <line x1="24" y1="125" x2="256" y2="125" class="st-ink2" stroke-width=".8"/>
+  <text x="24" y="38" class="s-ink2" font-size="12">三根线上的电流（随时间）</text>
+  <path id="f2a" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+  <path id="f2b" fill="none" stroke="var(--accent2)" stroke-width="2.2"/>
+  <path id="f2c" fill="none" stroke="var(--blue)" stroke-width="2.2"/>
+  <line id="f2cur" y1="44" y2="222" class="st-ink" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <circle cx="395" cy="128" r="98" class="s-bg" />
+  <circle cx="395" cy="128" r="75" fill="none" class="st-ink2" stroke-dasharray="2 4" stroke-width=".8"/>
+  <line x1="395" y1="128" x2="500" y2="128" stroke="var(--accent)" stroke-width="1" opacity=".35"/>
+  <line x1="395" y1="128" x2="342.5" y2="37" stroke="var(--accent2)" stroke-width="1" opacity=".35"/>
+  <line x1="395" y1="128" x2="342.5" y2="219" stroke="var(--blue)" stroke-width="1" opacity=".35"/>
+  <text x="482" y="120" class="s-acc" font-size="12" font-weight="700">A</text>
+  <text x="330" y="40" class="s-acc2" font-size="12" font-weight="700">B</text>
+  <text x="330" y="230" fill="var(--blue)" font-size="12" font-weight="700">C</text>
+  <line id="f2va" x1="395" y1="128" stroke="var(--accent)" stroke-width="3" opacity=".75"/>
+  <line id="f2vb" stroke="var(--accent2)" stroke-width="3" opacity=".75"/>
+  <line id="f2vc" stroke="var(--blue)" stroke-width="3" opacity=".75"/>
+  <line id="f2r" x1="395" y1="128" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round" marker-end="url(#ah2)"/>
+  <circle cx="395" cy="128" r="4" class="s-ink"/>
+  <text x="300" y="20" class="s-ink2" font-size="12">三个分量（彩色）首尾相加 = 合成箭头（黑）</text>
+</svg>
+<div class="ctrl"><button id="f2p" type="button">▶ 播放</button><label for="f2s" style="min-width:auto">时刻</label><input id="f2s" type="range" min="0" max="360" value="40"><output id="f2o">40°</output></div>
+<div class="legend"><span><i style="background:var(--accent)"></i>A 相</span><span><i style="background:var(--accent2)"></i>B 相</span><span><i style="background:var(--blue)"></i>C 相</span></div>
+<figcaption><b>看图要看什么：</b>左边虚线扫过三条波，右边三根彩色分量跟着伸缩、正负翻转；但它们首尾相接的合成箭头，长度始终不变，只是匀速转圈。不点播放，拖“时刻”滑块也能一格一格看。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比②：三个人拉一个铁环</div>
+<p>三个人站成等边三角形，各拉一根绳拴着中间的铁环，按节拍一个接一个地加劲、松劲。铁环受到的合力，就会绕着圈转。</p>
+<p class="off">哪里不准：绳子只能拉不能推，线圈电流却可以反向，相当于“推”。而且三相电流加起来始终为零，三个人的力气不是各自独立的。</p></div>
+
+<p>最后那句“三相加起来为零”，就是 Clarke 变换的出发点。用一句人话说：<b>三个数里只有两个是独立的，那就干脆换成两根互相垂直的轴来描述同一支箭头。</b></p>
+<p class="say">Clarke 变换：把三相 A、B、C 换成两根垂直的固定轴 α、β</p>
+<div class="formula">i<sub>α</sub> = i<sub>a</sub>，　i<sub>β</sub> = (i<sub>a</sub> + 2i<sub>b</sub>) / √3<small>（等幅值形式，前提是 i<sub>a</sub> + i<sub>b</sub> + i<sub>c</sub> = 0）</small></div>
+<p>这也解释了昨天的一个细节：Mini Cheetah 的驱动板只在两相上放了分流电阻。第三相不用量，用“三者之和为零”算出来就行。</p>
+
+<h2><span class="n">3</span>跳上转子：为什么一换坐标，正弦波就“停”了？</h2>
+<p>Clarke 变换之后，三条波变成了两条，可它们还是正弦波，而且转得飞快。来算一笔<b>教学假设</b>的账：很多无人机外转子电机是 14 极，也就是 7 对极。电机机械上转一圈，电流要变化 7 个周期。如果关节电机转到 3000 转/分，也就是每秒 50 圈，电流就是 50 × 7 = <b>350 Hz</b> 的正弦波。</p>
+<p>让一个控制器去紧紧追一条 350 Hz、而且频率还随转速变来变去的正弦波，就像站在站台上，给一列开过去的高铁车窗里的人递一杯水——时机差一点，水就洒了。</p>
+<p>Park 在 1929 年给出的办法是：<b>别站在站台上了，跳上车。</b>建一个跟着转子一起转的坐标系，d 轴永远对准磁铁，q 轴永远垂直于它。转子转多快，这套坐标就转多快。从这里看出去，那支同步旋转的电流箭头是<b>静止</b>的，于是两条正弦波变成了两个几乎不变的数：I<sub>d</sub> 和 I<sub>q</sub>。</p>
+<p class="say">Park 变换：用转子的电角度 θ，把固定轴上的 α、β 旋转到转子轴上的 d、q</p>
+<div class="formula">I<sub>d</sub> = i<sub>α</sub>cos θ + i<sub>β</sub>sin θ<br>I<sub>q</sub> = −i<sub>α</sub>sin θ + i<sub>β</sub>cos θ<small>θ 来自编码器——这就是第一课讲编码器的原因</small></div>
+
+<figure>
+<svg id="f3" viewBox="0 0 520 300" role="img" aria-label="同一组电流在定子视角和转子视角下的波形对比">
+  <rect x="10" y="10" width="500" height="132" rx="10" class="s-bg"/>
+  <rect x="10" y="158" width="500" height="132" rx="10" class="s-bg"/>
+  <text x="22" y="30" class="s-ink2" font-size="12">站在定子上看：三相电流 i<tspan font-size="9" dy="3">a</tspan><tspan dy="-3">、i</tspan><tspan font-size="9" dy="3">b</tspan><tspan dy="-3">、i</tspan><tspan font-size="9" dy="3">c</tspan></text>
+  <text x="22" y="178" class="s-ink2" font-size="12">坐在转子上看：I<tspan font-size="9" dy="3">d</tspan><tspan dy="-3">（灰）和 I</tspan><tspan font-size="9" dy="3">q</tspan><tspan dy="-3">（绿）</tspan></text>
+  <line x1="20" y1="80" x2="500" y2="80" class="st-ink2" stroke-width=".6"/>
+  <line x1="20" y1="250" x2="500" y2="250" class="st-ink2" stroke-width=".6"/>
+  <path id="f3a" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+  <path id="f3b" fill="none" stroke="var(--accent2)" stroke-width="1.8"/>
+  <path id="f3c" fill="none" stroke="var(--blue)" stroke-width="1.8"/>
+  <path id="f3d" fill="none" stroke="var(--ink2)" stroke-width="2.4"/>
+  <path id="f3q" fill="none" stroke="var(--accent2)" stroke-width="3"/>
+  <text x="470" y="245" class="s-ink2" font-size="11">0 A</text>
+</svg>
+<div class="ctrl"><button id="f3p" type="button">▶ 播放</button></div>
+<div class="ctrl"><label for="f3t">目标力矩</label><input id="f3t" type="range" min="0" max="100" value="60"><output id="f3to">60%</output></div>
+<div class="ctrl"><label for="f3w">转速</label><input id="f3w" type="range" min="1" max="10" value="4"><output id="f3wo">4 档</output></div>
+<figcaption><b>看图要看什么：</b>同一组电流，两种看法。播放后拖“目标力矩”：上面三条波的振幅跟着变；下面绿线 I<sub>q</sub> 只是平稳地上下挪一下。再拖“转速”：上面的波越挤越密，下面的绿线纹丝不动。控制器只要盯着下面那条线。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比③：在高铁上递水</div>
+<p>站台上的人看，那杯水以 300 公里时速飞过；车厢里的人看，水杯就在小桌板上，纹丝不动，伸手就能递。</p>
+<p class="off">哪里不准：在车厢里，你天然知道自己和车一起动；驱动器却没有这种“天然”，它必须每时每刻从编码器读出转子的精确角度，才能把坐标系“钉”在转子上。角度一错，就等于你以为自己在车上，其实还在站台。</p></div>
+
+<h2><span class="n">4</span>一轮完整的 FOC，几十微秒里发生了什么？</h2>
+<p>有了 I<sub>d</sub>、I<sub>q</sub> 这两个“静止的数”，控制就变得像调电动车的油门一样朴素：想要多少力矩，就给 I<sub>q</sub> 定一个目标；I<sub>d</sub> 通常定成 0。然后用两个最基本的比例-积分控制器（PI，下周 W4 细讲），哪个偏小就加一点电压，偏大就减一点。</p>
+<p>算出来的电压是 d、q 坐标里的，还得原路“翻译”回去：反 Park 变换回到 α、β，再用空间矢量调制（SVPWM，昨天提过）换成三个桥臂的占空比，交给六只开关管。下一个 PWM 周期，重新量电流，重新算一遍。</p>
+
+<figure>
+<svg class="flow" viewBox="0 0 360 470" role="img" aria-label="FOC 控制流程图">
+  <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--ink2)"/></marker>
+  <marker id="ah4b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--accent2)"/></marker></defs>
+  <text x="180" y="18" text-anchor="middle" class="s-ink" font-size="13" font-weight="700">每个 PWM 周期跑一圈</text>
+  <!-- forward path right column -->
+  <rect x="196" y="32" width="150" height="40" rx="10" class="bxa"/><text x="271" y="50" text-anchor="middle" class="s-acc" font-weight="700">① 目标</text><text x="271" y="65" text-anchor="middle" class="s-ink2">I<tspan dy="3" font-size="9">q</tspan><tspan dy="-3">* = 要的力矩 ÷ K</tspan><tspan dy="3" font-size="9">t</tspan><tspan dy="-3">，I</tspan><tspan dy="3" font-size="9">d</tspan><tspan dy="-3">* = 0</tspan></text>
+  <rect x="196" y="98" width="150" height="40" rx="10" class="bx"/><text x="271" y="116" text-anchor="middle" class="s-ink" font-weight="700">② 两个 PI 控制器</text><text x="271" y="131" text-anchor="middle" class="s-ink2">比较误差 → 算出 V<tspan dy="3" font-size="9">d</tspan><tspan dy="-3">、V</tspan><tspan dy="3" font-size="9">q</tspan></text>
+  <rect x="196" y="164" width="150" height="40" rx="10" class="bx"/><text x="271" y="182" text-anchor="middle" class="s-ink" font-weight="700">③ 反 Park</text><text x="271" y="197" text-anchor="middle" class="s-ink2">转子坐标 → 固定坐标</text>
+  <rect x="196" y="230" width="150" height="40" rx="10" class="bx"/><text x="271" y="248" text-anchor="middle" class="s-ink" font-weight="700">④ SVPWM</text><text x="271" y="263" text-anchor="middle" class="s-ink2">算出三个占空比</text>
+  <rect x="196" y="296" width="150" height="40" rx="10" class="bx"/><text x="271" y="314" text-anchor="middle" class="s-ink" font-weight="700">⑤ 六管逆变桥</text><text x="271" y="329" text-anchor="middle" class="s-ink2">开关 → 三相电压</text>
+  <line x1="271" y1="72" x2="271" y2="96" class="st-ink2" stroke-width="1.4" marker-end="url(#ah4)"/>
+  <line x1="271" y1="138" x2="271" y2="162" class="st-ink2" stroke-width="1.4" marker-end="url(#ah4)"/>
+  <line x1="271" y1="204" x2="271" y2="228" class="st-ink2" stroke-width="1.4" marker-end="url(#ah4)"/>
+  <line x1="271" y1="270" x2="271" y2="294" class="st-ink2" stroke-width="1.4" marker-end="url(#ah4)"/>
+  <!-- motor -->
+  <g transform="translate(180,408)">
+    <circle r="44" class="s-can"/><circle r="34" class="s-bg2"/>
+    <g fill="var(--copper)"><rect x="-4" y="-42" width="8" height="10" rx="2"/><rect x="-4" y="32" width="8" height="10" rx="2"/><rect x="32" y="-4" width="10" height="8" rx="2"/><rect x="-42" y="-4" width="10" height="8" rx="2"/><rect x="21" y="-30" width="8" height="8" rx="2" transform="rotate(45 25 -26)"/><rect x="-29" y="-30" width="8" height="8" rx="2" transform="rotate(-45 -25 -26)"/><rect x="21" y="22" width="8" height="8" rx="2" transform="rotate(-45 25 26)"/><rect x="-29" y="22" width="8" height="8" rx="2" transform="rotate(45 -25 26)"/></g>
+    <path d="M0,-24A24,24 0 0 1 0,24Z" class="s-N"/><path d="M0,-24A24,24 0 0 0 0,24Z" class="s-S"/>
+    <circle r="4" class="s-steel"/>
+    <text y="62" text-anchor="middle" class="s-ink" font-weight="700">电机</text>
+  </g>
+  <path d="M271,336 V380 H228" fill="none" class="st-ink2" stroke-width="1.4" marker-end="url(#ah4)"/>
+  <!-- feedback left column -->
+  <rect x="14" y="296" width="150" height="40" rx="10" class="bxb"/><text x="89" y="314" text-anchor="middle" class="s-acc2" font-weight="700">⑥ 量电流</text><text x="89" y="329" text-anchor="middle" class="s-ink2">分流电阻读 i<tspan dy="3" font-size="9">a</tspan><tspan dy="-3">、i</tspan><tspan dy="3" font-size="9">b</tspan></text>
+  <rect x="14" y="230" width="150" height="40" rx="10" class="bxb"/><text x="89" y="248" text-anchor="middle" class="s-acc2" font-weight="700">⑦ Clarke</text><text x="89" y="263" text-anchor="middle" class="s-ink2">三相 → α、β</text>
+  <rect x="14" y="164" width="150" height="40" rx="10" class="bxb"/><text x="89" y="182" text-anchor="middle" class="s-acc2" font-weight="700">⑧ Park</text><text x="89" y="197" text-anchor="middle" class="s-ink2">α、β → I<tspan dy="3" font-size="9">d</tspan><tspan dy="-3">、I</tspan><tspan dy="3" font-size="9">q</tspan></text>
+  <rect x="14" y="32" width="150" height="40" rx="10" class="bxb"/><text x="89" y="50" text-anchor="middle" class="s-acc2" font-weight="700">⑨ 编码器</text><text x="89" y="65" text-anchor="middle" class="s-ink2">机械角 × 极对数 = θ</text>
+  <path d="M132,380 H89 V338" fill="none" stroke="var(--accent2)" stroke-width="1.4" marker-end="url(#ah4b)"/>
+  <line x1="89" y1="296" x2="89" y2="272" stroke="var(--accent2)" stroke-width="1.4" marker-end="url(#ah4b)"/>
+  <line x1="89" y1="230" x2="89" y2="206" stroke="var(--accent2)" stroke-width="1.4" marker-end="url(#ah4b)"/>
+  <path d="M164,184 H180 V118 H194" fill="none" stroke="var(--accent2)" stroke-width="1.4" marker-end="url(#ah4b)"/>
+  <text x="168" y="150" class="s-acc2" font-size="11">反馈</text>
+  <!-- theta lines -->
+  <line x1="89" y1="72" x2="89" y2="162" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#ah4)"/>
+  <path d="M164,52 H182 V184 H194" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#ah4)"/>
+  <text x="20" y="120" class="s-acc" font-size="11">θ（电角度）</text>
+  <text x="20" y="134" class="s-acc" font-size="11">同时喂给 ⑧ 和 ③</text>
+</svg>
+<figcaption><b>看图要看什么：</b>右列往下是“下命令”，左列往上是“看结果”，两列在 ② 汇合比较。注意橙色虚线：编码器的角度 θ 同时喂给 Park 和反 Park，两头都离不开它。Mini Cheetah 的驱动板每 25 微秒（40 kHz）跑完这一整圈。</figcaption>
+</figure>
+
+<p>整套流程里，真正决定力矩的只有一个数。用一句人话说：<b>力矩只认 I<sub>q</sub>，和 I<sub>q</sub> 成正比。</b></p>
+<p class="say">表贴式永磁同步电机的力矩公式（p 是极对数，ψ 是磁铁磁链）</p>
+<div class="formula">T = (3/2) · p · ψ · I<sub>q</sub> = K<sub>t</sub> · I<sub>q</sub><small>规格书上的“力矩常数 K<sub>t</sub>”，说的就是这个比例</small></div>
+<p>那 I<sub>d</sub> 永远是 0 吗？也不是。电机转得很快时，反电动势（第一单元讲过）会顶到母线电压，电流灌不进去。这时可以故意给一个<b>负的 I<sub>d</sub></b>，削弱磁铁的有效磁场，让电机转得更快，这叫<b>弱磁</b>（field weakening）。</p>
+
+<div class="analogy"><div class="t">类比④：电动车的“弱磁提速”</div>
+<p>国内不少电动车控制器把这招做成一个“弱磁/超速”功能，开了以后极速能高一截，但续航会掉。原因就在这：负 I<sub>d</sub> 本身不出力矩，只是花电流换转速。</p>
+<p class="off">哪里不准：电动车是为了跑得快，机器人关节用弱磁更多是为了在电压受限时扩展高速段，而且要严格限制，否则电流大、发热大，失控时还有退磁和过压风险。</p></div>
+
+<h2><span class="n">5</span>不用 FOC 行不行？</h2>
+<p>行，便宜的方案叫<b>六步换相</b>，也叫方波控制：根据霍尔传感器知道转子大致在哪个 60° 扇区，就给对应的两相通电，每转过 60° 跳一次。它不需要做三角函数，算力要求低。</p>
+<p>代价是：电流箭头不是平滑转圈，而是一格一格地<b>跳</b>，和磁铁的夹角在 60°~120° 之间来回晃（回头看图 1，力矩在 sin60°≈87% 和 100% 之间抖）。这就是力矩脉动。电动车圈子里，“正弦波控制器比方波控制器更安静、起步更顺”几乎是常识，背后就是这个原因。</p>
+
+<div class="analogy"><div class="t">类比⑤：骑车蹬踏</div>
+<p>新手骑车只在脚踏转到前面时猛踩一下，车一顿一顿；老手讲究“画圆踩踏”，一整圈都在平顺地出力。方波像新手，FOC 像老手。</p>
+<p class="off">哪里不准：人腿的力量本来就随角度变化，而 FOC 理论上可以在每个角度都给出完全一样的力矩。</p></div>
+
+<p>对电动车来说，这点抖动只是“有点吵”。对机器人关节就不一样了：腿落地、手握东西、人推机器人一把，关节都要在低速甚至静止时精确地给出某个力矩。一顿一顿的力矩，会直接变成振动、噪声和控制误差。这也是为什么准直驱路线（W2 讲过）通常都配 FOC——减速比低，电机的每一丝力矩脉动都会直接传到输出端。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-00-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT 新闻稿中的 Mini Cheetah 配图" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>Mini Cheetah 每条腿 3 个关节、全身 12 个，每个关节电机后面配一个 6:1 的减速器，减速比很低。空翻落地那一下，靠的就是每个关节都能快速、平顺地给出指定力矩。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<div class="box cold"><div class="t">冷知识：FOC 的两块基石，出自同一家公司的同一个年代</div>
+<p>Park 和 Clarke 在 1920 年代都在 GE 做电力系统。Park 的 1929 年论文《同步电机的双反应理论》在 2000 年一项“20 世纪电力工程高影响力论文”统计里排名第二，他写这篇时才二十六七岁。他们当年关心的是发电机和电网稳定，压根没想过机器狗。一个世纪后，你买的扫地机器人、电动车、机器人关节里，每秒都在把他们的公式算上几千到几万遍。</p></div>
+
+<h2><span class="n">6</span>角度差几度，会出什么事？</h2>
+<p>回到高铁递水：整个 FOC 的地基，是“坐标系钉在转子上”。钉得准不准，全看角度 θ。这里有个容易被忽略的放大效应：FOC 用的是<b>电角度</b>，等于机械角度 × 极对数。还用前面 7 对极的教学假设：编码器零点偏了 2°（机械），换成电角度就是 <b>14°</b>。</p>
+<p>角度错了，驱动器以为自己在沿 q 轴推，实际上推歪了。歪多少，有用的力矩就按 cos(误差) 打折，剩下的变成 d 轴电流白白发热。下面这个实验，拿 Koala BEAR KB02 的力矩常数做个推算：THEMIS 用户手册表 4.1 写的是 0.35 Nm/A；这里假设它就是“每安培 I<sub>q</sub> 对应的输出力矩”，给 10 A。<span class="tag">推算</span></p>
+
+<figure>
+<svg id="f5" viewBox="0 0 360 230" role="img" aria-label="电角度误差对力矩影响的交互实验">
+  <defs>
+    <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--accent)"/></marker>
+    <radialGradient id="g5" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></radialGradient>
+  </defs>
+  <circle cx="120" cy="118" r="100" fill="url(#g5)"/>
+  <circle cx="120" cy="118" r="78" class="s-bg2"/>
+  <g id="f5rot">
+    <path d="M120,62 A56,56 0 0 1 120,174 Z" class="s-N"/>
+    <path d="M120,62 A56,56 0 0 0 120,174 Z" class="s-S"/>
+    <text x="150" y="124" fill="#fff" font-size="17" font-weight="700">N</text>
+  </g>
+  <line x1="120" y1="118" x2="216" y2="118" class="st-ink" stroke-width="1.2"/>
+  <text x="196" y="110" class="s-ink" font-size="11">真 d</text>
+  <line id="f5gd" x1="120" y1="118" x2="216" y2="118" class="st-acc" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text id="f5gdl" class="s-acc" font-size="11">驱动器以为的 d</text>
+  <line id="f5i" x1="120" y1="118" x2="120" y2="40" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" marker-end="url(#ah5)"/>
+  <circle cx="120" cy="118" r="5" class="s-steel"/>
+  <g transform="translate(250,40)">
+    <text x="0" y="0" class="s-ink2" font-size="12">实际力矩</text>
+    <line x1="0" y1="90" x2="100" y2="90" class="st-ink2" stroke-width=".8"/>
+    <rect x="30" y="12" width="26" height="78" rx="4" class="s-bg" stroke="var(--line)"/>
+    <rect id="f5bar" x="30" y="12" width="26" height="78" rx="4" class="s-acc2"/>
+    <text x="0" y="96" class="s-ink2" font-size="10">0</text>
+    <text id="f5val" x="0" y="156" class="s-ink" font-size="16" font-weight="700">3.50 Nm</text>
+  </g>
+</svg>
+<div class="ctrl"><label for="f5s">零点误差</label><input id="f5s" type="range" min="-180" max="180" value="0" step="1"><output id="f5o">0° 电</output></div>
+<div class="readout"><div>折合机械角（7 对极）<b id="f5m">0.0°</b></div><div>白费的 I<sub>d</sub><b id="f5d">0.0 A</b></div><div>状态<b id="f5st" class="status">正常</b></div></div>
+<figcaption><b>看图要看什么：</b>橙色虚线是驱动器“以为”的磁铁方向，它把电流箭头放在虚线的 90° 处。误差小时只是打折；到 90° 力矩归零；超过 90°，力矩反向——你让它往前推，它往后拉。</figcaption>
+</figure>
+
+<p>超过 90° 那段最危险。设想位置环发现关节没往目标走，于是加大电流指令；可是电流越大，反向力矩越大，关节离目标越远……一个正反馈就这么形成了，表现出来就是“飞车”或者剧烈抖动。所以几乎每一款 FOC 驱动器在出厂或刷固件后都要做一步：<b>把编码器读数和转子磁极的真实方向对齐</b>，常被叫作电角度零点、编码器偏移（encoder offset）校准。</p>
+
+<div class="box fail"><div class="t">翻车现场：重启之后，电机突然狂转</div>
+<p>开源驱动器 ODrive 的论坛上，这类帖子很常见。有一位用户用的是增量式编码器（W3-1 讲过：它上电时不知道自己在哪），第一次校准后一切正常；但断电重启、切到闭环位置控制时，电机<b>有时</b>会突然不受控地狂转。他自己的怀疑是：两次上电之间用手拧过电机。另一个帖子里，用户校准时没报任何错，一给速度指令，电机却飞快地转，编码器读到的速度是指令的七十多倍，还是负的。</p>
+<p>帖子摘要里看不到最终结论，我们不替它下结论。但这类症状正好对上今天这一节：<b>只要 θ 和真实磁极方向错开太多，FOC 就会把力推到错误的方向。</b>还有一个机械臂团队在论坛上说，他们的关节有限位，没法每次开机都让电机转一圈去找零点——这正是为什么很多机器人关节宁愿多花钱用绝对式编码器，或者带 Z 相索引信号的编码器。</p></div>
+
+<h2><span class="n">7</span>工作里会在哪遇到？</h2>
+<div class="box work">
+<p><b>规格书上：</b>“Torque Constant K<sub>t</sub>（Nm/A）”就是图 4 下面那个公式的比例。THEMIS 用户手册表 4.1 列了各型号 BEAR 的 K<sub>t</sub>，比如 KB02 是 0.35 Nm/A、PB02 是 0.67 Nm/A。回客户时注意，手册里的 K<sub>t</sub> 是在输出端还是电机端、对应什么电流定义，需要以手册定义为准，不要自己换算后当规格发出去。</p>
+<p><b>BEAR 校准工具里：</b>《BEAR Firmware Update &amp; Calibration》写明，两种情况需要重新校准：刷完固件后，以及执行器<b>异常发热或保持不住位置</b>时。校准步骤里有 ADC OFFSET（从名字看，对应昨天讲的电流采样零点）和 ELECTRIC OFFSET（从名字看，很可能对应今天的电角度对齐，具体以工程团队解释为准）。手册还特别提醒：ELECTRIC OFFSET 等步骤执行时执行器会通电转动，必须按安全确认窗口的要求操作。看完今天这课，你应该能体会到：为什么“发热、保持不住位置”会和“零点”联系在一起——角度偏了，电流在白费，力矩又打了折。</p>
+<p><b>客户邮件常见问法：</b></p>
+<p class="en">“Does the driver use FOC or trapezoidal commutation?”<br>“What is the current loop bandwidth / update rate?”<br>“Is the torque constant measured at the motor or at the output?”</p>
+<p>第一问、第三问看起来简单，但具体实现和测量点要以手册或工程团队确认为准；第二问一定是 [待技术确认]，今天的知识只让你听懂它在问什么。</p>
+</div>
+
+<h2><span class="n">8</span>自测三题</h2>
+<p class="q">1. 展会上，一位客户指着执行器问：“你们的电机只有三根线，为什么说它能精确控制力矩？”你会怎么用一两句话解释？</p>
+<details><summary>看答案</summary><p>驱动器每个周期测量相电流，借助编码器给出的转子角度，把三相电流换算到跟着转子转的坐标系里，得到决定力矩的 I<sub>q</sub>，再用电流环把 I<sub>q</sub> 稳定在目标值上；力矩约等于 K<sub>t</sub> × I<sub>q</sub>。英文可以说："The driver measures the phase currents and uses the rotor angle from the encoder to transform them into the rotor frame, then regulates the torque-producing current. That's called field-oriented control."（是否适用于具体某款驱动器，以手册为准。）</p></details>
+<p class="q">2. 一封邮件里写着：“After re-flashing the firmware, the actuator gets hot even when holding still, and it can't hold position.” 结合今天的课，你最先想到什么？下一步该怎么做？</p>
+<details><summary>看答案</summary><p>刷固件后需要重新校准，这正是《BEAR Firmware Update &amp; Calibration》里列的两种需要校准的情况。原理上，如果电角度零点不对，电流会有一部分变成不出力的 I<sub>d</sub>，表现为发热大、力矩打折、保持不住位置。下一步：先确认客户是否完成了完整校准（包括 ELECTRIC OFFSET 等步骤），提醒校准时执行器会转动、要按安全确认操作；如果校准后仍有问题，收集型号、固件版本、现象，转给工程团队，不要在邮件里断言原因。</p></details>
+<p class="q">3. 一台电机有 7 对极，编码器零点比真实磁极偏了 6°（机械角）。驱动器给了 10 A 的 I<sub>q</sub> 指令，实际力矩大约是正常值的百分之几？</p>
+<details><summary>看答案</summary><p>电角度误差 = 6 × 7 = 42°。实际出力的电流 ≈ 10 × cos42° ≈ 7.4 A，力矩约为正常的 74%；另外约 10 × sin42° ≈ 6.7 A 变成 d 轴电流，只发热不出力。机械角的小误差，被极对数放大了 7 倍。</p></details>
+
+<h2><span class="n">9</span>中英术语对照</h2>
+<table class="terms">
+<tr><td>磁场定向控制 / 矢量控制</td><td>Field-Oriented Control (FOC) / vector control</td></tr>
+<tr><td>直轴 / 交轴</td><td>d-axis (direct) / q-axis (quadrature)</td></tr>
+<tr><td>交轴电流（产生力矩）</td><td>q-axis current, I<sub>q</sub> (torque-producing current)</td></tr>
+<tr><td>Clarke 变换</td><td>Clarke transform (αβ transform)</td></tr>
+<tr><td>Park 变换</td><td>Park transform (dq transform)</td></tr>
+<tr><td>电角度 / 机械角度</td><td>electrical angle / mechanical angle</td></tr>
+<tr><td>极对数</td><td>pole pairs</td></tr>
+<tr><td>电流环</td><td>current loop</td></tr>
+<tr><td>弱磁</td><td>field weakening</td></tr>
+<tr><td>六步换相（方波控制）</td><td>six-step / trapezoidal commutation</td></tr>
+<tr><td>力矩脉动</td><td>torque ripple</td></tr>
+<tr><td>编码器偏移校准</td><td>encoder offset calibration</td></tr>
+</table>
+
+<div class="tease"><b>下一课预告：</b>人形机器人从站姿蹲下去的时候，膝关节电机其实是被“压着转”的——这时它不再是电动机，而是一台发电机。那些被“发”出来的电，会冲回驱动器的母线上，电压一路往上涨……它们最后去了哪儿？涨过头会怎样？顺便，十几个关节的驱动器又是怎么和主控“说话”的？下一课：母线电压、能量回馈与通信总线。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://spectrum.ieee.org/edith-clarke-modern-power-distribution">IEEE Spectrum：Edith Clarke: Architect of Modern Power Distribution</a>：GE 计算员团队、1925 年计算尺专利、1922 年起任电气工程师、1947 年任 UT Austin 教授</li>
+<li><a href="https://arxiv.org/pdf/1807.08720">Data Analytics Perspective of the Clarke and Related Transforms in Power Grid Analysis（arXiv 1807.08720）</a>：Clarke 变换出自 Clarke 1943 年著作《Circuit Analysis of A.C. Power Systems》、Park 变换出自 1929 年论文</li>
+<li><a href="https://en.wikipedia.org/wiki/Robert_H._Park">Wikipedia：Robert H. Park</a>：生于 1902 年、在 GE 工作、1929 年论文在 Heydt 等（2000）统计中排名第二</li>
+<li><a href="https://patents.google.com/patent/CA953777A/GUID-C5D7CC26-194C-43D0-91A1-9AE8C70A9BFF.html">Google Patents CA953777A：Apparatus for the field-related regulation of asynchronous machines</a>：发明人 Felix Blaschke，Siemens AG，优先权日 1971-02-12</li>
+<li><a href="https://cavac.at/cavacopedia/Vector%20control%20%28motor%29">Vector control (motor) 词条（镜像）</a>：Hasse 与 Blaschke 自 1968 年起开创矢量控制；通用交流驱动器在 1980 年代初微处理器商用后普及</li>
+<li><a href="https://dspace.mit.edu/handle/1721.1/105580">Benjamin G. Katz, Low cost, high performance actuators for dynamic robots, MIT 本科论文（2016）</a>：用航模/无人机电机，开发位置传感、功率电路与 FOC</li>
+<li><a href="https://dspace.mit.edu/handle/1721.1/118671">Benjamin G. Katz, A Low Cost Modular Actuator for Dynamic Robots, MIT 硕士论文（2018）</a>：40 kHz 开关与电流环、两相分流采样</li>
+<li><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News：MIT's mini cheetah is the first four-legged robot to do a backflip（2019-03-04）</a>：12 个关节、6:1 减速、无人机电机改造；照片与 CC BY-NC-ND 3.0 授权</li>
+<li><a href="https://ride1up.com/blogs/sine-wave-controller-benefits/">Ride1Up：Sine-Wave Controller Benefits</a>：电动车正弦波控制器更安静、更平顺</li>
+<li><a href="https://discourse.odriverobotics.com/t/uncontrollably-spin-after-offset-calibration/1413">ODrive 论坛：Uncontrollably spin after offset calibration</a>；<a href="https://discourse.odriverobotics.com/t/motor-spins-uncontrollably/3166">Motor spins uncontrollably</a>；<a href="https://discourse.odriverobotics.com/t/avoiding-calibration-at-startup/620">Avoiding calibration at startup</a></li>
+<li>项目资料 THEMIS User Manual（user-manual.md）表 4.1：BEAR 各型号 K<sub>t</sub>（KB02 0.35 Nm/A、PB02 0.67 Nm/A）</li>
+<li>项目资料《BEAR Firmware Update &amp; Calibration》v1.1（firmware-calibration.md）：需要校准的情形、ADC OFFSET / ELECTRIC OFFSET 步骤与安全提示</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id);};
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function f1(x){return (Math.round(x*10)/10).toFixed(1);}
+function P(x,y){return x.toFixed(1)+','+y.toFixed(1);}
+
+/* Fig1 */
+(function(){
+  var g=$('f1slots'),s='';
+  for(var k=0;k<12;k++){var a=k*Math.PI/6,x=130+96*Math.cos(a),y=125+96*Math.sin(a);
+    s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="7" fill="var(--copper)" stroke="var(--copper2)" stroke-width="1"/>';}
+  g.innerHTML=s;
+  var cx=130,cy=125,L=88;
+  function draw(){
+    var th=+$('f1s').value,r=th*Math.PI/180;
+    var ex=cx+L*Math.cos(r),ey=cy-L*Math.sin(r);
+    var d=L*Math.cos(r),q=L*Math.sin(r);
+    $('f1i').setAttribute('x2',ex);$('f1i').setAttribute('y2',ey);
+    $('f1d').setAttribute('x2',cx+d);$('f1d').setAttribute('y2',cy);
+    $('f1q').setAttribute('x2',cx);$('f1q').setAttribute('y2',cy-q);
+    $('f1pd').setAttribute('x1',ex);$('f1pd').setAttribute('y1',ey);$('f1pd').setAttribute('x2',cx+d);$('f1pd').setAttribute('y2',cy);
+    $('f1pq').setAttribute('x1',ex);$('f1pq').setAttribute('y1',ey);$('f1pq').setAttribute('x2',cx);$('f1pq').setAttribute('y2',cy-q);
+    var lx=ex+(Math.cos(r)>=0?6:-6),ly=ey-8;var t=$('f1il');t.setAttribute('x',lx);t.setAttribute('y',Math.max(14,ly));t.setAttribute('text-anchor',Math.cos(r)>=0?'start':'end');
+    var sp=Math.sin(r);$('f1bar').setAttribute('height',80*sp);$('f1bar').setAttribute('y',88-80*sp);
+    $('f1pct').textContent=Math.round(sp*100)+'%';
+    $('f1o').textContent=th+'°';
+    $('f1rq').textContent=f1(10*sp)+' A';$('f1rd').textContent=f1(Math.abs(10*Math.cos(r)))+' A';
+  }
+  $('f1s').addEventListener('input',draw);draw();
+})();
+
+/* Fig2 */
+(function(){
+  var x0=24,x1=256,yc=125,A=70,cx=395,cy=128,R=50;
+  function wave(ph){var s='';for(var i=0;i<=116;i++){var u=i/116,ang=u*2*Math.PI;s+=(i?'L':'M')+P(x0+(x1-x0)*u,yc-A*Math.cos(ang-ph));}return s;}
+  $('f2a').setAttribute('d',wave(0));$('f2b').setAttribute('d',wave(2*Math.PI/3));$('f2c').setAttribute('d',wave(4*Math.PI/3));
+  var t=40,playing=false,last=0;
+  var dirs=[0,2*Math.PI/3,4*Math.PI/3];
+  function draw(){
+    var a=t*Math.PI/180;$('f2cur').setAttribute('x1',x0+(x1-x0)*t/360);$('f2cur').setAttribute('x2',x0+(x1-x0)*t/360);
+    var px=cx,py=cy,ids=['f2va','f2vb','f2vc'];
+    for(var k=0;k<3;k++){var m=Math.cos(a-dirs[k])*R,nx=px+m*Math.cos(dirs[k]),ny=py-m*Math.sin(dirs[k]);
+      var e=$(ids[k]);e.setAttribute('x1',px);e.setAttribute('y1',py);e.setAttribute('x2',nx);e.setAttribute('y2',ny);px=nx;py=ny;}
+    $('f2r').setAttribute('x2',px);$('f2r').setAttribute('y2',py);
+    $('f2s').value=Math.round(t);$('f2o').textContent=Math.round(t)+'°';
+  }
+  function step(ts){if(!playing)return;if(last)t=(t+(ts-last)*0.06)%360;last=ts;draw();requestAnimationFrame(step);}
+  $('f2p').addEventListener('click',function(){playing=!playing;last=0;this.textContent=playing?'❚❚ 暂停':'▶ 播放';if(playing)requestAnimationFrame(step);});
+  $('f2s').addEventListener('input',function(){t=+this.value;draw();});
+  draw();
+})();
+
+/* Fig3 */
+(function(){
+  var N=240,x0=20,x1=500,hA=[],hB=[],hC=[],hD=[],hQ=[],th=0,iq=6,playing=false,last=0;
+  function tgt(){return +$('f3t').value/100*10;}
+  function w(){return +$('f3w').value*0.9;}
+  function push(){
+    iq+= (tgt()-iq)*0.08;
+    var id=0.15*Math.sin(th*0.37)*0.4;
+    var ia=id*Math.cos(th)-iq*Math.sin(th),ib0=id*Math.sin(th)+iq*Math.cos(th);
+    var a=ia,b=-0.5*ia+0.8660254*ib0,c=-0.5*ia-0.8660254*ib0;
+    hA.push(a);hB.push(b);hC.push(c);hD.push(id);hQ.push(iq);
+    if(hA.length>N){hA.shift();hB.shift();hC.shift();hD.shift();hQ.shift();}
+  }
+  function path(h,yc,sc){var s='';for(var i=0;i<h.length;i++){s+=(i?'L':'M')+P(x0+(x1-x0)*i/(N-1),yc-h[i]*sc);}return s;}
+  function draw(){
+    $('f3a').setAttribute('d',path(hA,80,5.2));$('f3b').setAttribute('d',path(hB,80,5.2));$('f3c').setAttribute('d',path(hC,80,5.2));
+    $('f3d').setAttribute('d',path(hD,250,6));$('f3q').setAttribute('d',path(hQ,250,6));
+  }
+  for(var i=0;i<N;i++){th+=w()*0.06;push();}
+  draw();
+  function step(ts){if(!playing)return;var n=last?Math.min(4,Math.round((ts-last)/16)):1;last=ts;for(var k=0;k<Math.max(1,n);k++){th+=w()*0.06;push();}draw();requestAnimationFrame(step);}
+  $('f3p').addEventListener('click',function(){playing=!playing;last=0;this.textContent=playing?'❚❚ 暂停':'▶ 播放';if(playing)requestAnimationFrame(step);});
+  $('f3t').addEventListener('input',function(){$('f3to').textContent=this.value+'%';if(!playing){for(var i=0;i<N;i++){th+=w()*0.06;push();}draw();}});
+  $('f3w').addEventListener('input',function(){$('f3wo').textContent=this.value+' 档';if(!playing){for(var i=0;i<N;i++){th+=w()*0.06;push();}draw();}});
+})();
+
+/* Fig5 */
+(function(){
+  var cx=120,cy=118,L=80;
+  function draw(){
+    var e=+$('f5s').value,r=e*Math.PI/180;
+    $('f5gd').setAttribute('x2',cx+96*Math.cos(r));$('f5gd').setAttribute('y2',cy-96*Math.sin(r));
+    var l=$('f5gdl');var lx=cx+100*Math.cos(r),ly=cy-100*Math.sin(r);
+    l.setAttribute('x',Math.min(300,Math.max(4,lx-30)));l.setAttribute('y',Math.min(226,Math.max(12,ly+(Math.sin(r)>=0?-4:14))));
+    var ia=r+Math.PI/2;$('f5i').setAttribute('x2',cx+L*Math.cos(ia));$('f5i').setAttribute('y2',cy-L*Math.sin(ia));
+    var k=Math.cos(r),T=3.5*k;
+    var bar=$('f5bar'),h=78*Math.abs(k);
+    if(k>=0){bar.setAttribute('y',90-h);bar.setAttribute('height',h);bar.setAttribute('class','s-acc2');}
+    else{bar.setAttribute('y',90);bar.setAttribute('height',h*0.5);bar.setAttribute('class','s-acc');}
+    $('f5val').textContent=T.toFixed(2)+' Nm';
+    $('f5o').textContent=e+'° 电';
+    $('f5m').textContent=f1(e/7)+'°';
+    $('f5d').textContent=f1(Math.abs(10*Math.sin(r)))+' A';
+    var a=Math.abs(e),st;
+    if(a<=10)st='正常';else if(a<60)st='力矩打折、发热增加';else if(a<88)st='严重打折';else if(a<=92)st='几乎零力矩';else st='力矩反向！可能飞车';
+    var s=$('f5st');s.textContent=st;s.style.color=a>92?'var(--accent)':'';
+  }
+  $('f5s').addEventListener('input',draw);draw();
+})();
+})();
+</script>
+</body>
+</html>
