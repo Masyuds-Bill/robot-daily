@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W3-4｜母线电压、能量回馈与通信总线</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+/* svg classes */
+.s-ink{fill:var(--ink)} .s-ink2{fill:var(--ink2)} .s-acc{fill:var(--accent)} .s-acc2{fill:var(--accent2)}
+.s-bg{fill:var(--bg)} .s-bg2{fill:var(--bg2)} .s-line{stroke:var(--line)} .s-can{fill:var(--can)} .s-steel{fill:var(--steel)}
+.s-cu{fill:var(--copper)} .s-cu2{stroke:var(--copper2)} .s-N{fill:var(--magN)} .s-S{fill:var(--magS)} .s-wood{fill:var(--wood)} .s-water{fill:var(--water)}
+.st-ink{stroke:var(--ink)} .st-ink2{stroke:var(--ink2)} .st-acc{stroke:var(--accent)} .st-acc2{stroke:var(--accent2)} .st-cu{stroke:var(--copper)} .st-blue{stroke:var(--blue)} .st-water{stroke:var(--water)}
+.nofill{fill:none}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;animation:none!important}}
+.st-steel{stroke:var(--steel)} .s-blue{fill:var(--blue)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--soft2);color:var(--accent2);margin-left:4px;vertical-align:2px}
+.bar{height:12px;border-radius:6px;background:var(--accent);transition:width .25s}
+.cmp{font-size:15px}
+.cmp td:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+</style>
+<style>
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .pcb2{fill:#24704f} .chip{fill:#202226} .lead{fill:#c9ccd1}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .pcb2{fill:#1c4c39} .chip{fill:#0d0e10} }
+.ontxt{fill:#f2efe8}
+.trace{fill:none;stroke-width:2.2;stroke-linejoin:round}
+.hide{display:none}
+.danger{fill:#dc2626;opacity:.18}
+.dangertxt{fill:#dc2626}
+.flow text{font-size:12px}
+.flow .bx{fill:var(--bg);stroke:var(--line);stroke-width:1.2}
+.flow .bxa{fill:var(--soft);stroke:var(--accent);stroke-width:1.2}
+.flow .bxb{fill:var(--soft2);stroke:var(--accent2);stroke-width:1.2}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:4px 2px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.status{font-weight:700}
+</style>
+<style>
+.cell{stroke:var(--line);stroke-width:1}
+.c0{fill:var(--accent)} .c1{fill:var(--bg)} .cq{fill:var(--bg2)}
+.out{opacity:.28}
+.mono{font-family:Menlo,Consolas,monospace}
+.wire-p{stroke:#dc2626;stroke-width:7;fill:none;stroke-linecap:round}
+.wire-n{stroke:#1f2937;stroke-width:7;fill:none;stroke-linecap:round}
+.wire-s{stroke:var(--accent2);stroke-width:2.4;fill:none;stroke-dasharray:6 4}
+@media (prefers-color-scheme: dark){.wire-n{stroke:#9ca3af}}
+.flowdot{fill:var(--glow)}
+@media (prefers-reduced-motion: no-preference){.flowdot{animation:none}}
+.blk{rx:3}
+.okc{color:var(--accent2)} .badc{color:#dc2626}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">W3 传感与驱动器 · 第 4 课</div>
+<h1>早课 W3-4｜母线电压、能量回馈与通信总线</h1>
+<p class="sub">每个关节都插着两根线：一根粗的送能量，一根细的送消息。今天把这两根线拆开看。约 18 分钟。</p>
+
+<div class="lead">
+<p>2021 年 7 月，Prusa 3D 打印机的官方论坛上有人发了一段视频，标题大意是“快速推动 X 轴或 Y 轴，屏幕会亮起来”。打印机电源是关着的，插头也没插，他只是用手把打印喷头左右推了几下，液晶屏就闪闪地亮了。</p>
+<p>论坛版主回复说：这是<b>反电动势</b>（back EMF）。步进电机被手推着转，就成了一台小发电机；驱动芯片里的保护二极管把这股电“整流”成直流，送上了主板的供电线，主板被“喂”醒了。她还提到，有一派人认为通电状态下用手去拧电机是“very bad mojo”，千万别干。</p>
+<p>这件小事其实就是今天的全部伏笔。上周我们讲过 K<sub>v</sub> 和反电动势：电机转起来就会发电，不管是谁让它转的。对机器人来说，这件事每天发生成千上万次——机器人蹲下、下楼梯、落地缓冲，关节都是被重力和惯性“压着转”的。那么两个问题来了：<b>这些被“发”出来的电去哪了？</b>以及，一台人形机器人身上二三十个关节，<b>又是怎么同时跟主控“说话”而不乱套的？</b></p>
+</div>
+
+<h2><span class="n">1</span>关节背后那根粗线里，到底流着什么？</h2>
+<p>先回忆 W3-2 讲的逆变器：六只开关把直流“剁”成三相交流喂给电机。那个“直流”从哪来？从电池来，经过配电，进入每个驱动器的一对电源端子。这条贯穿所有驱动器、电压基本恒定的直流供电线，就叫<b>直流母线</b>（DC bus），它上面的电压叫<b>母线电压</b>（bus voltage）。</p>
+<p>每个驱动器在母线的入口处都并着一排电容，叫<b>母线电容</b>（DC-link / bus capacitor）。逆变器开关每秒通断几万次，电流忽大忽小，电池和长长的电源线反应不了这么快，就靠这排电容就近“补货”和“收货”。</p>
+
+<div class="analogy"><div class="t">类比 1：楼顶水箱</div>
+<p>老小区楼顶有个水箱，水泵把水打上去，各家开水龙头靠水箱的水压出水。母线电压就是水箱的<b>水位</b>，电池是远处的<b>水厂</b>，母线电容就是楼顶的<b>水箱</b>：谁家突然开大水龙头，先从水箱里取，水厂慢慢补。反过来，如果有人往水箱里倒水，水位就会上涨。</p>
+<p class="off">哪里不准：水箱的水量跟水位成正比，电容里的能量却跟电压的<b>平方</b>成正比（E = ½CV²）；而且真水箱满了会溢出，电容“满了”不会溢，电压只会继续往上顶，直到把什么东西顶坏。</p></div>
+
+<figure>
+<svg viewBox="0 0 520 300" role="img" aria-label="人形机器人关节的供电与通信路径示意">
+<defs>
+<linearGradient id="g1bat" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4b5563"/><stop offset="1" stop-color="#1f2937"/></linearGradient>
+<linearGradient id="g1hub" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b82c4"/><stop offset="1" stop-color="#1e5a96"/></linearGradient>
+<linearGradient id="g1act" x1="0" x2="1"><stop offset="0" stop-color="#8a8f98"/><stop offset=".5" stop-color="#c9ccd1"/><stop offset="1" stop-color="#7b818b"/></linearGradient>
+</defs>
+<!-- battery -->
+<rect x="14" y="120" width="96" height="120" rx="10" fill="url(#g1bat)"/>
+<g fill="#6b7280">
+<rect x="24" y="132" width="16" height="96" rx="5"/><rect x="44" y="132" width="16" height="96" rx="5"/><rect x="64" y="132" width="16" height="96" rx="5"/><rect x="84" y="132" width="16" height="96" rx="5"/>
+</g>
+<rect x="34" y="110" width="16" height="12" rx="2" fill="#dc2626"/><rect x="74" y="110" width="16" height="12" rx="2" fill="#374151"/>
+<text x="62" y="262" text-anchor="middle" class="s-ink" font-size="13" font-weight="700">电池包</text>
+<text x="62" y="278" text-anchor="middle" class="s-ink2" font-size="11">“水厂”：能吃也能吐</text>
+<!-- hub -->
+<rect x="160" y="150" width="96" height="66" rx="8" fill="url(#g1hub)"/>
+<text x="208" y="178" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">配电 / 急停</text>
+<text x="208" y="196" text-anchor="middle" fill="#dbeafe" font-size="11">Power Hub</text>
+<!-- main computer -->
+<rect x="160" y="34" width="96" height="56" rx="8" class="s-bg" stroke="var(--accent2)" stroke-width="1.6"/>
+<rect x="172" y="46" width="22" height="22" rx="2" class="chip"/>
+<text x="230" y="58" text-anchor="middle" class="s-ink" font-size="12" font-weight="700">主控</text>
+<text x="230" y="76" text-anchor="middle" class="s-ink2" font-size="10">发指令/收状态</text>
+<!-- wires battery->hub -->
+<path class="wire-p" d="M42 112 C42 70 130 170 160 168"/>
+<path class="wire-n" d="M82 112 C82 90 130 200 160 198"/>
+<!-- hub -> actuator -->
+<path class="wire-p" d="M256 168 C300 168 300 150 330 150"/>
+<path class="wire-n" d="M256 198 C300 198 300 176 330 176"/>
+<!-- signal -->
+<path class="wire-s" d="M256 62 C320 62 300 120 336 124"/>
+<!-- actuator body -->
+<rect x="330" y="96" width="176" height="128" rx="16" fill="url(#g1act)" stroke="#6b7280"/>
+<!-- inside: caps -->
+<g>
+<rect x="344" y="132" width="16" height="34" rx="4" fill="#1e3a8a"/><rect x="364" y="132" width="16" height="34" rx="4" fill="#1e3a8a"/>
+<rect x="344" y="128" width="16" height="6" rx="2" fill="#94a3b8"/><rect x="364" y="128" width="16" height="6" rx="2" fill="#94a3b8"/>
+<text x="362" y="182" text-anchor="middle" fill="#111827" font-size="10.5" font-weight="700">母线电容</text>
+<text x="362" y="196" text-anchor="middle" fill="#374151" font-size="10">“楼顶水箱”</text>
+</g>
+<!-- inverter -->
+<rect x="392" y="124" width="44" height="50" rx="4" class="pcb"/>
+<g class="chip"><rect x="397" y="130" width="10" height="8"/><rect x="411" y="130" width="10" height="8"/><rect x="425" y="130" width="8" height="8"/><rect x="397" y="156" width="10" height="8"/><rect x="411" y="156" width="10" height="8"/><rect x="425" y="156" width="8" height="8"/></g>
+<text x="414" y="190" text-anchor="middle" fill="#111827" font-size="10.5" font-weight="700">逆变器</text>
+<!-- motor -->
+<circle cx="476" cy="150" r="24" fill="#b45309"/><circle cx="476" cy="150" r="15" fill="#6b7280"/><circle cx="476" cy="150" r="5" fill="#d1d5db"/>
+<text x="476" y="190" text-anchor="middle" fill="#111827" font-size="10.5" font-weight="700">电机</text>
+<text x="418" y="114" text-anchor="middle" fill="#111827" font-size="11" font-weight="700">一个关节执行器（示意）</text>
+<!-- energy arrows -->
+<g font-size="11" font-weight="700">
+<path d="M150 252 L300 252" class="st-acc" stroke-width="2.4" marker-end="url(#a1)" fill="none"/>
+<path d="M300 272 L150 272" class="st-acc2" stroke-width="2.4" marker-end="url(#a2)" fill="none"/>
+<text x="306" y="256" class="s-acc">走路、站起：电池 → 关节</text>
+<text x="306" y="276" class="s-acc2">蹲下、落地：关节 → 母线（回馈）</text>
+</g>
+<defs>
+<marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--accent)"/></marker>
+<marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--accent2)"/></marker>
+</defs>
+<text x="300" y="44" class="s-acc2" font-size="11" font-weight="700">细线：通信总线</text>
+<text x="300" y="232" fill="#dc2626" font-size="11" font-weight="700">粗线：直流母线</text>
+</svg>
+<figcaption><b>看图要看什么：</b>粗线里的能量是<b>双向</b>的——这是今天前半段的重点。母线电容就藏在每个执行器里，离逆变器最近；细线是通信，后半段再讲。图中结构为通用示意，不代表某一具体产品的内部布置。</figcaption>
+</figure>
+
+<p>母线电压不是一个死数。拿最常见的锂电池来说，一节电芯满电约 4.2 V，标称约 3.6–3.7 V，放空时更低。12 节串联（行内叫 12S），满电就是 4.2 × 12 = 50.4 V。所以你在 THEMIS 用户手册的执行器参数表里会看到这样的写法：Panda / Kodiak 系列供电电压 <b>9–50.4 V（3–12 S）</b>，Koala 系列 <b>9–33.6 V（3–8 S）</b>。那个 50.4 V 不是随便写的，它恰好就是 12S 电池充满时的电压。记住这个“上沿”，它待会儿很重要。</p>
+
+<h2><span class="n">2</span>机器人蹲下的时候，膝盖在“发电”？</h2>
+<p>W1-1 我们讲过机械功率 P = T·ω。当力矩方向和转动方向<b>相同</b>时，P 为正，电机在往外“使劲”，这叫正功；当两者<b>相反</b>时——比如机器人慢慢蹲下，膝关节电机在“顶着”往上用力，可膝盖却在往下弯——P 是负的，这叫<b>负功</b>（negative work）。这时候不是电机在推负载，而是重力在推电机。电机变成了发电机，电流反着流回母线，这就是<b>能量回馈</b>（regeneration，常简称 regen）。</p>
+
+<p>这不是什么理论上的小数点。MIT 的 Ben Katz 在他的硕士论文里给 Mini Cheetah 的关节做过台架测试：这个执行器做正功时最大输出约 250 W，而做负功时最大吸收约 680 W。也就是说，同一个关节“刹车”的本事比“使劲”还大得多——落地缓冲、急停这种动作，瞬间灌回来的功率相当可观。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人实物" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>Mini Cheetah 全身约 9 kg、12 个关节。它会后空翻，每次落地，12 个关节都在做负功，把下落的能量“刹”住——这些能量有一部分变成电，回到它那块 24 V 电池。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<p>更早的时候，同一个实验室在 2013 年就专门讲过这件事。MIT 新闻稿介绍他们 70 磅重的 Cheetah 机器人时说：传统机器人每次脚落地，冲击能量都被阻尼器白白耗掉；而他们的电机通过控制本身就能充当“阻尼器”，并且<b>大部分冲击能量回到了电池</b>。这是电驱腿足机器人比液压机器人省电的重要原因之一。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201807/MIT-Cheetah-PRESS.JPG" loading="lazy" referrerpolicy="no-referrer" alt="MIT Cheetah 3 四足机器人" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>MIT 仿生机器人实验室后来的 Cheetah 3。注意腿上看不到液压油管，关节全靠电机驱动——这意味着“刹车”的能量有机会变回电，而不是变成液压油的热量。<br>图：Courtesy of the researchers / <a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比 2：满载下行的电梯</div>
+<p>电梯有配重。轿厢坐满人往下走、或者空轿厢往上走时，其实是“重的一边在往下掉”，电机不用出力，反而要刹住它——此刻电机在发电。奥的斯（Otis）介绍它的 ReGen 回馈驱动时就是这么说的：传统驱动把这部分刹车能量在一组电阻里烧成热，而回馈驱动把它送回楼里的电网，给别的设备用。奥的斯宣称最多可省电 75%；它自己资料里给的 20 层楼示例算下来，比不回馈的同代驱动省约 45%。</p>
+<p class="off">哪里不准：电梯能把电还给“无限大”的城市电网，随还随收；机器人只有一块电池和几颗电容，收不收得下，是另一回事——这正是下一节的悬念。</p></div>
+
+<h2><span class="n">3</span>电往回灌，母线电压为什么会“涨水”？</h2>
+<p>回到楼顶水箱。回馈的电先灌进离它最近的母线电容，电压立刻往上走。正常情况下，电池会把多出来的电“吸”走，电压只微微抬一点。问题是：<b>如果电池不吸呢？</b>比如电池已经充满、电池管理系统（BMS）拒绝再充；或者你在实验室里用的是一台普通的直流稳压电源，它只会往外送电，根本不收。</p>
+<p>那就只剩电容自己扛。我们算一笔账，看电容到底能扛多少。</p>
+
+<p class="say">先用人话说：电容能多吸收的能量，取决于电压从“正常”涨到“危险”之间那一截。</p>
+<div class="formula">ΔE = ½ C (V<sub>max</sub>² − V<sub>0</sub>²)<small>C 是电容量，V<sub>0</sub> 是正常电压，V<sub>max</sub> 是元件能承受的电压上限</small></div>
+
+<p>Katz 的论文正好给了一组真实数据：Mini Cheetah 驱动器的输入电容在 24 V 时储能约 1.5 J；母线上的元件（主要受限于 MOSFET）额定至少 40 V。代进去：电压从 24 V 涨到 40 V，电容最多再吸 1.5 × (40²/24² − 1) ≈ <b>2.7 J</b>。</p>
+<p>而一只 9 kg 的机器狗从 0.5 m 高落下（这是我设的教学假设），势能是 9 × 9.8 × 0.5 ≈ <b>44 J</b>。哪怕只有十分之一变成电回到母线，也比 2.7 J 多。换句话说：<b>电容只是缓冲，真正能接住回馈能量的，必须是电池或别的“出口”</b>。</p>
+
+<p>下面这张图让你自己试。它模拟一台人形机器人蹲下的过程，你可以换“出口”，看母线电压怎么变。</p>
+
+<figure>
+<div class="seg" id="f2mode">
+<button class="on" data-m="bat">接电池（能吸收）</button>
+<button data-m="psu">接实验室电源（不吸收）</button>
+<button data-m="res">电源 + 制动电阻</button>
+</div>
+<svg viewBox="0 0 520 250" role="img" aria-label="下蹲时母线电压随时间变化的模拟">
+<!-- robot -->
+<g id="f2bot">
+<rect x="8" y="226" width="104" height="6" rx="3" class="s-line" fill="var(--line)"/>
+<line id="f2th1" x1="60" y1="96" x2="48" y2="160" stroke="#6b7280" stroke-width="9" stroke-linecap="round"/>
+<line id="f2sh1" x1="48" y1="160" x2="60" y2="224" stroke="#6b7280" stroke-width="8" stroke-linecap="round"/>
+<circle id="f2kn" cx="48" cy="160" r="7" class="s-acc"/>
+<rect id="f2torso" x="44" y="40" width="32" height="58" rx="10" fill="#9aa1ab"/>
+<circle id="f2head" cx="60" cy="26" r="13" fill="#9aa1ab"/>
+<rect id="f2visor" x="52" y="21" width="16" height="7" rx="3" fill="#1f2937"/>
+<rect x="46" y="224" width="30" height="7" rx="3" fill="#4b5563"/>
+<text id="f2lbl" x="60" y="246" text-anchor="middle" class="s-ink2" font-size="11">站立</text>
+</g>
+<!-- plot -->
+<g transform="translate(150,14)">
+<rect x="0" y="0" width="356" height="200" class="s-bg" stroke="var(--line)"/>
+<g id="f2grid" font-size="10" class="s-ink2"></g>
+<line id="f2trip" x1="0" x2="356" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text id="f2tript" x="352" text-anchor="end" fill="#dc2626" font-size="10.5" font-weight="700">过压保护线 56 V</text>
+<line id="f2brk" x1="0" x2="356" class="st-acc2" stroke-width="1.2" stroke-dasharray="3 3"/>
+<text id="f2brkt" x="352" text-anchor="end" class="s-acc2" font-size="10.5">制动电阻启动 52 V</text>
+<path id="f2curve" fill="none" class="st-acc" stroke-width="2.6" stroke-linejoin="round"/>
+<line id="f2cur" y1="0" y2="200" class="st-ink2" stroke-width="1" opacity=".5"/>
+<text x="178" y="230" text-anchor="middle" class="s-ink2" font-size="11">时间（s）</text>
+<text x="-6" y="-2" class="s-ink2" font-size="11">母线电压（V）</text>
+<text id="f2x" x="200" y="100" text-anchor="middle" fill="#dc2626" font-size="15" font-weight="700"></text>
+</g>
+</svg>
+<div class="ctrl"><label>机器人质量</label><input type="range" id="f2m" min="20" max="80" value="60"><output id="f2mo">60 kg</output></div>
+<div class="ctrl"><label>重心下降</label><input type="range" id="f2h" min="5" max="50" value="30"><output id="f2ho">0.30 m</output></div>
+<div class="ctrl"><label>下蹲用时</label><input type="range" id="f2t" min="3" max="20" value="10"><output id="f2to">1.0 s</output></div>
+<div class="ctrl"><label>母线电容</label><input type="range" id="f2c" min="1" max="30" value="3"><output id="f2co">3 mF</output></div>
+<div class="ctrl"><button id="f2p">▶ 播放下蹲</button></div>
+<div class="readout">
+<div>回馈到母线的能量<b id="f2e">–</b></div>
+<div>峰值回馈功率<b id="f2pk">–</b></div>
+<div>电容 48→56 V 能吸收<b id="f2cap">–</b></div>
+<div>结果<b id="f2st" class="status">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>切到“实验室电源”，几乎不管怎么调，红色过压线都会被冲破，驱动器关断、关节一软，机器人直接坐下去；把电容加大十倍也只是晚一点出事。切回电池，电压只抬一点点。<b>全部数字都是教学假设</b>：48 V 母线、56 V 过压保护、回收比例 60%、制动电阻 6 Ω，不代表任何具体产品。</figcaption>
+</figure>
+
+<div class="box fail"><div class="t">翻车现场：“电源够大，还怕它？”</div>
+<p>开源电机驱动器 ODrive 的官方文档写得很直白：电机反拖驱动器时，驱动器就是一台发电机，会把电流往电源方向送；而<b>有些电源完全不能吸收回馈，哪怕一点点回馈功率都会让它直接关机</b>。文档给的对策是在电源和驱动器之间串一只大功率二极管，或者加一个外置的回馈钳位（regen clamp）/制动电阻，并且一定要设置母线过压跳闸值。</p>
+<p>它的用户论坛里有个典型帖子：有人用 24 V 电源加一只 2 kW 的制动电阻，在力矩模式下用手反拖电机到约 1800 rpm，结果驱动器“随机”断电、LED 熄灭、电脑上的连接也掉了，而制动电阻却一点没热——说明能量根本没走到电阻那里。台架上用稳压电源调关节，是很多人第一次撞上“回馈”这堵墙的地方。</p></div>
+
+<div class="analogy"><div class="t">类比 3：骑车下长坡一路捏闸</div>
+<p>骑共享单车下一个长坡，你一路捏着闸，下到坡底摸一下闸皮——烫手。势能没有消失，它变成了闸皮的热。制动电阻（brake resistor，也叫 braking resistor）干的就是这件事：母线电压一旦超过某个阈值，驱动器就把一只电阻接上去，把多余的电烧成热，电压就被按住了。</p>
+<p class="off">哪里不准：自行车闸是你手控制的，而制动电阻是按电压自动开关、每秒通断成千上万次的（叫制动斩波，brake chopper）；另外，自行车下坡你可以干脆不捏闸，机器人却不能“不管”——不管，电压就会把元件顶坏。</p></div>
+
+<h2><span class="n">4</span>多出来的电，一共有几条出路？</h2>
+<p>把上面的东西归拢一下。一个关节回馈出来的电，按“先近后远”的顺序，可能去这几个地方：</p>
+<table class="cmp">
+<tr><th>去处</th><th style="text-align:left">说明</th></tr>
+<tr><td>① 隔壁关节</td><td style="text-align:left">同一条母线上，膝盖在“刹车”的同时，髋或另一条腿可能正在“使劲”，回馈的电直接被它们用掉。这是最理想的情况，像电梯群里下行的轿厢给上行的供电。</td></tr>
+<tr><td>② 母线电容</td><td style="text-align:left">最快，但容量极小，只够吸收毫秒级的尖峰。</td></tr>
+<tr><td>③ 电池</td><td style="text-align:left">真正的“大水库”。但满电、低温或 BMS 限制充电电流时，它可能吸不动。</td></tr>
+<tr><td>④ 制动电阻</td><td style="text-align:left">把多余的电烧成热。可靠，但浪费，还要考虑散热。</td></tr>
+<tr><td>⑤ 驱动器自保</td><td style="text-align:left">以上都不够时，驱动器会限制回馈电流，或者在过压时直接关断。代价是关节瞬间失去力矩。</td></tr>
+</table>
+<p>现在你应该明白为什么规格书上的电压范围有“上沿”了。如果电池充满到 50.4 V，机器人又正好在下楼梯、持续做负功，回馈会让母线电压往上冲。能留多少余量、过压时怎么保护，这是每家驱动器各自的设计，<b>具体到某一款产品，一律以手册为准</b>。</p>
+
+<h3>插电源时“啪”的一声，是怎么回事？</h3>
+<p>顺便解决一个工作里常被问到的现象：给执行器插上电源接头的一瞬间，接头处会打出一个小火花，有时还“啪”一声。原因还是那排母线电容——插上之前它是空的，电压为 0，相当于一瞬间短路，充电电流极大。Katz 的论文里，Mini Cheetah 的配电板专门做了一个<b>预充电电路</b>（precharge）：先通过一只功率电阻用约 80 ms 把电容慢慢充上，再把电阻旁路掉。很多机器人会把这一步放在配电盒或电源管理系统里。</p>
+
+<h2><span class="n">5</span>那根细线：二十几个关节，怎么不抢着说话？</h2>
+<p>1983 年，博世（Bosch）的工程师 Uwe Kiencke 开始做一种新的串行总线。当时汽车上的电子控制单元越来越多，每两个单元之间要通信就拉一组线，线束越来越粗、越来越重。按 CAN 行业组织 CiA 的说法，他们的首要目标是让各单元能方便地共享信息，省线只是附带的好处。1986 年 2 月，博世在美国底特律的 SAE 大会上正式发布了它，名字叫“汽车串行控制器局域网”——<b>CAN</b>（Controller Area Network）。1987 年英特尔交付了第一颗 CAN 控制器芯片，1991 年奔驰开始在高档轿车上使用，1993 年成为国际标准 ISO 11898。</p>
+<p>机器人关节面对的问题几乎一样：主控每隔 1 毫秒左右，就要给每个关节发一次指令（目标力矩、位置、增益……），再把每个关节的角度、速度、电流、温度、电压收回来。几十个关节，每秒上千次，<b>一来一回不能乱、不能丢、还不能晚</b>。下面是机器人里最常见的三种总线。</p>
+
+<h3>RS-485：一对“反着跳”的线</h3>
+<p>RS-485 本身只规定了电气层：用一对双绞线传信号，两根线上的电压总是一高一低、反着跳，接收端只看<b>两根线的差值</b>，这叫<b>差分信号</b>（differential signaling）。外面的干扰（比如旁边电机线的开关噪声）通常同时、同样地叠加在两根线上，一相减就抵消了。按 ADI 的应用笔记，标准 RS-485 总线可挂 32 个单位负载，线长可达 4000 英尺（约 1.2 km），速率最高可到 10 Mbit/s——当然，长距离和高速率不能同时拿满。</p>
+
+<figure>
+<svg viewBox="0 0 520 220" role="img" aria-label="差分信号抗干扰示意">
+<g transform="translate(10,10)">
+<!-- twisted pair -->
+<g>
+<path d="M0 40 C15 20 30 60 45 40 C60 20 75 60 90 40" fill="none" stroke="#2563eb" stroke-width="5"/>
+<path d="M0 40 C15 60 30 20 45 40 C60 60 75 20 90 40" fill="none" stroke="#f8fafc" stroke-width="5"/>
+<path d="M0 40 C15 60 30 20 45 40 C60 60 75 20 90 40" fill="none" stroke="#94a3b8" stroke-width="1"/>
+<text x="45" y="84" text-anchor="middle" class="s-ink2" font-size="11">双绞线 A / B</text>
+</g>
+<!-- lightning noise -->
+<path d="M150 0 L140 26 L152 26 L138 56" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round"/>
+<text x="160" y="16" fill="#b45309" font-size="11" font-weight="700">干扰同时叠到两根线上</text>
+<!-- waves -->
+<g transform="translate(120,64)">
+<text x="0" y="12" class="s-ink" font-size="11" font-weight="700">A 线</text>
+<path d="M36 28 H80 V8 H140 V28 H170 L176 2 L182 28 H200 V8 H260 V28 H300" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+<text x="0" y="62" class="s-ink" font-size="11" font-weight="700">B 线</text>
+<path d="M36 52 H80 V72 H140 V52 H170 L176 26 L182 52 H200 V72 H260 V52 H300" fill="none" stroke="#64748b" stroke-width="2.2"/>
+<text x="0" y="118" class="s-acc2" font-size="11" font-weight="700">A − B</text>
+<path d="M36 128 H80 V100 H140 V128 H200 V100 H260 V128 H300" fill="none" class="st-acc2" stroke-width="2.8"/>
+<rect x="164" y="0" width="24" height="80" fill="#f59e0b" opacity=".12"/>
+<text x="176" y="146" text-anchor="middle" class="s-acc2" font-size="11">尖刺在这里被减掉了</text>
+</g>
+<!-- receiver -->
+<rect x="436" y="80" width="64" height="60" rx="8" class="s-bg" stroke="var(--accent2)" stroke-width="1.6"/>
+<text x="468" y="106" text-anchor="middle" class="s-acc2" font-size="16" font-weight="700">−</text>
+<text x="468" y="126" text-anchor="middle" class="s-ink2" font-size="10">接收器</text>
+</g>
+</svg>
+<figcaption><b>看图要看什么：</b>橙色那一下干扰，在 A、B 两根线上长得一模一样；接收器只看差值，它就消失了。这就是机器人里电机线和信号线挤在一起，通信依然能跑的原因之一。</figcaption>
+</figure>
+
+<p>RS-485 上通常跑“一问一答”的主从协议：主控点一个关节的名，这个关节回话，再点下一个。</p>
+<div class="analogy"><div class="t">类比 4：老师点名</div>
+<p>RS-485 主从轮询就像上课点名：老师念“3 号”，3 号答“到”，再念 4 号。全班只有一个人说话，绝不会撞车。代价是人一多，点一圈就要很久。</p>
+<p class="off">哪里不准：点名时老师等学生答话的“停顿”在总线上是真实耗时（收发方向切换），学生多了，停顿的总时间比说话本身还可观；另外，RS-485 只管“怎么发声”，具体说什么话（协议）各家自己定。</p></div>
+
+<h3>CAN：谁的号码小，谁先说</h3>
+<p>CAN 走的是另一条路：没有老师，<b>谁都可以开口</b>。那撞车了怎么办？靠一个很巧的设计——在 CAN 线上，“0”是<b>显性位</b>（dominant），是被主动驱动出来的；“1”是<b>隐性位</b>（recessive），是电阻被动拉出来的。只要有一个节点发 0，整条线就是 0。</p>
+<p>每条消息开头都是一个 ID 号。几个节点同时开口时，大家一位一位地发 ID，同时听线上的实际状态：谁发了 1 却听到 0，就知道“有人比我优先”，立刻闭嘴，等下一轮。最后剩下的，一定是 ID 最小的那条消息，而且它从头到尾<b>没有被打断、没有损坏</b>。这叫非破坏性仲裁（non-destructive arbitration）。自己点一下看看：</p>
+
+<figure>
+<svg viewBox="0 0 520 222" role="img" aria-label="CAN 总线仲裁逐位演示">
+<g id="f3g"></g>
+</svg>
+<div class="ctrl"><button id="f3s">下一位 ▸</button><button id="f3p">▶ 自动演示</button><button id="f3r">换一组 ID</button></div>
+<figcaption><b>看图要看什么：</b>橙色格是 0（显性），浅色是 1（隐性）。最下面一行是线上实际听到的值。某个节点一旦“发 1 却听到 0”，整行就变淡，退出竞争。静止状态显示的是整轮仲裁的结果：ID 最小者胜出。三个节点名称只是示意。</figcaption>
+</figure>
+
+<p>经典 CAN 最高 1 Mbit/s（线长约 40 m 以内），后来的 CAN FD 允许数据段跑得更快、一帧装更多数据。Mini Cheetah 用的就是经典 CAN：Katz 的论文写道，全身 12 个关节分成 <b>4 条 CAN 网络，每条腿一条，每条挂 3 个关节</b>，速率 1 Mbit/s；每个关节一次指令加回复大约 200 位，所以一条网络理论上每秒最多约 5000 ÷ 关节数次往返，实际运行在 1.2 kHz。</p>
+
+<h3>EtherCAT：不停站的传送带</h3>
+<p>2003 年，德国倍福（Beckhoff）在汉诺威工业博览会上第一次展示了 EtherCAT。它用的是普通以太网的线和 100 Mbit/s 的速率，但玩法完全不同：主站发出<b>一个</b>以太网帧，这个帧依次穿过每一个从站；每个从站不是先收下、再转发，而是在帧“路过”的那几纳秒里，把发给自己的数据读出来，再把自己的数据写进去，帧继续往前跑，到了最后一个从站再折返回主站。倍福称之为 processing on the fly（飞行中处理）。今天 EtherCAT 技术协会（ETG）已有来自 72 个国家的 7000 多家成员。</p>
+
+<div class="analogy"><div class="t">类比 5：回转寿司</div>
+<p>EtherCAT 像回转寿司的传送带：一长串小碟子绕着吧台转，每位客人不用叫服务员，碟子经过面前时，拿走写着自己名字的那碟，顺手放上自己要送出去的东西，传送带一刻不停。一圈转完，所有人都交换完了。</p>
+<p class="off">哪里不准：寿司传送带是环形一直转；EtherCAT 是主站每个周期发一趟“专列”，走到线路尽头再原路折回来，下一个周期发新的一趟。而且“拿和放”是硬件芯片在纳秒级完成的，比任何手都快得多。</p></div>
+
+<figure>
+<svg viewBox="0 0 520 170" role="img" aria-label="EtherCAT 帧依次经过各从站的示意">
+<g transform="translate(10,20)">
+<rect x="0" y="40" width="70" height="56" rx="8" class="s-bg" stroke="var(--accent2)" stroke-width="1.6"/>
+<text x="35" y="66" text-anchor="middle" class="s-ink" font-size="12" font-weight="700">主站</text>
+<text x="35" y="84" text-anchor="middle" class="s-ink2" font-size="10">发一帧</text>
+<line x1="70" y1="56" x2="490" y2="56" class="st-acc" stroke-width="2"/>
+<line x1="490" y1="80" x2="70" y2="80" class="st-acc2" stroke-width="2" stroke-dasharray="5 4"/>
+<path d="M490 56 C506 56 506 80 490 80" fill="none" class="st-acc" stroke-width="2"/>
+<g id="f5nodes"></g>
+<!-- frame -->
+<g transform="translate(96,8)">
+<rect x="0" y="0" width="180" height="22" rx="4" class="s-soft" fill="var(--soft)" stroke="var(--accent)"/>
+<g font-size="9.5" class="s-ink">
+<rect x="2" y="2" width="26" height="18" fill="var(--line)"/><text x="15" y="15" text-anchor="middle">头</text>
+<rect x="30" y="2" width="34" height="18" class="s-acc2" opacity=".55"/><text x="47" y="15" text-anchor="middle">关节1</text>
+<rect x="66" y="2" width="34" height="18" class="s-acc2" opacity=".55"/><text x="83" y="15" text-anchor="middle">关节2</text>
+<rect x="102" y="2" width="34" height="18" class="s-acc2" opacity=".55"/><text x="119" y="15" text-anchor="middle">关节3</text>
+<rect x="138" y="2" width="22" height="18" class="s-acc2" opacity=".55"/><text x="149" y="15" text-anchor="middle">…</text>
+<rect x="162" y="2" width="16" height="18" fill="var(--line)"/><text x="170" y="15" text-anchor="middle">校</text>
+</g>
+</g>
+<text x="290" y="24" class="s-acc" font-size="11" font-weight="700">← 一帧里给每个关节留好了“座位”</text>
+<text x="250" y="140" text-anchor="middle" class="s-ink2" font-size="11">去程：每个从站读走自己的指令、写入自己的状态；回程：帧带着全部状态回到主站</text>
+</g>
+</svg>
+<figcaption><b>看图要看什么：</b>只有一帧，挨个“路过”所有关节。关节数增加，帧只是变长一点，不需要一问一答地多跑好多轮。帧结构为简化示意。</figcaption>
+</figure>
+
+<h3>同一个控制周期里，三种总线各要多久？</h3>
+<p>把三种总线放到同一把尺子上：选总线、选关节数和控制频率，看一个周期装不装得下。</p>
+
+<figure>
+<div class="seg" id="f6bus">
+<button data-b="485">RS-485</button>
+<button class="on" data-b="can">CAN</button>
+<button data-b="ecat">EtherCAT</button>
+</div>
+<svg viewBox="0 0 520 190" role="img" aria-label="一个控制周期内总线占用时间示意">
+<g id="f6g"></g>
+</svg>
+<div class="ctrl"><label>关节数</label><input type="range" id="f6n" min="6" max="40" value="12"><output id="f6no">12 个</output></div>
+<div class="ctrl"><label>控制频率</label><input type="range" id="f6f" min="1" max="8" value="2"><output id="f6fo">1000 Hz</output></div>
+<div class="ctrl"><label>并行通道</label><input type="range" id="f6c" min="1" max="4" value="4"><output id="f6co">4 条</output></div>
+<div class="readout">
+<div>每个周期<b id="f6per">–</b></div>
+<div>单通道耗时<b id="f6use">–</b></div>
+<div>占用率<b id="f6pct">–</b></div>
+<div>结论<b id="f6st" class="status">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>默认设置就是 Mini Cheetah 的配置（CAN、12 个关节、4 条通道、1 kHz），四条通道各用掉约六成时间；把频率拖到 1200 Hz 左右，就是论文里实际跑的数。再把关节数拖到 30、通道降到 1，CAN 立刻爆表，EtherCAT 却还很轻松。<b>CAN 按每次往返约 200 位估算（来自 Katz 论文）；RS-485 按 4 Mbit/s、每次往返 28 字节加收发切换估算；EtherCAT 按 100 Mbit/s、每个关节 24 字节估算。后两者都是教学假设</b>，实际取决于具体协议和实现。</figcaption>
+</figure>
+
+<div class="box cold"><div class="t">冷知识：CAN 的第一批用户，并不是汽车</div>
+<p>CAN 是为汽车发明的，但 CiA 的史料记载，最早把它用起来的反而是别的行业：芬兰电梯公司通力（Kone）把它用在电梯里，瑞典的 Kvaser 把它推荐给纺织机械，还因此成立过一个“CAN 纺织用户组”。所以你家楼里的电梯，可能比你的车更早开始“说 CAN”。</p></div>
+
+<h2><span class="n">6</span>工作里会在哪遇到？</h2>
+<p><b>规格书上的电压一栏。</b>THEMIS 用户手册的执行器参数表里，供电电压写作 9–50.4 V（3–12 S）或 9–33.6 V（3–8 S），电源接头分 XT30 / XT60 / XT90，信号接头是 Molex PicoBlade 53047 6 针。读到“S”时，你就知道它说的是电池串数，上沿对应满电电压。</p>
+<p><b>系统接线图。</b>同一份手册里，执行器的信号分成三条链：右腿、左腿、上半身；急停信号经过 Power Hub 直接接到执行器上，以保证最快响应。开发参考里的 <span class="mono">get_joint_states()</span> 会返回每个电机的电压 v——这就是你今天学的母线电压在软件里的样子。故障排查表里，“Communication” 错误的第一步是检查信号线通断。</p>
+<p><b>客户邮件常见的几种问法</b>（具体到某款产品的接口、协议、电压余量，凡手册里查不到的，标 [待技术确认]，不要凭印象回答）：</p>
+<div class="en">"What communication interface does the actuator use, and can we run it on EtherCAT / CAN?"<br>"Can we power the actuators from a lab bench power supply during testing?"<br>"What happens if the battery is fully charged and the robot walks downstairs? Is there a braking resistor?"</div>
+<p>第二个问题尤其值得留心：从原理上讲，实验室电源大多不能吸收回馈能量。回信时可以提醒客户注意这一点，但具体的接法和保护建议，以官方手册和工程团队的确认为准。例如：</p>
+<div class="en">"Please note that most bench power supplies cannot absorb regenerative energy from the actuators. We'll confirm the recommended power setup for your configuration with our engineering team. [待技术确认]"</div>
+
+<h2><span class="n">7</span>三道自测题</h2>
+<p class="q">1. 展会上一位客户说：“我们把机器人的电池换成更大容量的，回馈就不会有问题了吧？”你怎么回答？</p>
+<details><summary>看答案</summary><p>不一定。回馈能不能被吸收，关键在电池<b>当时能不能充电</b>、能接受多大的充电电流，而不只是容量大小。电池满电，或者 BMS 限制了充电电流时，大电池一样吸不动；这时母线电压会往上走，要靠其他关节用掉、制动电阻消耗，或驱动器自我保护。具体产品怎么处理，以手册和工程确认为准。</p></details>
+<p class="q">2. 一封邮件写着：“The actuator works fine when driving, but it shuts down whenever we decelerate the load quickly. We're using a 48 V bench supply.” 你最先怀疑什么？</p>
+<details><summary>看答案</summary><p>减速时关节在做负功，能量回馈到母线；稳压电源不吸收，母线电压被顶高，触发了驱动器的过压保护（或者电源自己保护关机）。下一步：请客户提供电源型号、是否有反向吸收能力、驱动器报的错误码，再转工程团队确认推荐的供电方案。不要在邮件里直接下结论。</p></details>
+<p class="q">3. 一条 1 Mbit/s 的 CAN 网络，每个关节一次往返约 200 位。如果要以 1 kHz 控制 8 个关节，一条网络够吗？至少要几条？</p>
+<details><summary>看答案</summary><p>一个周期 1000 µs；每个关节 200 位 ÷ 1 Mbit/s = 200 µs，8 个关节需要 1600 µs，一条不够。分两条，每条 4 个关节、800 µs，占用 80%，勉强能跑但余量不多；分三条更稳妥。这是只算数据位的粗估，实际还要留出余量。</p></details>
+
+<h2><span class="n">8</span>中英术语对照</h2>
+<table class="terms">
+<tr><td>直流母线 / 母线电压</td><td>DC bus / bus voltage</td></tr>
+<tr><td>母线电容</td><td>DC-link capacitor / bus capacitor</td></tr>
+<tr><td>负功</td><td>negative work</td></tr>
+<tr><td>能量回馈 / 再生制动</td><td>regeneration, regenerative braking (regen)</td></tr>
+<tr><td>制动电阻 / 制动斩波</td><td>brake resistor / brake chopper</td></tr>
+<tr><td>过压保护</td><td>overvoltage protection / overvoltage trip</td></tr>
+<tr><td>预充电</td><td>precharge (inrush current limiting)</td></tr>
+<tr><td>电池串数（12S）</td><td>series cell count (12S)</td></tr>
+<tr><td>差分信号 / 双绞线</td><td>differential signaling / twisted pair</td></tr>
+<tr><td>显性位 / 隐性位</td><td>dominant bit / recessive bit</td></tr>
+<tr><td>仲裁</td><td>(bitwise) arbitration</td></tr>
+<tr><td>主站 / 从站</td><td>master / slave (EtherCAT: MainDevice / SubDevice)</td></tr>
+</table>
+
+<div class="tease"><b>明天是第三单元复盘：</b>这一周我们从“关节怎么知道自己在哪”（编码器），走到“怎么把直流剁成交流”（逆变器），再到“怎么只给出力的那部分电流”（FOC），最后到今天的两根线。可它们在一个真实的控制周期里，是按什么顺序、在几微秒之内依次发生的？如果编码器读错一位、母线电压突然掉了一截，链条上哪一环先出事？明天用一张能点开的知识地图把四课串起来，再来 10 道题，看看哪一环你还没扣紧。</div>
+
+<h2><span class="n">9</span>来源</h2>
+<ul class="src">
+<li>Prusa 论坛：<a href="https://forum.prusa3d.com/forum/hardware-firmware-and-software-help/moving-axis-lights-display/">Moving axis lights display</a>（2021-07-28）</li>
+<li>B. Katz, <a href="https://dspace.mit.edu/bitstream/handle/1721.1/118671/1057343368-MIT.pdf">A Low Cost Modular Actuator for Dynamic Robots</a>（MIT 硕士论文，2018）：正/负功功率、24 V 供电、电容储能、预充电、4 条 CAN 网络</li>
+<li>MIT News：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">Mini cheetah is the first four-legged robot to do a backflip</a>（2019）</li>
+<li>MIT News：<a href="https://news.mit.edu/2013/mit-cheetah-robot-0308">MIT cheetah robot rivals running animals in efficiency</a>（2013）</li>
+<li>MIT News：<a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">Cheetah 3 robot</a>（2018）</li>
+<li>Otis：<a href="https://www.otis.com/documents/256045/6552829/Regen_Drive_UK.pdf">ReGen Drive</a> 产品资料</li>
+<li>ODrive 文档：<a href="https://docs.odriverobotics.com/v/latest/manual/hardware-config.html">Hardware Configuration</a>；论坛：<a href="https://discourse.odriverobotics.com/t/odrive-cuts-out-when-braking/6638">ODrive cuts out when braking</a></li>
+<li>CiA：<a href="https://www.can-cia.org/can-knowledge/history-of-can-technology">History of CAN technology</a>；CAN 速率与仲裁另参 <a href="https://en.wikipedia.org/wiki/CAN_bus">CAN bus（维基百科）</a></li>
+<li>Analog Devices：<a href="https://analog.com/en/resources/app-notes/an-960.html">AN-960 RS-485/RS-422 Circuit Implementation Guide</a></li>
+<li>Beckhoff：<a href="https://www.beckhoff.com/en-za/company/news/compatible-and-open-ethercat-communication-proven-in-practice-for-two-decades.html">20 年 EtherCAT 回顾</a>（2023）</li>
+<li>Westwood Robotics 项目资料：THEMIS 用户手册（user-manual.md，表 4.1 及信号系统一节）、THEMIS 开发参考（development-reference.md）</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+var NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Fig2: bus voltage during squat ---------- */
+(function(){
+  var W=356,H=200,Vlo=44,Vhi=60,V0=48,Vtrip=56,Vbr=52,Rb=6,Rint=0.08,eta=0.6,bleed=4;
+  var mode='bat',sim=null,playing=false,t0=0;
+  function vy(v){return H-(Math.min(Vhi,Math.max(Vlo,v))-Vlo)/(Vhi-Vlo)*H;}
+  function P(){return {m:+$('f2m').value,h:+$('f2h').value/100,T:+$('f2t').value/10,C:+$('f2c').value/1000};}
+  function run(){
+    var p=P(),E=eta*p.m*9.81*p.h,Ppk=E*Math.PI/(2*p.T),Tt=p.T+0.6,dt=0.0002,ts=[],vs=[],tripT=-1;
+    var V=V0,Ec=0.5*p.C*V0*V0,vmax=V0,n=0;
+    for(var t=0;t<=Tt;t+=dt){
+      var pr=(t>0.1&&t<0.1+p.T&&tripT<0)?Ppk*Math.sin(Math.PI*(t-0.1)/p.T):0;
+      if(mode==='bat'){V=V0+Rint*pr/V0;}
+      else{
+        var pres=(mode==='res'&&V>Vbr)?V*V/Rb:0;
+        Ec+= (pr-pres-bleed)*dt; if(Ec<0.5*p.C*V0*V0)Ec=0.5*p.C*V0*V0;
+        V=Math.sqrt(2*Ec/p.C);
+        if(V>=Vtrip&&tripT<0){tripT=t;}
+      }
+      if(V>vmax)vmax=V;
+      if(n++%10===0){ts.push(t);vs.push(V);}
+    }
+    sim={p:p,E:E,Ppk:Ppk,Tt:Tt,ts:ts,vs:vs,tripT:tripT,vmax:vmax};
+  }
+  function grid(){
+    var g=$('f2grid');g.innerHTML='';
+    for(var v=44;v<=60;v+=4){var y=vy(v);g.appendChild(el('line',{x1:0,x2:W,y1:y,y2:y,stroke:'var(--line)'}));g.appendChild(el('text',{x:-4,y:y+3,'text-anchor':'end'},v));}
+    var Tt=sim.Tt;for(var s=0;s<=Tt+1e-6;s+=0.5){var x=s/Tt*W;g.appendChild(el('text',{x:x,y:H+13,'text-anchor':'middle'},s.toFixed(1)));}
+    $('f2trip').setAttribute('y1',vy(Vtrip));$('f2trip').setAttribute('y2',vy(Vtrip));$('f2tript').setAttribute('y',vy(Vtrip)-4);
+    var showB=mode==='res';$('f2brk').style.display=showB?'':'none';$('f2brkt').style.display=showB?'':'none';
+    $('f2brk').setAttribute('y1',vy(Vbr));$('f2brk').setAttribute('y2',vy(Vbr));$('f2brkt').setAttribute('y',vy(Vbr)+13);
+  }
+  function curve(upto){
+    var s='',ts=sim.ts,vs=sim.vs;
+    for(var i=0;i<ts.length&&ts[i]<=upto;i++){s+=(i?'L':'M')+(ts[i]/sim.Tt*W).toFixed(1)+' '+vy(vs[i]).toFixed(1);}
+    $('f2curve').setAttribute('d',s);
+    $('f2cur').setAttribute('x1',upto/sim.Tt*W);$('f2cur').setAttribute('x2',upto/sim.Tt*W);
+    var tripped=sim.tripT>=0&&upto>=sim.tripT;
+    $('f2x').textContent=tripped?'过压跳闸 · 关节失去力矩':'';
+    pose(upto,tripped);
+  }
+  function pose(t,tripped){
+    var p=sim.p,f;
+    if(tripped){var tt=Math.min(1,(t-sim.tripT)/0.25);var ft=Math.min(1,Math.max(0,(sim.tripT-0.1)/p.T));ft=(1-Math.cos(Math.PI*ft))/2;f=ft+(1.15-ft)*tt;}
+    else{var u=Math.min(1,Math.max(0,(t-0.1)/p.T));f=(1-Math.cos(Math.PI*u))/2;}
+    var drop=f*(30+p.h*90);var hipY=96+drop,kneeX=48-f*26;
+    var footY=224,kneeY=(hipY+footY)/2+Math.min(0,0);
+    $('f2th1').setAttribute('y1',hipY);$('f2th1').setAttribute('x2',kneeX);$('f2th1').setAttribute('y2',kneeY);
+    $('f2sh1').setAttribute('x1',kneeX);$('f2sh1').setAttribute('y1',kneeY);
+    $('f2kn').setAttribute('cx',kneeX);$('f2kn').setAttribute('cy',kneeY);
+    $('f2torso').setAttribute('y',40+drop);$('f2head').setAttribute('cy',26+drop);$('f2visor').setAttribute('y',21+drop);
+    $('f2lbl').textContent=tripped?'关节软了！':(f>0.02&&f<0.98?'下蹲中（负功）':(f>=0.98?'蹲好':'站立'));
+  }
+  function readout(){
+    var p=sim.p,head=0.5*p.C*(Vtrip*Vtrip-V0*V0);
+    $('f2e').textContent=sim.E.toFixed(0)+' J';
+    $('f2pk').textContent=sim.Ppk.toFixed(0)+' W';
+    $('f2cap').textContent=head.toFixed(2)+' J';
+    var st=$('f2st');
+    if(sim.tripT>=0){st.textContent='过压跳闸';st.className='status badc';}
+    else{st.textContent='峰值 '+sim.vmax.toFixed(1)+' V，安全';st.className='status okc';}
+  }
+  function labels(){var p=P();$('f2mo').textContent=p.m+' kg';$('f2ho').textContent=p.h.toFixed(2)+' m';$('f2to').textContent=p.T.toFixed(1)+' s';$('f2co').textContent=Math.round(p.C*1000)+' mF';}
+  function full(){labels();run();grid();readout();if(!playing)curve(sim.Tt);}
+  ['f2m','f2h','f2t','f2c'].forEach(function(id){$(id).addEventListener('input',function(){playing=false;$('f2p').textContent='▶ 播放下蹲';full();});});
+  Array.prototype.forEach.call($('f2mode').querySelectorAll('button'),function(b){b.addEventListener('click',function(){
+    Array.prototype.forEach.call($('f2mode').querySelectorAll('button'),function(x){x.classList.remove('on');});
+    b.classList.add('on');mode=b.getAttribute('data-m');playing=false;$('f2p').textContent='▶ 播放下蹲';full();});});
+  function step(ts){if(!playing)return;if(!t0)t0=ts;var t=(ts-t0)/1000*0.8;if(t>=sim.Tt){t=sim.Tt;playing=false;$('f2p').textContent='▶ 再播一次';}curve(t);if(playing)requestAnimationFrame(step);}
+  $('f2p').addEventListener('click',function(){
+    if(playing){playing=false;this.textContent='▶ 播放下蹲';curve(sim.Tt);return;}
+    if(reduce){curve(sim.Tt);return;}
+    playing=true;t0=0;this.textContent='❚❚ 停止';requestAnimationFrame(step);});
+  full();
+})();
+
+/* ---------- Fig3: CAN arbitration ---------- */
+(function(){
+  var g=$('f3g'),names=['膝关节','髋关节','踝关节'],ids=[],k=11,timer=null,x0=86,cw=36,rows=[30,72,114],busY=166;
+  function bits(n){var a=[];for(var i=10;i>=0;i--)a.push((n>>i)&1);return a;}
+  function pick(){
+    var s={};ids=[];while(ids.length<3){var base=0x040+Math.floor(Math.random()*0x0C0);if(!s[base]){s[base]=1;ids.push(base);}}
+    // make them share a prefix so arbitration lasts a few bits
+    ids[1]=(ids[0]&0x7F0)|(ids[1]&0x00F);ids[2]=(ids[0]&0x7C0)|(ids[2]&0x03F);
+    if(ids[1]===ids[0])ids[1]^=1;if(ids[2]===ids[0]||ids[2]===ids[1])ids[2]^=2;
+  }
+  function draw(){
+    g.innerHTML='';
+    var B=ids.map(bits),alive=[true,true,true],out=[-1,-1,-1],bus=[];
+    for(var i=0;i<11;i++){var b=1;for(var j=0;j<3;j++)if(alive[j]&&B[j][i]===0)b=0;bus.push(b);
+      for(var j2=0;j2<3;j2++)if(alive[j2]&&B[j2][i]===1&&b===0){alive[j2]=false;out[j2]=i;}}
+    g.appendChild(el('text',{x:x0+cw*5.5,y:14,'text-anchor':'middle','class':'s-ink2','font-size':11},'11 位 ID：从最高位开始逐位发送 →'));
+    for(var j=0;j<3;j++){
+      var y=rows[j],lost=out[j]>=0&&out[j]<k;
+      var grp=el('g',{'class':lost?'out':''});
+      grp.appendChild(el('text',{x:4,y:y+18,'class':'s-ink','font-size':12,'font-weight':700},names[j]));
+      grp.appendChild(el('text',{x:4,y:y+32,'class':'s-ink2 mono','font-size':10},'0x'+ids[j].toString(16).toUpperCase().padStart(3,'0')));
+      for(var i=0;i<11;i++){
+        var shown=i<k&&!(out[j]>=0&&i>out[j]);
+        grp.appendChild(el('rect',{x:x0+i*cw,y:y,width:cw-3,height:30,rx:4,'class':'cell '+(shown?(B[j][i]?'c1':'c0'):'cq')}));
+        if(shown)grp.appendChild(el('text',{x:x0+i*cw+16,y:y+20,'text-anchor':'middle','font-size':13,'font-weight':700,fill:B[j][i]?'var(--ink2)':'#fff'},B[j][i]));
+      }
+      if(lost)grp.appendChild(el('text',{x:x0+out[j]*cw+16,y:y-3,'text-anchor':'middle','font-size':10,fill:'#dc2626','font-weight':700},'退出'));
+      g.appendChild(grp);
+    }
+    g.appendChild(el('line',{x1:x0-4,x2:x0+11*cw,y1:busY-8,y2:busY-8,stroke:'var(--line)'}));
+    g.appendChild(el('text',{x:4,y:busY+19,'class':'s-acc2','font-size':12,'font-weight':700},'线上听到'));
+    for(var i=0;i<11;i++){
+      var sh=i<k;
+      g.appendChild(el('rect',{x:x0+i*cw,y:busY,width:cw-3,height:30,rx:4,'class':'cell '+(sh?(bus[i]?'c1':'c0'):'cq'),stroke:'var(--accent2)'}));
+      if(sh)g.appendChild(el('text',{x:x0+i*cw+16,y:busY+20,'text-anchor':'middle','font-size':13,'font-weight':700,fill:bus[i]?'var(--ink2)':'#fff'},bus[i]));
+    }
+    if(k>=11){var w=alive.indexOf(true);g.appendChild(el('text',{x:x0+cw*5.5,y:busY+46,'text-anchor':'middle','class':'s-acc','font-size':12,'font-weight':700},'胜出：'+names[w]+'（ID 最小），它的帧完好无损地继续发送'));}
+    $('f3s').disabled=k>=11;
+  }
+  function stop(){if(timer){clearInterval(timer);timer=null;}$('f3p').textContent='▶ 自动演示';}
+  $('f3s').addEventListener('click',function(){stop();if(k>=11)k=0;k++;draw();});
+  $('f3p').addEventListener('click',function(){
+    if(timer){stop();return;}
+    if(reduce){k=11;draw();return;}
+    k=0;draw();this.textContent='❚❚ 暂停';
+    timer=setInterval(function(){k++;draw();if(k>=11)stop();},650);});
+  $('f3r').addEventListener('click',function(){stop();pick();k=11;draw();});
+  ids=[0x123,0x12B,0x131];draw();
+})();
+
+/* ---------- Fig5: EtherCAT nodes ---------- */
+(function(){
+  var g=$('f5nodes');
+  for(var i=0;i<6;i++){
+    var x=110+i*64;
+    g.appendChild(el('rect',{x:x-20,y:44,width:40,height:48,rx:8,fill:'#9aa1ab',stroke:'#6b7280'}));
+    g.appendChild(el('circle',{cx:x,cy:68,r:11,fill:'#b45309'}));
+    g.appendChild(el('circle',{cx:x,cy:68,r:5,fill:'#d1d5db'}));
+    g.appendChild(el('text',{x:x,y:108,'text-anchor':'middle','class':'s-ink2','font-size':10},i<5?('关节'+(i+1)):'…'));
+    g.appendChild(el('path',{d:'M'+(x-6)+' 50 L'+(x-6)+' 40',stroke:'var(--accent)','stroke-width':1.6}));
+    g.appendChild(el('path',{d:'M'+(x+6)+' 40 L'+(x+6)+' 50',stroke:'var(--accent2)','stroke-width':1.6}));
+  }
+  g.appendChild(el('text',{x:110,y:122,'class':'s-ink2','font-size':10},'↑读走指令  ↓写入状态（帧经过时，纳秒级完成）'));
+})();
+
+/* ---------- Fig6: bus timing ---------- */
+(function(){
+  var bus='can',freqs=[500,1000,1200,2000,2500,3000,4000,5000];
+  function cfg(){var n=+$('f6n').value,f=freqs[+$('f6f').value-1],c=bus==='ecat'?1:+$('f6c').value;return {n:n,f:f,c:c};}
+  function draw(){
+    var p=cfg(),per=1e6/p.f,g=$('f6g');g.innerHTML='';
+    $('f6no').textContent=p.n+' 个';$('f6fo').textContent=p.f+' Hz';$('f6co').textContent=(bus==='ecat'?'1 条（无需分）':p.c+' 条');
+    $('f6c').disabled=bus==='ecat';
+    var per1=Math.ceil(p.n/p.c),blocks=[],use;
+    if(bus==='can'){for(var i=0;i<per1;i++)blocks.push(200);use=per1*200;}
+    else if(bus==='485'){for(var i2=0;i2<per1;i2++)blocks.push(90);use=per1*90;}
+    else{use=(52+p.n*24)*0.08+p.n*0.5;blocks=[use];}
+    var X0=60,Wd=440,scale=Wd/Math.max(per,use)*(use>per?1:1);
+    var span=Math.max(per,use);scale=Wd/span;
+    var rowsN=Math.min(p.c,4);
+    for(var r=0;r<rowsN;r++){
+      var y=20+r*36;
+      g.appendChild(el('text',{x:4,y:y+18,'class':'s-ink2','font-size':11},bus==='ecat'?'EtherCAT':'通道 '+(r+1)));
+      g.appendChild(el('rect',{x:X0,y:y,width:per*scale,height:26,rx:4,fill:'var(--bg)',stroke:'var(--line)'}));
+      var x=X0,cnt=(bus==='ecat')?1:Math.min(per1,Math.max(0,p.n-r*per1));
+      for(var b=0;b<cnt;b++){
+        var w=blocks[b]*scale,over=(x-X0+w)>per*scale+0.5;
+        g.appendChild(el('rect',{x:x+0.5,y:y+3,width:Math.max(1,w-1),height:20,rx:3,fill:over?'#dc2626':(b%2?'var(--accent2)':'var(--accent)'),opacity:.85}));
+        x+=w;
+      }
+    }
+    var yb=20+rowsN*36+6;
+    g.appendChild(el('line',{x1:X0+per*scale,x2:X0+per*scale,y1:12,y2:yb,stroke:'#dc2626','stroke-width':1.5,'stroke-dasharray':'4 3'}));
+    g.appendChild(el('text',{x:Math.min(X0+per*scale,500),y:10,'text-anchor':'end',fill:'#dc2626','font-size':10.5,'font-weight':700},'周期结束 '+per.toFixed(0)+' µs'));
+    g.appendChild(el('text',{x:X0,y:yb+16,'class':'s-ink2','font-size':10.5},'色块 = 每个关节一次“指令 + 回复”'+(bus==='ecat'?'（EtherCAT：全部关节共用一帧）':'')+'；红色 = 超出周期'));
+    var pct=use/per*100;
+    $('f6per').textContent=per.toFixed(0)+' µs';$('f6use').textContent=use.toFixed(0)+' µs';$('f6pct').textContent=pct.toFixed(0)+'%';
+    var st=$('f6st');
+    if(pct>100){st.textContent='装不下';st.className='status badc';}
+    else if(pct>80){st.textContent='能跑，余量很小';st.className='status';}
+    else{st.textContent='装得下';st.className='status okc';}
+  }
+  ['f6n','f6f','f6c'].forEach(function(id){$(id).addEventListener('input',draw);});
+  Array.prototype.forEach.call($('f6bus').querySelectorAll('button'),function(b){b.addEventListener('click',function(){
+    Array.prototype.forEach.call($('f6bus').querySelectorAll('button'),function(x){x.classList.remove('on');});
+    b.classList.add('on');bus=b.getAttribute('data-b');draw();});});
+  draw();
+})();
+})();
+</script>
+</body>
+</html>
