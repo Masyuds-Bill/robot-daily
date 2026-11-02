@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W3 复盘｜传感与驱动器</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --steel:#a7adb7; --steel2:#6b7280; --copper:#c47a35; --spring:#7c3aed;
+  --warn:#fdf0d5; --warnline:#b45309; --ok:#15803d; --bad:#b91c1c; --oks:#e3f4e8; --bads:#fbe4e4;
+  --L1:#c2410c; --L2:#1d4ed8; --L3:#0f766e; --L4:#a16207;
+  --L1s:#fbe6d8; --L2s:#e1e8fb; --L3s:#dcefec; --L4s:#f6ecd2;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --serif:"Songti SC","STSong",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --steel:#6b7280; --steel2:#9ca3af; --copper:#d08a45; --spring:#a78bfa;
+    --warn:#2b2416; --warnline:#f59e0b; --ok:#4ade80; --bad:#f87171; --oks:#14301f; --bads:#3a1a1a;
+    --L1:#fb923c; --L2:#7aa2ff; --L3:#2dd4bf; --L4:#facc15;
+    --L1s:#33241a; --L2s:#1c2438; --L3s:#152c2a; --L4s:#2e2a16;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:160px;height:34px;accent-color:var(--accent)}
+.ctrl output{min-width:4.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent)}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:42px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.formula{font-family:"Times New Roman",var(--serif);font-size:21px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2)}
+.analogy .no{display:block;font-size:15px;color:var(--ink2);margin-top:6px}
+.box{border:1px solid var(--warnline);background:var(--warn);border-radius:14px;padding:12px 16px;margin:22px 0}
+.box .t{font-weight:700;color:var(--warnline);font-size:15px;letter-spacing:.06em}
+.box.cold{border-color:var(--accent2);background:var(--soft2)}
+.box.cold .t{color:var(--accent2)}
+.mix{border-radius:14px;border:1px solid var(--line);background:var(--bg2);padding:10px 14px;margin:14px 0}
+.mix .q{font-weight:700}
+.mix .tag{display:inline-block;font-size:12px;background:var(--bads);color:var(--bad);border-radius:6px;padding:0 6px;margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0 4px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat .k{font-size:13px;color:var(--ink2)}
+.stat .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .bar{height:6px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}
+.stat .bar i{display:block;height:100%;background:var(--accent)}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:15.5px;line-height:1.7;min-height:7em}
+.panel h4{margin:0 0 4px;font-size:17px}
+.panel .f{font-family:"Times New Roman",var(--serif);font-size:18px;margin:4px 0;color:var(--accent2)}
+.panel .w,.panel .x{margin:4px 0}
+.panel .x{color:var(--bad)}
+.node{cursor:pointer}
+.node rect{transition:stroke-width .15s}
+.node.on rect{stroke-width:3.2}
+.quiz{counter-reset:q}
+.qq{border:1px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;margin:16px 0}
+.qq .stem{font-weight:600}
+.qq .stem::before{counter-increment:q;content:counter(q) ". ";color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.opts button{text-align:left;border-radius:10px;border-color:var(--line);background:var(--bg);color:var(--ink);min-height:44px;line-height:1.5}
+.opts button.right{background:var(--oks);border-color:var(--ok);color:var(--ink)}
+.opts button.wrong{background:var(--bads);border-color:var(--bad);color:var(--ink)}
+.exp{display:none;font-size:15.5px;margin-top:8px;padding:8px 12px;border-radius:10px;background:var(--soft2)}
+.exp b.r{color:var(--ok)} .exp b.w{color:var(--bad)}
+.score{position:sticky;bottom:10px;margin:20px auto 0;max-width:300px;text-align:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 16px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+details{border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:14px 0;background:var(--bg2)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent2);min-height:30px}
+.mail{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{color:var(--ink2);font-weight:600}
+.src{font-size:14px;color:var(--ink2);line-height:1.7}
+.src li{margin:4px 0}
+.next{background:var(--soft);border-radius:14px;padding:14px 16px;margin:28px 0}
+.next .t{font-weight:700;color:var(--accent)}
+svg text{font-family:var(--sans)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+h3{font-size:19px;margin:26px 0 6px;line-height:1.5}
+.box p,.next p{margin:6px 0}
+</style>
+
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 3 单元「传感与驱动器」· 复盘日</div>
+<h1>早课 W3 复盘｜传感与驱动器</h1>
+<p class="sub">一个只有 25 微秒的回合，一封列了五个毛病的邮件，和一张能点开的知识地图。约 15 分钟。</p>
+
+<p>先做一道算术。Ben Katz 给 Mini Cheetah 做的关节驱动板，开关频率是 40 kHz，电流环也跑 40 kHz，和开关同步。换算一下：每一轮只有 <b>25 微秒</b>。你眨一下眼大约要 0.1 到 0.4 秒，这期间那块巴掌大的板子已经完整跑了四千到一万六千轮：读角度、量电流、做两次坐标变换、算出新的占空比、把六只开关管各拨一遍。</p>
+
+<p>这一周我们其实只拆了这 25 微秒。周三讲编码器，它是“读角度”那一步；周四讲逆变器、PWM 和分流电阻，它们是“量电流”和“拨开关”；周五讲 FOC，它是中间那段“算”；昨天讲母线和通信，一头是给这一切供电的那根粗线，一头是告诉它“这一轮该出多大力”的那根细线。</p>
+
+<p>今天不讲新东西，只把这四段接回一个圆。为了让它落地，我们拿一封邮件来练手（为练习设计的场景，不是真实客户）：</p>
+
+<div class="mail">Hi, we have been testing one of your actuators on our bench for a week. A few issues:
+1. After power-up, the output angle is sometimes off by a fixed step.
+2. When holding position, there is a faint high-pitched whine.
+3. After we re-flashed the firmware, it runs hot and can't hold position.
+4. It shuts down every time we decelerate the load quickly (48 V bench supply).
+5. When we added more actuators on the same CAN line, the loop got laggy.</div>
+
+<p>五个毛病，恰好落在这一周的四课上。我们就沿着那个 25 微秒的圆走一遍，看每个毛病出在圆上哪一格。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，髋部和膝部是圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>12 个圆饼关节，每个里面都有一颗读转子角度的芯片、一块自己的驱动板，各自每 25 微秒跑完一圈；它们再分成 4 条 CAN 网络，每条腿一条，和主控对话。这一周四课，就藏在每一块“饼”里。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">01</span>先把地图摊开：四节课是怎么接成一个圈的？</h2>
+
+<p>下面每个方块是一个概念，颜色代表它来自哪一课。点一下，下方展开“一句话、关键数字、工作里在哪遇到、最容易错在哪”。箭头上的小字，是两个概念之间真正流过去的东西：角度、电流、占空比、电压、指令。</p>
+
+<figure>
+<svg id="map" viewBox="0 0 360 350" role="img" aria-label="第 3 单元知识地图，可点击节点查看要点">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink2)"/></marker>
+  </defs>
+  <g id="mapEdges"></g>
+  <g id="mapNodes"></g>
+  <g font-size="10" fill="var(--ink2)">
+    <rect x="8" y="326" width="10" height="10" rx="2" fill="var(--L1s)" stroke="var(--L1)"/><text x="22" y="335">①编码器</text>
+    <rect x="92" y="326" width="10" height="10" rx="2" fill="var(--L2s)" stroke="var(--L2)"/><text x="106" y="335">②逆变器</text>
+    <rect x="176" y="326" width="10" height="10" rx="2" fill="var(--L3s)" stroke="var(--L3)"/><text x="190" y="335">③FOC</text>
+    <rect x="248" y="326" width="10" height="10" rx="2" fill="var(--L4s)" stroke="var(--L4)"/><text x="262" y="335">④母线与总线</text>
+  </g>
+</svg>
+<div class="panel" id="mapPanel"><h4>点一个方块试试</h4>建议从右上角的“CAN / EtherCAT”开始：目标从那里进来，顺着箭头走到右下角的“六只管”；再看左边，“编码器”和“分流电阻”的两支箭头怎么把测量送回 FOC。</div>
+<figcaption><b>看图要看什么：</b>“编码器角度 θ”和“分流电阻电流”两支箭头都汇进 FOC——驱动器没有这两只“眼睛”就是瞎的；而母线电压从下方托住“PWM”，因为占空比只是比例，真正加到线圈上的电压还要乘以母线电压。</figcaption>
+</figure>
+
+<h2><span class="n">02</span>把 25 微秒放慢十万倍，会看到什么？</h2>
+
+<p>按“播放”，一个回合会慢放成两三秒。每走到一站，下面会告诉你这一站来自哪一课、此刻在做什么。下面那条长条是 1 毫秒：一个 1 kHz 主控周期里，驱动板自己已经转了 40 圈，通信只在其中占一小段。</p>
+
+<figure>
+<svg id="cyc" viewBox="0 0 360 330" role="img" aria-label="一个 FOC 控制回合的六个步骤环形图，以及 1 毫秒时间轴">
+  <defs>
+    <radialGradient id="cg" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="var(--bg2)"/><stop offset="1" stop-color="var(--soft2)"/></radialGradient>
+  </defs>
+  <circle cx="180" cy="120" r="78" fill="url(#cg)" stroke="var(--line)" stroke-width="10"/>
+  <circle cx="180" cy="120" r="78" fill="none" stroke="var(--accent)" stroke-width="10" stroke-dasharray="0 490" id="cycArc" transform="rotate(-90 180 120)" stroke-linecap="round"/>
+  <text x="180" y="112" text-anchor="middle" font-size="13" fill="var(--ink2)">一个回合</text>
+  <text x="180" y="134" text-anchor="middle" font-size="22" font-weight="700" fill="var(--ink)">25 µs</text>
+  <text x="180" y="152" text-anchor="middle" font-size="10.5" fill="var(--ink2)">Mini Cheetah，40 kHz</text>
+  <g id="cycSt"></g>
+  <circle id="cycDot" r="7" fill="var(--accent)" cx="180" cy="42"/>
+  <!-- timeline -->
+  <text x="14" y="244" font-size="11" fill="var(--ink2)">1 ms = 一个 1 kHz 控制周期</text>
+  <g id="tl"></g>
+  <rect x="14" y="252" width="332" height="22" rx="4" fill="none" stroke="var(--ink2)" stroke-width="1"/>
+  <rect x="14" y="282" width="199" height="14" rx="3" fill="var(--L4s)" stroke="var(--L4)"/>
+  <text x="18" y="293" font-size="10" fill="var(--ink)">CAN：一条腿 3 个关节 ≈ 600 µs</text>
+  <text x="14" y="316" font-size="10.5" fill="var(--ink2)">↑ 每一小格 = 一个 25 µs 回合，共 40 格</text>
+  <rect id="tlCur" x="14" y="250" width="3" height="26" fill="var(--accent)"/>
+</svg>
+<div class="seg"><button type="button" id="cycPlay">▶ 播放</button><button type="button" id="cycStep">下一站</button></div>
+<div class="panel" id="cycPanel"><h4>六站一圈</h4>① 读角度 → ② 量电流 → ③ 变坐标 → ④ 比一比 → ⑤ 算占空比 → ⑥ 拨开关。点“下一站”可以一步步看。</div>
+<figcaption><b>看图要看什么：</b>①和②是“看”，③④⑤是“想”，⑥是“动”。周三、周四、周五三课各占几站；而那条细细的 CAN，在 1 毫秒里只来一次，把目标值塞进第④站。时间轴按 Katz 论文的数估算：1 Mbit/s、每关节一次往返约 200 位。</figcaption>
+</figure>
+
+<div class="analogy"><span class="t">类比一：厨房里的炒菜师傅</span>主控像点菜的服务员，大约每毫秒递一张单子（“这一轮要 3 N·m”）；驱动板是灶台前的师傅，单子没来之前，他每 25 微秒就要看一眼锅（编码器、电流）、调一下火（占空比）。服务员跑得再勤，也不可能替师傅颠勺。<span class="no">哪里不准：真师傅凭经验，驱动板每一轮都按同一套公式算；而且服务员的单子晚到了，师傅不会自己改菜单——驱动器通常会按超时保护停下来，这个行为要看具体产品。</span></div>
+
+<h2><span class="n">03</span>五个毛病，各在圆上的哪一格？</h2>
+
+<p>下面这张剖面图画的是一个“饼状”准直驱关节的大致样子（示意，不对应任何具体型号）。点上方的症状按钮，图里对应的零件会亮起来，下面给出这一周学过的解释。</p>
+
+<figure>
+<svg id="cut" viewBox="0 0 360 250" role="img" aria-label="饼状关节剖面示意图：电机、减速器、编码器、驱动板、母线电容、接插件">
+  <defs>
+    <linearGradient id="hs" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#cfd3d9"/><stop offset=".5" stop-color="#a7adb7"/><stop offset="1" stop-color="#7d8592"/></linearGradient>
+    <linearGradient id="cu" x1="0" x2="1"><stop offset="0" stop-color="#b8692a"/><stop offset=".5" stop-color="#e2a066"/><stop offset="1" stop-color="#b8692a"/></linearGradient>
+    <linearGradient id="pcb" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1f7a4d"/><stop offset="1" stop-color="#145a37"/></linearGradient>
+    <pattern id="teeth" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#8a919c"/><path d="M0 8 L4 0 L8 8z" fill="#6b7280"/></pattern>
+  </defs>
+  <rect x="14" y="62" width="26" height="126" rx="4" fill="url(#hs)" stroke="#5b616b"/>
+  <text x="27" y="206" text-anchor="middle" font-size="10" fill="var(--ink2)">输出</text>
+  <rect x="40" y="42" width="200" height="166" rx="16" fill="url(#hs)" stroke="#5b616b" opacity=".55"/>
+  <g id="h-gear"><rect x="48" y="62" width="44" height="126" rx="6" fill="url(#teeth)" stroke="#4b5563"/>
+  <text x="70" y="200" text-anchor="middle" font-size="10" fill="var(--ink2)">行星减速</text></g>
+  <rect x="98" y="52" width="16" height="146" rx="3" fill="#4b5563"/>
+  <g><rect x="100" y="56" width="12" height="20" fill="#c2410c"/><rect x="100" y="78" width="12" height="20" fill="#1d4ed8"/><rect x="100" y="100" width="12" height="18" fill="#c2410c"/><rect x="100" y="132" width="12" height="18" fill="#1d4ed8"/><rect x="100" y="152" width="12" height="20" fill="#c2410c"/><rect x="100" y="174" width="12" height="20" fill="#1d4ed8"/></g>
+  <rect x="118" y="56" width="40" height="138" rx="4" fill="#9aa1ab"/>
+  <g fill="url(#cu)"><rect x="122" y="60" width="32" height="18" rx="4"/><rect x="122" y="82" width="32" height="18" rx="4"/><rect x="122" y="104" width="32" height="14" rx="4"/><rect x="122" y="132" width="32" height="14" rx="4"/><rect x="122" y="150" width="32" height="18" rx="4"/><rect x="122" y="172" width="32" height="18" rx="4"/></g>
+  <text x="132" y="222" text-anchor="middle" font-size="10" fill="var(--ink2)">外转子磁铁 + 定子线圈</text>
+  <rect x="92" y="118" width="80" height="14" fill="#6b7280"/>
+  <g id="h-enc"><rect x="164" y="110" width="10" height="30" rx="2" fill="#c2410c"/><rect x="164" y="110" width="10" height="15" rx="2" fill="#1d4ed8"/>
+  <rect x="180" y="116" width="12" height="18" rx="2" fill="#111827"/>
+  <text x="178" y="104" text-anchor="middle" font-size="9.5" fill="var(--ink)">编码器</text></g>
+  <rect x="196" y="56" width="9" height="140" rx="2" fill="url(#pcb)"/>
+  <g id="h-fet"><g fill="#111827"><rect x="208" y="60" width="16" height="12" rx="1.5"/><rect x="208" y="76" width="16" height="12" rx="1.5"/><rect x="208" y="166" width="16" height="12" rx="1.5"/><rect x="208" y="182" width="16" height="12" rx="1.5"/></g>
+  <text x="248" y="80" font-size="10" fill="var(--ink2)">功率管 ×6</text></g>
+  <g id="h-shunt"><rect x="208" y="96" width="16" height="6" rx="1" fill="#e5e7eb" stroke="#6b7280"/><text x="248" y="103" font-size="10" fill="var(--ink2)">分流电阻</text></g>
+  <g id="h-mcu"><rect x="208" y="112" width="20" height="20" rx="2" fill="#1f2937"/><text x="248" y="126" font-size="10" fill="var(--ink2)">MCU（跑 FOC）</text></g>
+  <g id="h-cap"><rect x="208" y="140" width="11" height="20" rx="5" fill="#334155"/><rect x="221" y="140" width="11" height="20" rx="5" fill="#334155"/><rect x="208" y="140" width="11" height="4" rx="2" fill="#94a3b8"/><rect x="221" y="140" width="11" height="4" rx="2" fill="#94a3b8"/><text x="248" y="154" font-size="10" fill="var(--ink2)">母线电容</text></g>
+  <g id="h-pwr"><path d="M226 44 C250 44 270 18 318 18" stroke="#b91c1c" stroke-width="5" fill="none"/><path d="M232 50 C258 50 276 28 318 28" stroke="#111827" stroke-width="5" fill="none"/><rect x="316" y="8" width="28" height="30" rx="3" fill="#facc15" stroke="#a16207"/><text x="330" y="52" text-anchor="middle" font-size="10" fill="var(--ink2)">电源</text></g>
+  <g id="h-can"><path d="M232 200 C270 200 290 214 326 214" stroke="#64748b" stroke-width="2.5" fill="none"/><path d="M232 205 C268 205 290 220 326 220" stroke="#94a3b8" stroke-width="2.5" fill="none"/><rect x="326" y="206" width="18" height="20" rx="2" fill="#e5e7eb" stroke="#6b7280"/><text x="335" y="242" text-anchor="middle" font-size="10" fill="var(--ink2)">通信</text></g>
+  <rect id="hiBox" x="0" y="0" width="0" height="0" rx="8" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 4"/>
+</svg>
+<div class="seg" id="symBtns">
+<button type="button" data-s="0">① 开机角度差一截</button><button type="button" data-s="1">② 保持时“吱——”</button><button type="button" data-s="2">③ 刷固件后发热</button><button type="button" data-s="3">④ 一减速就关机</button><button type="button" data-s="4">⑤ 多挂几个就卡</button>
+</div>
+<div class="panel" id="symPanel"><h4>点一个症状</h4>先自己猜它属于哪一课，再点开对答案。</div>
+<figcaption><b>看图要看什么：</b>五个毛病落在五个不同的零件上，但没有一个是“电机本身坏了”。驱动器这一周学的东西，恰恰是客户最容易看不见、也最容易怪错对象的部分。</figcaption>
+</figure>
+
+<p>把五条答案连起来读，你会发现它们有个共同点：<b>今天学到的知识只够你提出假设，不够你下结论。</b>真正写回信时，每一条都要先收集条件，再转给工程团队。这句话这周说了四遍，复盘时再说一遍。</p>
+
+<details><summary>如果真收到这封邮件，回信骨架可以这样搭（点开）</summary>
+<div class="mail">Thank you for the detailed report. To help our engineering team look into each point, could you share:
+1. Power-up angle offset: the actuator model, firmware version, and whether the joint is powered up in the same pose each time.
+2. Whine: control mode and gains, load, and whether it changes with the gains.
+3. Heating after re-flash: whether the full calibration procedure was completed after the update.
+4. Shutdown on deceleration: the bench supply model and whether it can absorb regenerative energy, plus any error code reported by the driver.
+5. CAN latency: bus bit rate, number of actuators per line, and the control loop rate.
+Specific limits and recommended setup: [待技术确认]</div>
+具体型号的校准流程、电压上限、总线配置，一律以最新手册和工程团队确认为准。第 3 条可引用项目资料《BEAR Firmware Update & Calibration》：刷固件后、或执行器异常发热或保持不住位置时需要重新校准，且校准过程中执行器会通电转动，要按安全确认窗口操作（来源：firmware-calibration.md）。</details>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Ben Katz 手持并展示 Mini Cheetah 的关节电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>对照上面的剖面图看这只真模块：电机、6:1 减速器、编码器芯片和驱动板都塞在这么扁的壳子里。它只在电机侧装了一个位置传感器，所以开机时输出角度只能确定到 60° 以内——症状①在真实机器人上的版本。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">04</span>最容易搞混的三处</h2>
+
+<h3>混淆一：分辨率和精度，是两把不同的尺子</h3>
+<p>14 位编码器把一圈分成 16384 格，每格约 0.022°，这是<b>分辨率</b>：刻度有多细。可 Mini Cheetah 用的 AS5047P 芯片，数据手册写的积分非线性（INL）在理想安装下是 ±0.8°，这是<b>精度</b>：整把尺子印得准不准。两者差了三十多倍。到了关节输出端，还要再叠上减速器的背隙和变形。</p>
+<div class="analogy"><span class="t">类比二：手机上的体重秤 App</span>一台秤显示到 0.01 kg，看起来很精细；可要是它本身偏了半公斤，你每次称都“精确地”错半公斤。显示的位数是分辨率，偏多少是精度。<span class="no">哪里不准：体重秤的偏差基本是一个常数，编码器的误差会随角度、温度、磁铁装偏多少而变化，是一条弯弯曲曲的线，不是简单减一个数就能修好的。</span></div>
+<p>顺带一个计数单位的坑：正交编码器 1000 PPR（每圈脉冲数），A、B 两路的上升沿、下降沿都计数，就是 4000 CPR（每圈计数）。两家规格放一起比较前，先对齐单位。</p>
+
+<h3>混淆二：三种“频率”，不是一回事</h3>
+<p>客户邮件里只写一句“what's the loop rate?”，你要先弄清他问的是哪一个。</p>
+<figure>
+<svg viewBox="0 0 360 170" role="img" aria-label="对数频率轴上的几个关键频率：通信控制、人耳上限、PWM 与电流环">
+  <rect x="0" y="0" width="360" height="170" fill="none"/>
+  <defs><linearGradient id="ear" x1="0" x2="1"><stop offset="0" stop-color="var(--L2s)"/><stop offset="1" stop-color="var(--L2s)" stop-opacity=".2"/></linearGradient></defs>
+  <rect x="20" y="70" width="248" height="22" fill="url(#ear)"/>
+  <text x="26" y="85" font-size="10.5" fill="var(--L2)">人耳能听见（约 20 Hz – 20 kHz）</text>
+  <line x1="20" y1="100" x2="340" y2="100" stroke="var(--ink2)" stroke-width="1.5"/>
+  <g font-size="10" fill="var(--ink2)" text-anchor="middle">
+    <line x1="20" y1="96" x2="20" y2="104" stroke="var(--ink2)"/><text x="20" y="118">10 Hz</text>
+    <line x1="84" y1="96" x2="84" y2="104" stroke="var(--ink2)"/><text x="84" y="118">100 Hz</text>
+    <line x1="148" y1="96" x2="148" y2="104" stroke="var(--ink2)"/><text x="148" y="118">1 kHz</text>
+    <line x1="212" y1="96" x2="212" y2="104" stroke="var(--ink2)"/><text x="212" y="118">10 kHz</text>
+    <line x1="276" y1="96" x2="276" y2="104" stroke="var(--ink2)"/><text x="276" y="118">100 kHz</text>
+  </g>
+  <!-- 1.2 kHz at 148+64*log10(1.2)=153 ; 20k at 212+64*0.301=231 ; 40k at 212+64*.602=250.5 -->
+  <g><line x1="153" y1="40" x2="153" y2="100" stroke="var(--L4)" stroke-width="2.5"/><circle cx="153" cy="100" r="5" fill="var(--L4)"/>
+  <text x="148" y="22" font-size="11" font-weight="700" fill="var(--L4)" text-anchor="middle">≈1.2 kHz</text><text x="148" y="36" font-size="10" fill="var(--ink2)" text-anchor="middle">主控↔关节通信</text></g>
+  <g><line x1="231" y1="92" x2="231" y2="140" stroke="var(--L2)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="231" y="152" font-size="10" fill="var(--L2)" text-anchor="middle">20 kHz</text></g>
+  <g><line x1="251" y1="40" x2="251" y2="100" stroke="var(--accent)" stroke-width="2.5"/><circle cx="251" cy="100" r="5" fill="var(--accent)"/>
+  <text x="290" y="22" font-size="11" font-weight="700" fill="var(--accent)" text-anchor="middle">40 kHz</text><text x="290" y="36" font-size="10" fill="var(--ink2)" text-anchor="middle">PWM 开关 = 电流环</text></g>
+</svg>
+<figcaption><b>看图要看什么：</b>这是 Mini Cheetah 一个关节的三个数，横轴每一格差 10 倍。电流环和通信差了三十多倍，所以“驱动器自己闭环、主控只发目标”是必然的分工；PWM 放在 20 kHz 右边，是为了躲开人耳。</figcaption>
+</figure>
+<p>第一种是 <b>PWM 开关频率</b>：六只管子每秒开关多少次，决定电流纹波和会不会“吱”。第二种是<b>电流环频率</b>：多久量一次电流、改一次占空比，Mini Cheetah 让它和开关同步。第三种是<b>通信或上层控制频率</b>：主控多久发一次目标，Mini Cheetah 实际跑在约 1.2 kHz。BEAR 驱动器的这几个数，本会话能读到的手册里没有查到，回信时一律标 [待技术确认]。</p>
+
+<h3>混淆三：机械角和电角度，差一个“极对数”的放大镜</h3>
+<p>编码器读的是转子的<b>机械角</b>，FOC 要的是磁极的<b>电角度</b>：电角度 = 机械角 × 极对数。所以一个 7 对极的电机，编码器零点偏 6°，到 FOC 那里就偏了 42°。出力的那部分电流只剩 cos 42° ≈ 74%，另外约 67% 的电流跑到了不出力的 I<sub>d</sub> 上，只发热。这正是症状③“刷完固件、没做完校准，就发热又保持不住”背后的账。</p>
+<div class="analogy"><span class="t">类比三：吊扇的拉绳和扇叶</span>拉绳上一点点偏差，传到扇叶尖上被放大了好几倍。极对数就是这条“放大的杠杆”：机械上差一点，电气上差一大截。<span class="no">哪里不准：吊扇是距离上的放大，极对数是角度上的倍乘；而且电角度错到 90° 时，力矩直接归零，这种“转着转着就没劲了”的非线性，吊扇没有。</span></div>
+
+<div class="box"><span class="t">翻车现场：一刹车就“断电”的实验台</span><p>在 ODrive 的用户论坛里，有一类帖子反复出现：电机加速一切正常，一减速驱动器就报错停机。原因正是昨天讲的能量回馈——负载在减速时把电机变成发电机，电流倒灌回母线，而实验室稳压电源不吸收这些能量，母线电压被顶高，触发过压保护。ODrive 的文档在硬件配置里专门讲了制动电阻该怎么接、怎么设。症状④就是这一幕的翻版。对我们的启示是：客户在实验台上用稳压电源测试时，这个提醒值得一提，但推荐的供电方案以手册和工程确认为准。</p></div>
+
+<p>同理，电池也不是“无底洞”：THEMIS 用户手册的电池规格表里，最大充电电流是 15 A，推荐 4.5 A，满电电压 33.2 V（来源：user-manual.md，表 4.3）。电池满了、或者回馈电流超过它愿意吃下的量，多出来的能量依然要找别的出路。</p>
+
+<div class="box cold"><span class="t">冷知识：编码器码盘上的“格雷码”，原本是为通信发明的</span><p>第一课讲的格雷码，取名自贝尔实验室物理学家 Frank Gray。他 1947 年提交、1953 年获批的美国专利 2,632,058《脉冲编码通信》里，用它来减少模拟信号转数字时的读数错误。Gray 自己管它叫“反射二进制码”——一个原本为通信发明的编码，后来成了绝对式编码器码盘的标配。</p></div>
+
+<h2><span class="n">05</span>小测：十个真实场景</h2>
+<p>点选后立即显示对错和解析，底部会累计得分。计算题都可以心算或按手机计算器。</p>
+<div class="quiz" id="quiz"></div>
+<div class="score" id="score">已答 0 / 10 · 答对 0</div>
+
+<h2><span class="n">06</span>术语对照</h2>
+<table>
+<tr><th>中文</th><th>English</th></tr>
+<tr><td>分辨率 / 精度</td><td>resolution / accuracy (INL)</td></tr>
+<tr><td>单圈 / 多圈绝对式</td><td>single-turn / multi-turn absolute</td></tr>
+<tr><td>每圈脉冲数 / 每圈计数</td><td>PPR / CPR</td></tr>
+<tr><td>逆变器 / 半桥</td><td>inverter / half-bridge</td></tr>
+<tr><td>占空比 / 开关频率</td><td>duty cycle / switching frequency</td></tr>
+<tr><td>分流电阻</td><td>shunt resistor</td></tr>
+<tr><td>磁场定向控制</td><td>field-oriented control (FOC)</td></tr>
+<tr><td>电角度偏置</td><td>electrical angle offset</td></tr>
+<tr><td>直流母线电压</td><td>DC bus voltage</td></tr>
+<tr><td>能量回馈 / 制动电阻</td><td>regeneration / brake resistor</td></tr>
+<tr><td>过压保护</td><td>overvoltage protection</td></tr>
+<tr><td>总线仲裁</td><td>bus arbitration</td></tr>
+</table>
+
+<div class="next"><span class="t">下一单元预告：关节控制</span><p>这一周我们反复说“电流环把 I<sub>q</sub> 稳在目标值上”，可“稳在”两个字是怎么做到的？第④站那个“比一比”之后，误差到底怎么变成新的电压？1868 年，麦克斯韦写过一篇《论调速器》（On Governors），分析蒸汽机上那对飞球为什么有时稳、有时越调越抖。一百五十多年后，你家空调、电梯和我们的关节，还在回答同一个问题。下周一，从反馈和 PID 讲起。</p></div>
+
+<h2><span class="n">·</span>来源</h2>
+<ul class="src">
+<li>Benjamin G. Katz，<a href="https://dspace.mit.edu/handle/1721.1/118671">A Low Cost Modular Actuator for Dynamic Robots</a>，MIT 硕士论文（2018）：40 kHz 开关与同步电流环、两相 1 mΩ 分流采样、电机侧单一位置传感器与开机姿势、4 条 1 Mbit/s CAN、约 1.2 kHz 运行</li>
+<li>MIT News：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT's mini cheetah is the first four-legged robot to do a backflip</a>（2019-03-04）：12 个关节、照片与 CC BY-NC-ND 3.0 授权</li>
+<li><a href="https://www.infineon.com/row/public/documents/24/49/infineon-as5047p-datasheet-en.pdf">AS5047P 数据手册</a>：14 位分辨率、INL ±0.8°（理想安装）、ABI 输出最高 1000 PPR</li>
+<li><a href="https://en.wikipedia.org/wiki/Frank_Gray_(researcher)">Frank Gray (researcher)</a>、<a href="https://en.wikipedia.org/wiki/Gray_code">Gray code</a>：美国专利 2,632,058，1947 年提交、1953 年授权，“reflected binary code”</li>
+<li>ODrive 文档：<a href="https://docs.odriverobotics.com/v/latest/manual/hardware-config.html">Hardware Configuration（制动电阻配置）</a>；论坛帖 <a href="https://discourse.odriverobotics.com/t/odrive-cuts-out-when-braking/6638">ODrive cuts out when braking</a></li>
+<li>麦克斯韦《On Governors》（1868，Proceedings of the Royal Society）：<a href="https://en.wikisource.org/wiki/Page:On_Governors.pdf/1">Wikisource 扫描页</a></li>
+<li>本单元前四课：<a href="2026-10-28.html">W3-1 编码器</a>、<a href="2026-10-29.html">W3-2 逆变器与 PWM</a>、<a href="2026-10-30.html">W3-3 FOC</a>、<a href="2026-11-02.html">W3-4 母线与总线</a>（各课来源见各页文末）</li>
+<li>Westwood Robotics 项目资料：THEMIS User Manual（user-manual.md，表 4.1 执行器参数、表 4.3 电池规格）；《BEAR Firmware Update &amp; Calibration》（firmware-calibration.md）</li>
+</ul>
+</main>
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function onAct(node,fn){node.addEventListener('click',fn);node.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();fn();}});}
+
+/* ---------- 知识地图 ---------- */
+var C1=65,C2=180,C3=295;
+var N=[
+{id:'enc',x:C1,y:125,t:'增量 vs 绝对',L:1,one:'增量式只会“数格子”，断电就忘；绝对式每个位置有自己的“门牌号”，开机就知道在哪。',f:'正交 A/B：1000 PPR → 4000 CPR',w:'规格书 Encoder Type；客户问 “Is homing required at startup?”',x2:'绝对式也分单圈、多圈，不等于“输出端开机即知”。'},
+{id:'res',x:C1,y:40,t:'分辨率≠精度',L:1,one:'分辨率是刻度多细，精度是尺子准不准。',f:'14 位：360°/16384 ≈ 0.022°；AS5047P INL ±0.8°',w:'规格书 Resolution 与 Accuracy 两栏，只给一栏时别替它补另一栏。',x2:'把位数直接换算成“定位精度”。'},
+{id:'turn',x:C2,y:40,t:'单圈的歧义',L:1,one:'编码器在电机侧、只认一圈，隔着减速比 N，输出端开机就有 N 种可能。',f:'歧义间隔 = 360° ÷ N',w:'THEMIS 手册：绝对编码器数据丢失时需零位标定（user-manual.md）。',x2:'以为“绝对式”就一定能直接给出输出端角度。'},
+{id:'inv',x:C3,y:295,t:'逆变器·六只管',L:2,one:'三个半桥、六只开关管，把直流母线“剁”成三相交流。',f:'上下管不可同时导通（死区）',w:'驱动器故障报警、功率管过温，多半和这一层有关。',x2:'以为电机直接吃电池的直流电。'},
+{id:'pwm',x:C3,y:210,t:'PWM 占空比',L:2,one:'只有开和关，靠“开的时间比例”调出平均电压，电感把电流抹平。',f:'V平均 = D × V母线',w:'客户问 PWM 频率、会不会有噪声。',x2:'占空比相同，母线一降，电压也跟着降。'},
+{id:'shunt',x:C2,y:125,t:'分流电阻测流',L:2,one:'串一根极小的电阻，量它两端电压，用欧姆定律反推电流。',f:'I = V ÷ R；Mini Cheetah：1 mΩ、放大 40 倍',w:'客户问 “shunt or Hall sensor?”',x2:'电阻越大信号越好？发热也同比例变大。'},
+{id:'park',x:C2,y:210,t:'Clarke / Park',L:3,one:'把三条正弦电流先压成两轴，再“跳上转子”，变成两根几乎不动的直流量。',f:'需要编码器给出的电角度 θ',w:'客户问 “FOC or trapezoidal commutation?”',x2:'变换本身不难，难的是 θ 必须准。'},
+{id:'iq',x:C3,y:125,t:'Iq 出力 Id 发热',L:3,one:'只有和磁场垂直的那部分电流 Iq 出力；常见表贴电机通常把 Id 目标设为 0。',f:'T ≈ Kt × Iq',w:'THEMIS 手册表 4.1：KB02 的 Kt 为 0.35 Nm/A、PB02 为 0.67 Nm/A。',x2:'Kt 在电机端还是输出端，以手册定义为准，别自己换算后外发。'},
+{id:'align',x:C1,y:210,t:'电角度对齐',L:3,one:'编码器零点要和磁极对上，否则电流有一部分跑去 Id。',f:'电角度 = 机械角 × 极对数',w:'BEAR 校准步骤 ELECTRIC OFFSET；刷固件后需重新校准（firmware-calibration.md）。',x2:'机械上偏几度“不要紧”——乘以极对数后就要紧了。'},
+{id:'bus',x:C2,y:295,t:'母线与电容',L:4,one:'所有关节共用的那根直流“水管”，电容是水管上的小水箱。',f:'THEMIS 电池：满电 33.2 V，截止 20 V',w:'规格书 Supply Voltage，如 9–50.4 V（3–12 S），见 user-manual.md 表 4.1。',x2:'超过额定电压可能直接损坏功率管和电容——按手册 WARNING 处理。'},
+{id:'regen',x:C1,y:295,t:'回馈与过压',L:4,one:'关节做负功时电机变发电机，电流倒灌回母线，电压上涨。',f:'出路：别的关节用掉 / 电池吃下 / 制动电阻烧掉 / 过压保护',w:'客户用稳压电源测试、一减速就关机。',x2:'“电池容量大就没事”——满电或限流时一样吃不下。'},
+{id:'net',x:C3,y:40,t:'CAN / EtherCAT',L:4,one:'主控和关节对话的那根细线；CAN 按 ID 仲裁，EtherCAT 像不停站的传送带。',f:'CAN：1 Mbit/s，每关节往返约 200 位',w:'客户问 “What interface? Can we run EtherCAT?”',x2:'只看波特率，不算每周期能挂几个关节。'}
+];
+var E=[['net','iq','目标 Iq',0],['shunt','park','电流',0],['enc','align','机械角',0],['align','park','',0],['park','iq','Iq / Id',0],['iq','pwm','电压指令',0],['pwm','inv','开关',0],['bus','pwm','×母线',0],['regen','bus','',0],['res','enc','',0],['turn','enc','',0]];
+var col={1:['--L1','--L1s'],2:['--L2','--L2s'],3:['--L3','--L3s'],4:['--L4','--L4s']};
+var byId={};N.forEach(function(n){byId[n.id]=n;});
+var gE=document.getElementById('mapEdges'),gN=document.getElementById('mapNodes'),panel=document.getElementById('mapPanel');
+var W=100,H=32;
+function edgePt(n,tx,ty){var dx=tx-n.x,dy=ty-n.y;var sx=Math.abs(dx)/(W/2),sy=Math.abs(dy)/(H/2);var s=Math.max(sx,sy)||1;return [n.x+dx/s,n.y+dy/s];}
+E.forEach(function(e){var a=byId[e[0]],b=byId[e[1]],off=e[3];
+  var mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y,len=Math.sqrt(dx*dx+dy*dy);
+  var cx=mx+(-dy/len)*off*2,cy=my+(dx/len)*off*2;
+  var p1=edgePt(a,cx,cy),p2=edgePt(b,cx,cy);
+  el('path',{d:'M'+p1[0]+','+p1[1]+' Q'+cx+','+cy+' '+p2[0]+','+p2[1],fill:'none',stroke:'var(--ink2)','stroke-width':1.3,opacity:.6,'marker-end':'url(#ar)'},gE);
+  if(e[2]){var lx=(p1[0]+2*cx+p2[0])/4,ly=(p1[1]+2*cy+p2[1])/4;
+    var w=e[2].length*10+8;el('rect',{x:lx-w/2,y:ly-8,width:w,height:15,rx:4,fill:'var(--bg2)',opacity:.92},gE);
+    var t=el('text',{x:lx,y:ly+3.5,'text-anchor':'middle','font-size':10,fill:'var(--accent)'},gE);t.textContent=e[2];}
+});
+var nodes=[];
+function clearN(){nodes.forEach(function(g){g.classList.remove('on');});}
+N.forEach(function(n){
+  var g=el('g',{class:'node',tabindex:0,role:'button','aria-label':n.t},gN);
+  el('rect',{x:n.x-W/2,y:n.y-H/2,width:W,height:H,rx:9,fill:'var('+col[n.L][1]+')',stroke:'var('+col[n.L][0]+')','stroke-width':1.6},g);
+  var t=el('text',{x:n.x,y:n.y+4.5,'text-anchor':'middle','font-size':12,'font-weight':600,fill:'var(--ink)'},g);t.textContent=n.t;
+  onAct(g,function(){clearN();g.classList.add('on');
+    panel.innerHTML='<h4 style="color:var('+col[n.L][0]+')">'+n.t+'</h4><div>'+n.one+'</div><div class="f">'+n.f+'</div><div class="w"><b>工作里：</b>'+n.w+'</div><div class="x"><b>易错：</b>'+n.x2+'</div>';});
+  nodes.push(g);
+});
+
+/* ---------- 25 µs 回合 ---------- */
+var ST=[
+['①读角度','第 1 课 · 编码器','编码器芯片读出转子机械角，乘以极对数、减去校准时记下的偏置，得到电角度 θ。读错一点，后面全歪。'],
+['②量电流','第 2 课 · 分流电阻','在 PWM 周期里合适的时刻，ADC 读两相分流电阻上的电压，第三相用“三相之和为零”算出来。'],
+['③变坐标','第 3 课 · Clarke / Park','三相电流 → 两轴 → 借 θ 跳上转子，得到 Iq（出力）和 Id（不出力）。'],
+['④比一比','第 3 课 + 第 4 课','把 Iq、Id 和目标值比较。目标 Iq 来自主控，经 CAN 等总线大约每毫秒送来一次；误差交给 PI 调节器（下单元细讲）。'],
+['⑤算占空比','第 3 课 → 第 2 课','PI 给出两轴电压，反 Park 变回三相，再除以当前母线电压，换算成三个占空比。'],
+['⑥拨开关','第 2 课 + 第 4 课','六只功率管按占空比开关，从母线取电（或在减速时把电送回母线）。25 µs 后，回到第①站。']];
+var cx=180,cy=120,r=78,gS=document.getElementById('cycSt'),stG=[];
+ST.forEach(function(s,i){var a=(-90+60*i)*Math.PI/180,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+  var g=el('g',{},gS);el('circle',{cx:x,cy:y,r:11,fill:'var(--bg2)',stroke:'var(--ink2)','stroke-width':1.5},g);
+  var n=el('text',{x:x,y:y+4,'text-anchor':'middle','font-size':11,'font-weight':700,fill:'var(--ink)'},g);n.textContent=i+1;
+  var lx=cx+(r+26)*Math.cos(a),ly=cy+(r+22)*Math.sin(a)+4;var anc=Math.abs(Math.cos(a))<0.2?'middle':(Math.cos(a)>0?'start':'end');
+  if(anc!=='middle'){lx=cx+(r+16)*Math.cos(a);}
+  var t=el('text',{x:lx,y:ly,'text-anchor':anc,'font-size':11.5,fill:'var(--ink2)'},g);t.textContent=s[0].slice(1);
+  stG.push(g);});
+var tl=document.getElementById('tl');for(var i=1;i<40;i++){el('line',{x1:14+i*8.3,y1:252,x2:14+i*8.3,y2:274,stroke:'var(--line)','stroke-width':1},tl);}
+var dot=document.getElementById('cycDot'),arc=document.getElementById('cycArc'),cyp=document.getElementById('cycPanel'),cur=document.getElementById('tlCur');
+var cs=-1,playing=false,t0=0,raf=0,ph=0;
+function setSt(k){cs=k;stG.forEach(function(g,i){g.firstChild.setAttribute('fill',i===k?'var(--accent)':'var(--bg2)');g.firstChild.setAttribute('stroke',i===k?'var(--accent)':'var(--ink2)');g.childNodes[1].setAttribute('fill',i===k?'#fff':'var(--ink)');});
+  var s=ST[k];cyp.innerHTML='<h4>'+s[0]+'　<span style="font-size:13px;color:var(--ink2);font-weight:400">'+s[1]+'</span></h4>'+s[2];}
+function place(p){var a=(-90+360*p)*Math.PI/180;dot.setAttribute('cx',cx+r*Math.cos(a));dot.setAttribute('cy',cy+r*Math.sin(a));arc.setAttribute('stroke-dasharray',(490*p)+' 490');}
+function frame(t){if(!playing)return;var el2=(t-t0)/1000;var p=(el2/3.6)%1;place(p);var k=Math.floor(p*6);if(k!==cs)setSt(k);
+  var q=(el2/9)%1;cur.setAttribute('x',14+q*329);raf=requestAnimationFrame(frame);}
+var pb=document.getElementById('cycPlay');
+pb.addEventListener('click',function(){
+  if(RM){step();return;}
+  playing=!playing;pb.textContent=playing?'❚❚ 暂停':'▶ 播放';
+  if(playing){dot.style.opacity=1;t0=performance.now()-((cs<0?0:cs)/6)*3600;raf=requestAnimationFrame(frame);}else cancelAnimationFrame(raf);});
+function step(){if(playing){playing=false;pb.textContent='▶ 播放';cancelAnimationFrame(raf);}var k=(cs+1)%6;setSt(k);cur.setAttribute('x',14+((k+1)/6)*8.3);dot.style.opacity=0;place(k/6);}
+document.getElementById('cycStep').addEventListener('click',step);
+
+/* ---------- 症状诊断 ---------- */
+var SY=[
+['h-enc','① 开机角度差一截 → 第 1 课 编码器','“差一个固定步长”是关键词。若位置传感器只在电机侧、且只认一圈，隔着减速比 N，输出端开机就有 N 种可能，彼此相隔 360°/N；Mini Cheetah 就是靠固定的开机姿势来消除这个歧义。要问客户：每次开机姿势是否一致、型号和固件版本。对 THEMIS，手册把“重启后左右肢体仍不对称”列为绝对编码器数据丢失、需零位标定的情形。'],
+['h-fet','② 保持时“吱——” → 第 2 课 PWM','一种可能是开关频率或控制环里某些频率成分落在 20 kHz 以下，线圈和铁芯跟着振动发声；但增益过高、机械共振也会叫。只够提出假设：先问控制模式、增益、负载，以及声音是否随增益变化。'],
+['h-mcu','③ 刷固件后发热、保持不住 → 第 3 课 FOC','电角度偏置不对，电流有一部分变成不出力的 Id：力矩打折，热却照发。《BEAR Firmware Update & Calibration》写明刷固件后要重新校准，校准时执行器会通电转动，须按安全确认操作。先确认客户是否完成了全部校准步骤。'],
+['h-cap','④ 一减速就关机 → 第 4 课 母线与回馈','减速时关节做负功，电流倒灌回母线；稳压电源一般不吸收，母线电压被顶高，触发驱动器过压保护（或电源自身保护）。先要电源型号、是否有吸收能力、驱动器报的错误码，推荐接法以工程确认为准。'],
+['h-can','⑤ 多挂几个就卡 → 第 4 课 通信总线','算一笔账：经典 CAN 1 Mbit/s，每个关节一次往返约 200 位，就是 200 µs。1 kHz 下一个周期 1000 µs，一条线最多挂 5 个，还不留余量。要么分多条线，要么降频率，要么换更快的总线。先问客户的波特率、每条线挂几个、控制频率。']];
+var hb=document.getElementById('hiBox'),sp=document.getElementById('symPanel');
+Array.prototype.forEach.call(document.querySelectorAll('#symBtns button'),function(b){b.addEventListener('click',function(){
+  var s=SY[+b.getAttribute('data-s')],g=document.getElementById(s[0]),bb=g.getBBox();
+  hb.setAttribute('x',bb.x-5);hb.setAttribute('y',bb.y-5);hb.setAttribute('width',bb.width+10);hb.setAttribute('height',bb.height+10);
+  sp.innerHTML='<h4>'+s[1]+'</h4>'+s[2];});});
+
+/* ---------- 小测 ---------- */
+var Q=[
+['展会上，客户指着规格书：“编码器 14 位，那关节定位精度就是 0.022° 吧？”最合适的回应是：',['对，14 位就是 360°/16384','不对，0.022° 是分辨率；精度要看 accuracy / INL，输出端还要叠加减速器背隙','不对，要再除以减速比才是精度'],1,'分辨率是刻度多细，精度是尺子准不准。AS5047P 的 INL 在理想安装下是 ±0.8°，比 0.022° 大三十多倍。稳妥英文：“14-bit is the resolution; accuracy is a separate figure — let me confirm it.”'],
+['某关节只在电机侧装了单圈绝对编码器，减速比 6:1，没有输出侧编码器。开机时，输出角度有几种可能？',['1 种，绝对式开机就知道','6 种，彼此相隔 60°','36 种，彼此相隔 10°'],1,'电机转一圈，输出只转 360°÷6 = 60°。一圈之内有 6 个“看起来一样”的位置。Mini Cheetah 正是这个情况，靠固定开机姿势解决。'],
+['两家编码器比较：A 写“2000 PPR 正交输出”，B 写“4096 CPR”。每圈计数谁更多？',['B 更多，4096 > 2000','A 更多，约 8000 CPR','一样多'],1,'正交编码器 A、B 两路的上升沿和下降沿都计数，PPR × 4 = CPR。2000 PPR → 8000 CPR。比较前先统一单位。'],
+['母线 24 V，某一相的 PWM 占空比 25%。这一相的平均电压大约是：',['6 V','18 V','24 V，PWM 不改变电压'],0,'V平均 = D × V母线 = 0.25 × 24 = 6 V。开关只有开和关，靠“开的时间比例”调出平均值。'],
+['THEMIS 电池满电 33.2 V、放电截止 20 V（user-manual.md 表 4.3）。占空比都是 50% 时，平均电压分别约为多少？这说明了什么？',['都是 16.6 V；母线电压不影响结果','16.6 V 和 10 V；同样的占空比给出的电压会随电量变化，所以要靠电流闭环修正','33.2 V 和 20 V；占空比只影响电流'],1,'0.5 × 33.2 = 16.6 V，0.5 × 20 = 10 V。驱动器每个周期量电流、修正占空比，才能让同样的指令在满电和快没电时出同样的力。'],
+['按 Mini Cheetah 关节的设计，1 mΩ 分流电阻上流过 30 A。电阻两端电压和发热分别是：',['30 mV，0.9 W','30 V，900 W','3 mV，0.09 W'],0,'V = I·R = 30 × 0.001 = 0.03 V = 30 mV；P = I²R = 900 × 0.001 = 0.9 W。电阻选得极小，就是为了少发热；代价是信号小，要放大（Katz 用了 40 倍）。'],
+['客户问：“In FOC, which current component produces torque?” 正确的是：',['Id，和磁场同方向的那部分','Iq，和磁场垂直的那部分；常见表贴电机通常把 Id 目标设为 0','三相电流的总和'],1,'力矩 ≈ Kt × Iq。Id 和磁场同向，对表贴式永磁电机基本不出力，只发热（弱磁等特殊用法除外）。三相电流之和理论上为零。'],
+['一台 7 对极电机，编码器零点比真实磁极偏了 6°（机械角）。给 10 A 的 Iq 指令，实际出力约为正常的：',['99%，6° 很小','约 74%','约 50%'],1,'电角度误差 = 6° × 7 = 42°。出力电流 ≈ 10 × cos42° ≈ 7.4 A；另有约 6.7 A 跑到 Id 上只发热。机械上的小偏差被极对数放大了 7 倍。'],
+['邮件：“It works fine when accelerating, but shuts down whenever we decelerate quickly. We use a 48 V bench supply.” 最先怀疑：',['电源功率不够，换更大功率的稳压电源','减速时能量回馈抬高母线电压，触发过压保护','编码器丢步'],1,'减速时关节做负功，电机变发电机。稳压电源一般不能吸收倒灌的能量，母线电压被顶高。换“更大功率”的稳压电源通常解决不了。先收集电源型号和错误码，转工程团队确认推荐方案。'],
+['一条 1 Mbit/s 的 CAN，每个关节一次往返约 200 位。要以 1 kHz 控制 6 个关节，至少需要几条 CAN？',['1 条就够','至少 2 条','至少 6 条'],1,'每个关节 200 位 ÷ 1 Mbit/s = 200 µs；6 个关节 1200 µs，超过 1 ms 周期。分两条，每条 3 个关节 600 µs，占用 60%，正是 Mini Cheetah 每条腿一条 CAN 的配置。']];
+var qz=document.getElementById('quiz'),done=0,right=0,sc=document.getElementById('score');
+Q.forEach(function(q){var d=document.createElement('div');d.className='qq';
+  d.innerHTML='<div class="stem">'+q[0]+'</div><div class="opts"></div><div class="exp"></div>';
+  var os=d.querySelector('.opts'),ex=d.querySelector('.exp'),ans=false;
+  q[1].forEach(function(o,i){var b=document.createElement('button');b.type='button';b.textContent=String.fromCharCode(65+i)+'. '+o;os.appendChild(b);
+    b.addEventListener('click',function(){if(ans)return;ans=true;done++;var ok=i===q[2];if(ok)right++;
+      b.classList.add(ok?'right':'wrong');os.children[q[2]].classList.add('right');
+      ex.innerHTML=(ok?'<b class="r">答对了。</b>':'<b class="w">再想想。</b>正确答案是 '+String.fromCharCode(65+q[2])+'。')+q[3];ex.style.display='block';
+      sc.textContent='已答 '+done+' / '+Q.length+' · 答对 '+right;});});
+  qz.appendChild(d);});
+})();
+</script>
+</body>
+</html>
