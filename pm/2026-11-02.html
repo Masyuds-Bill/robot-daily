@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>晚报 11/2｜Meta与傅利叶造人形</title>
+<style>
+:root{--bg:#faf8f4;--fg:#1f1d1a;--muted:#6b665e;--card:#fff;--line:#e6e1d8;--accent:#c2410c;--accent2:#0f766e;--soft:#f3efe7;--svgline:#3a3632;--svgfill:#ece6db;--metal:#c9ccd1;--metal2:#9aa0a8}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--fg:#ece8e1;--muted:#a39d93;--card:#1f1e1b;--line:#34312c;--accent:#fb923c;--accent2:#2dd4bf;--soft:#262420;--svgline:#d6d0c6;--svgfill:#2c2a26;--metal:#5a5f66;--metal2:#80868e}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:17px;line-height:1.8}
+main{max-width:720px;margin:0 auto;padding:12px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;margin:6px 0 14px;text-decoration:none;font-size:15px}
+h1{font-size:25px;line-height:1.35;margin:4px 0 6px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:18px}
+h2{font-size:20px;line-height:1.45;margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+.tldr{background:var(--soft);border-radius:12px;padding:12px 16px;margin:10px 0 6px}
+.tldr ol{margin:6px 0;padding-left:22px}
+.tag{display:inline-block;font-size:12.5px;line-height:1.5;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-right:4px}
+.why{border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:12px 0}
+.note{font-size:15px;color:var(--muted)}
+.src{font-size:14.5px;color:var(--muted)}
+figure{margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+figure img{display:block;width:100%;height:auto}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-size:14px;line-height:1.6;color:var(--muted);padding:8px 12px 10px}
+.fallback{display:none;padding:14px 12px;font-size:14.5px}
+.term{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 16px 10px;margin:12px 0}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:16px 0}
+.calc label{display:block;font-size:15px;margin-top:8px}
+.calc input[type=range]{width:100%}
+.calc .out{font-size:17px;font-weight:600;color:var(--accent);margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+ul.srcs{padding-left:20px;font-size:14.5px;word-break:break-all}
+ul.srcs li{margin:4px 0}
+b{font-weight:600}
+</style>
+<style>
+.bars{margin:6px 0}
+.bar{display:flex;align-items:center;gap:8px;font-size:14.5px;margin:6px 0}
+.bar .lab{width:92px;flex:none;color:var(--muted)}
+.bar .track{flex:1;background:var(--soft);border-radius:6px;height:20px;position:relative;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px}
+.bar .val{width:62px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<h1>晚报 11/2｜Meta 与傅利叶造人形</h1>
+<div class="meta">2026 年 11 月 2 日 · 周一 · 覆盖 10/31–11/2 周末 · 约 10 分钟</div>
+
+<div class="tldr">
+<b>今日三句话</b>
+<ol>
+<li>外媒称 Meta 和上海的傅利叶用三个月拼出一台家务人形样机“Max”，第二代已在做；傅利叶 CEO 只回了句“暂不方便回复”。</li>
+<li>泰山 3100 级石阶上办了首届机器人登山赛：四足 43 分钟登顶赛段，人形最快 27 分钟跑完一段更短的路——差距写在赛道长度里。</li>
+<li>Agility Robotics 的 SPAC 合并今天（美东时间）投票，原本 6.2 亿美元的募资预期已缩到约 4.65 亿美元，人形第一股的账没有看起来那么宽裕。</li>
+</ol>
+</div>
+
+<!-- 1 -->
+<h2><span class="n">1</span>Meta 的家务机器人，原来是在上海“组装”出来的</h2>
+<p><span class="tag">行业</span><span class="tag">媒体爆料·未经官方证实</span></p>
+<p>10 月 31 日，美国科技媒体 The Information 报道：Meta 与中国人形机器人公司<b>傅利叶（Fourier）</b>合作，大约三个月做出一台内部代号 <b>Max</b> 的人形样机。根据报道的信源：身高约 1.5 米、重约 48 公斤，胸前有扬声器，脸部是一块能显示表情的屏，五指手能捡起小物件，算力用的是英伟达 Jetson Thor。第二代 Max 2 从 9 月开始开发，据称重新设计了躯干和手，加了投影仪和帮助上下楼梯的传感器。Meta 没有发布时间表，这批样机只做内部研究、不对外卖。</p>
+<p>国内媒体随后追问傅利叶，创始人兼 CEO 顾捷的回答是“暂不方便回复”。另有未具名消息称 Meta 机器人产品副总裁曾在傅利叶上海工厂待了近两个月——这同样只是传闻。</p>
+
+<figure>
+<img src="https://mma.prnewswire.com/media/2856124/IMG_9044.jpg" loading="lazy" referrerpolicy="no-referrer" alt="傅利叶 GR-3 人形机器人与一台玩偶大小的陪伴机器人原型并排展示" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fallback"><a href="https://tools.prnewswire.com/en-us/live/20813/release/20260106EN55830">图片未能加载，点此查看原图</a></div>
+<figcaption>看图要看什么：这是傅利叶<b>自己的</b> GR-3（约 165 cm、55 个自由度，今年 CES 展出），<b>不是</b> Max——Max 没有公开照片。注意它圆润的软包外壳和“脸”：傅利叶这两年主打陪护、康养场景，做“能进家门、看着不吓人”的人形，这大概正是 Meta 找它的原因。<br>图：Fourier / <a href="https://tools.prnewswire.com/en-us/live/20813/release/20260106EN55830">PR Newswire 新闻稿</a>，官方新闻稿配图</figcaption>
+</figure>
+
+<div class="why"><b>为什么值得关注：</b>三个月出整机样机，说明在中国供应链里，<b>本体硬件</b>（关节、结构、整机集成）已经可以像手机代工一样“快速打样”。Meta 这类 AI 巨头把力气花在模型上（据称 Max 被定位为其 AI 模型的“物理化身”），硬件找现成的中国团队拼。对执行器公司，这是双刃剑：好消息是需求方越来越多，坏消息是整机越来越像“组装件”，关节的差异化必须体现在可靠性、一致性和交付速度上，而不只是参数表。</div>
+<p class="note">存疑之处：分工（谁设计、谁制造、关节是谁家的）报道里都没有；三个月很可能是在傅利叶既有平台上改造，而非从零设计。</p>
+
+<!-- 2 -->
+<h2><span class="n">2</span>泰山 3100 级石阶：机器狗一路小跑，人形还在学抬腿</h2>
+<p><span class="tag">赛事</span><span class="tag">真实场地·非实验室</span></p>
+<p>首届 <b>CMG 世界机器人登泰山大赛</b> 11 月 2 日在山东泰安举行，近 90 支队伍，赛道是红门到中天门的登山步道：3100 级台阶、约 600 米落差。成绩已出：</p>
+<table>
+<tr><th>组别</th><th>赛段</th><th>冠军</th></tr>
+<tr><td>足式（四足）竞速</td><td>约 3.2 km、2800 余级</td><td>北京灵翌科技队 43 分 41 秒</td></tr>
+<tr><td>人形竞速·正式赛段</td><td>约 2.6 km、1800 余级</td><td>智身灵跃队 27 分 26 秒</td></tr>
+<tr><td>人形挑战段（斗母宫→壶天阁）</td><td>更陡的选做段</td><td>智身灵跃队 55 分 34 秒</td></tr>
+<tr><td>足式负重</td><td>约 3.3 km、5 个任务点</td><td>灵思智能队 400 分</td></tr>
+</table>
+<p>别被“人形 27 分钟比四足 43 分钟快”骗了：两组<b>赛段不一样</b>，人形的正式赛段更短、台阶更少，而 600 米的挑战段人形花了近一小时。现场报道里，3 号人形在窄石阶上突然加速摔倒；四足则在排位赛里背过百斤货物。赛事把“是否人工干预”列为成绩因素，但公开报道没说明遥控、换电、扶持的具体规则，所以还不能把成绩直接当“全自主”能力。</p>
+<p>最有意思的是参赛队的硬件改动。山东优宝特的“行者泰山 E1”第三次上山踩点：原装脚底板太大，泰山石阶窄又不规整，脚掌放不下，前后拆改几十轮鞋底；还换上自研的新一代高功率密度关节电机，峰值扭矩明显提高，并把动态抬腿高度从 <b>20 cm 提到 30 cm</b>。也有队伍把相机从头部挪到胸口，专门看脚下——人形重心高，脚前是视觉盲区。</p>
+
+<figure>
+<svg viewBox="0 0 360 230" role="img" aria-label="人形机器人小腿与脚掌跨越不规则石阶的示意图">
+<rect x="0" y="0" width="360" height="230" fill="var(--svgfill)"/>
+<!-- stone steps -->
+<path d="M0 210 L120 210 L120 172 L215 172 L218 132 L360 132 L360 230 L0 230 Z" fill="#9b958a" stroke="var(--svgline)" stroke-width="1.5"/>
+<path d="M20 214 l14 6 M70 218 l18 -4 M140 178 l12 8 M180 180 l16 -3 M250 140 l14 7 M310 145 l-12 6" stroke="#6f695f" stroke-width="1.5"/>
+<!-- trajectory low -->
+<path id="trajLow" d="M60 202 Q150 150 260 124" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+<path id="traj" d="M60 202 Q150 110 260 124" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+<!-- leg -->
+<g id="leg">
+<rect x="128" y="40" width="22" height="70" rx="9" fill="var(--metal)" stroke="var(--svgline)"/>
+<circle cx="139" cy="112" r="12" fill="var(--metal2)" stroke="var(--svgline)" stroke-width="1.5"/>
+<circle cx="139" cy="112" r="5" fill="var(--svgline)"/>
+<rect x="131" y="114" width="16" height="44" rx="6" fill="var(--metal)" stroke="var(--svgline)"/>
+<circle cx="139" cy="160" r="7" fill="var(--metal2)" stroke="var(--svgline)"/>
+<path id="foot" d="M118 166 L166 166 Q172 166 172 172 L172 175 L114 175 Q112 170 118 166 Z" fill="#3a3632" stroke="var(--svgline)"/>
+</g>
+<text x="12" y="22" font-size="13" fill="var(--fg)">抬腿轨迹（示意）</text>
+<text id="clearTxt" x="12" y="40" font-size="13" fill="var(--accent2)">绿线：抬得够高，脚尖越过台阶沿</text>
+<text x="12" y="58" font-size="13" fill="#b91c1c">红虚线：抬得低，脚尖可能磕在台阶沿上</text>
+</svg>
+<figcaption>示意图（非比例）：腿足机器人每一步的“摆动相”（swing phase）要把脚抬过下一级台阶的边沿。台阶越高、越不规则，抬腿要越高，髋、膝关节在这一瞬间要提供的扭矩和速度就越大——这就是 E1 要换更高功率密度关节电机的原因。</figcaption>
+</figure>
+
+<div class="calc" id="liftDemo">
+<b>小交互：抬腿多高才够？</b>
+<label>台阶高度（假设）：<span id="stepV">18</span> cm<input type="range" id="stepR" min="12" max="32" value="18"></label>
+<label>抬腿高度：<span id="liftV">20</span> cm<input type="range" id="liftR" min="10" max="35" value="20"></label>
+<div class="out" id="liftOut"></div>
+<div class="note">按“抬腿高度需比台阶高 ≥5 cm 才稳妥”的假设估算余量，仅用于理解原理，非比赛数据。泰山台阶高低不一，同一级左右都可能差几厘米。</div>
+</div>
+
+<div class="why"><b>为什么值得关注：</b>展台上的平地走路演示已经很多，户外几公里、几千级、湿滑且不规整的石阶，才会暴露关节过热、脚底打滑、电池续航和感知盲区。参赛队的改动清单（鞋底、关节峰值扭矩、抬腿高度、相机位置）几乎就是一份<b>人形下肢硬件的需求清单</b>，做执行器的人值得逐条对照。</div>
+
+<!-- 3 -->
+<h2><span class="n">3</span>Agility 今晚投票上市，钱比预想的少了四分之一</h2>
+<p><span class="tag">资本</span><span class="tag">公司公告+媒体报道</span></p>
+<p>做双足仓储机器人 <b>Digit</b> 的 Agility Robotics，正通过与空壳公司 Churchill Capital Corp XI 合并的方式上市（这种方式叫 SPAC，见文末术语）。按计划：Churchill 股东 11 月 2 日（美东）投票，若通过，11 月 4 日完成合并，11 月 5 日以代码 <b>AGLT</b> 在纳斯达克交易。媒体估算的公司估值约 25 亿美元。</p>
+<p>值得注意的是募资数字的变化。10 月 13 日 Agility 公告里，预计总募资超过 6.2 亿美元（其中信托账户约 4.24 亿，富士康领投的 PIPE 约 2 亿）。10 月 30 日的新公告把预期降到约 <b>4.65 亿美元</b>：信托里只剩约 1.64 亿（大量股东选择赎回），另有 2.01 亿 PIPE，以及合并公布后已到账的 1 亿——也就是说，有 1 亿并不是交割时的新钱。</p>
+
+<div class="calc">
+<b>募资构成变化（亿美元，四舍五入）</b>
+<div class="bars">
+<div class="bar"><span class="lab">10/13 信托</span><span class="track"><span class="fill" style="width:68%;background:var(--accent2);display:block"></span></span><span class="val">≈4.24</span></div>
+<div class="bar"><span class="lab">10/30 信托</span><span class="track"><span class="fill" style="width:26%;background:var(--accent);display:block"></span></span><span class="val">≈1.64</span></div>
+<div class="bar"><span class="lab">PIPE（富士康领投）</span><span class="track"><span class="fill" style="width:32%;background:var(--metal2);display:block"></span></span><span class="val">≈2.0</span></div>
+<div class="bar"><span class="lab">已到账</span><span class="track"><span class="fill" style="width:16%;background:var(--metal2);display:block"></span></span><span class="val">1.0</span></div>
+</div>
+<div class="note">条宽以 6.2 亿为满格。来源：Agility 10/13 公告；Superpower Daily 10/30 对 GlobeNewswire 公告的转述。</div>
+</div>
+
+<figure>
+<img src="https://cdn.prod.website-files.com/68d6ca150ffa11fdc25d7575/6aa6c3fbd90e0d765ae6afc3_Solutions.avif" loading="lazy" referrerpolicy="no-referrer" alt="Agility Robotics 的 Digit 人形机器人，青色与黑色外壳" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fallback"><a href="https://www.agilityrobotics.com/content/agility-robotics-and-churchill-capital-corp-xi-s-4-registration-statement-declared-effective-by-sec-in-connection-with-proposed-business-combination">图片未能加载，点此查看原图</a></div>
+<figcaption>看图要看什么：Digit 的腿是“鸟腿”式反关节、手是简单夹爪而非五指——它从一开始就只瞄准仓库搬周转箱这一件事，这种“少做但做稳”的取舍是它最早拿到付费客户的原因。<br>图：Agility Robotics / <a href="https://www.agilityrobotics.com/content/agility-robotics-and-churchill-capital-corp-xi-s-4-registration-statement-declared-effective-by-sec-in-connection-with-proposed-business-combination">Agility 官网新闻稿页</a>，官方页面配图</figcaption>
+</figure>
+
+<div class="why"><b>为什么值得关注：</b>Agility 自称已有舍弗勒、GXO、丰田加拿大工厂等客户，9 个已承诺部署的设施，Digit 5 承诺订单超 3 亿美元（附带里程碑条件），早期型号累计真实运行超 6.5 万小时——这些是公司口径，未经第三方核实。高赎回率说明二级市场对“人形第一股”并不盲目。上市后它的财报会第一次把一家人形公司的毛利、单机成本、维修率公开出来，对整个行业（包括供应链定价）都是一份难得的参照。</div>
+
+<!-- 4 -->
+<h2><span class="n">4</span>Rhoda AI：让机器人“先在脑子里放视频，再照着动”</h2>
+<p><span class="tag">具身智能</span><span class="tag">参观演示·非独立测试</span></p>
+<p>11 月 1 日，前 Meta CTO Mike Schroepfer 的参观节目展示了 Rhoda AI 的工厂演示。双 7 自由度机械臂加两指夹爪：拆一箱 10 kg 的轴承，把纸和塑料内衬分开；夹到轴承连带着纸时，会把轴承放回、重新只夹纸；往箱里扔一团纸也能找出来。另一段把汽车雷达模块从传送带搬到检测工位，零件位置变了会调整抓法。</p>
+<p>它的技术路线叫 Direct Video-Action：先用数亿段视频预训练一个<b>视频预测模型</b>，预测接下来几帧画面“应该是什么样”，再由一个“逆动力学模型”（inverse dynamics model，从前后两帧画面反推需要什么动作）把预测翻译成电机指令，不断循环。新任务需 10–20 小时遥操作数据微调；大模型推理在云端，底层控制在本体上。公司目标是年底前在工厂开始付费部署。</p>
+<div class="why"><b>为什么值得关注：</b>这是“视频模型当策略”路线少见的工业场景展示。但要分清：电子料盘那段是<b>遥操作采数据</b>，不是自主演示；一次参观也证明不了跨班次、跨工厂的稳定性，云端推理还要面对断网恢复的问题。对硬件方，云端大脑意味着本体侧的低层控制和安全停机必须足够独立可靠。</div>
+
+<!-- 5 -->
+<h2><span class="n">5</span>论文速递：用“可微仿真”20 分钟训出全身动作跟踪</h2>
+<p><span class="tag">arXiv 10/30</span><span class="tag">仅仿真结果</span></p>
+<p>arXiv 新论文 <a href="https://arxiv.org/abs/2610.41654">∇Mimic</a>（Weyl Lu、Yubei Chen）想解决一个老问题：训练人形全身控制，主流用 PPO 这类强化学习，本质是“盲试”——试一次、看分数、调方向，样本要海量。另一条路是<b>可微分仿真</b>（differentiable simulation）：仿真器能直接告诉你“关节力矩改一点，结果会怎么变”，理论上效率高得多，但接触（脚落地、手碰物）让梯度偶尔爆炸，而且反向计算很贵。</p>
+<p>作者的办法：每步把单个样本的梯度按“相对中位数”截断，压住尖峰；同一段仿真重复利用多次。他们还写了一个针对宇树 G1 的 GPU 可微仿真器 NablaEngine，称比 MuJoCo Warp 的伴随计算快 11.5 倍。结果：一个策略跟踪 40 段 LAFAN1 动捕动作，单 GPU 20 分钟达到 0.82 分（之前的世界模型方法要 1.2 小时），1.8 小时达 0.874；而同类一阶方法 SHAC 几分钟就因梯度爆炸停滞。代码开源。</p>
+
+<figure>
+<svg viewBox="0 0 360 170" role="img" aria-label="强化学习盲试与可微仿真沿梯度直接下山的对比示意">
+<rect width="360" height="170" fill="var(--svgfill)"/>
+<ellipse cx="270" cy="95" rx="70" ry="45" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+<ellipse cx="270" cy="95" rx="42" ry="26" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+<ellipse cx="270" cy="95" rx="16" ry="10" fill="var(--accent2)" opacity=".35"/>
+<text x="250" y="160" font-size="12" fill="var(--muted)">目标：动作跟得准</text>
+<circle cx="40" cy="120" r="6" fill="var(--svgline)"/>
+<path d="M40 120 l28 -40 l10 50 l30 -30 l-6 40 l34 -30 l12 25 l30 -20 l20 10 l30 -10" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="14" y="30" font-size="12.5" fill="var(--accent)">PPO：随机试探、看分数，大量试错</text>
+<circle cx="40" cy="60" r="6" fill="var(--svgline)"/>
+<path d="M40 60 Q150 55 254 90" fill="none" stroke="var(--accent2)" stroke-width="3"/>
+<path d="M246 82 l10 9 l-13 3" fill="none" stroke="var(--accent2)" stroke-width="3"/>
+<text x="14" y="50" font-size="12.5" fill="var(--accent2)">可微仿真：直接沿梯度走（但落地瞬间梯度会“炸”）</text>
+</svg>
+<figcaption>示意：同样是“下山”找最优动作，强化学习靠摸索，可微仿真拿着坡度表走。∇Mimic 的贡献主要在给“坡度表”加护栏，防止脚接触地面时的梯度尖峰把训练带跑。</figcaption>
+</figure>
+<div class="why"><b>为什么值得关注 / 没说明什么：</b>摘要只有仿真结果，没看到实机 G1 验证；可微仿真对电机模型、摩擦、背隙的建模更敏感，仿真里的“梯度”与真实关节差多远，决定它能不能落地。对做执行器的公司，这类方法会反过来要求厂家提供<b>更准确的关节动力学参数</b>（转动惯量、摩擦、扭矩—电流曲线）。</div>
+
+<!-- 6 -->
+<h2><span class="n">6</span>英国出了第一份“家用人形机器人保险”</h2>
+<p><span class="tag">政策与市场</span></p>
+<p>10 月 31 日，英国保险经纪 Adrian Flux 与承保方 Tokio Marine HCC International 推出附加在家财险上的人形机器人保障：机器人自身损坏或被盗、机器人突然造成的家中财物损失、伤人或损坏他人财物的个人责任，以及突发故障后的紧急回收或“安全停机”服务。价格和适用型号未公布，文中预期家用机器人 2027 年起进入英国家庭。</p>
+<div class="why"><b>为什么值得关注：</b>保险条款是“谁为事故负责”的第一份市场化答案。“安全停机”被单列成服务项，说明保险方已把<b>故障时能否可靠断力、收住</b>视为核心风险——这正是关节层面的制动器、断电行为和急停设计要回答的问题。</div>
+
+<p class="note">顺带一提：据《旧金山标准报》援引 Humanoids Summit 创始人的说法，特斯拉可能在 12 月初开放 Optimus 预约；特斯拉未回应，费用与交付条款均未知（Humanoids Daily，10/30）。</p>
+
+<h2>今日术语</h2>
+<div class="term">
+<p><b>SPAC 与赎回（Special Purpose Acquisition Company / Redemption）</b><br>SPAC 是一家先上市、手里只有一笔现金（放在信托账户）的“空壳公司”，再去合并一家真实企业，让后者借壳上市。SPAC 的股东在合并投票时有权把股票按原价换回现金，这叫“赎回”。赎回越多，信托里留给新公司的钱越少——Agility 的信托从约 4.24 亿缩到约 1.64 亿，就是这个机制的结果。</p>
+</div>
+<div class="term">
+<p><b>可微分仿真（Differentiable Simulation）</b><br>普通仿真器只告诉你“这么做结果是什么”；可微分仿真还能告诉你“每个输入改一点点，结果会往哪变、变多少”（梯度）。有了梯度，训练就像拿着地形图下山，而不是闭眼摸索。难点在于碰撞和接触这种“突变”时刻，梯度会失真或爆炸。</p>
+</div>
+
+<h2>来源</h2>
+<ul class="srcs">
+<li><a href="https://www.engadget.com/2303434/meta-reportedly-built-a-humanoid-robot-prototype-that-can-do-household-chores/">Engadget：Meta reportedly built a humanoid robot prototype（11/1）</a></li>
+<li><a href="https://technode.com/2026/11/02/meta-reportedly-builds-humanoid-robot-prototype-with-chinas-fourier">TechNode：Meta reportedly builds humanoid robot prototype with China's Fourier（11/2）</a></li>
+<li><a href="https://www.sina.cn/weibo/detail/5360829727772802.html">新浪：Meta 机器人副总裁在上海待了两个月，傅利叶回应暂不方便（11/2）</a></li>
+<li><a href="https://www.ithome.com/1/021/004.htm">IT之家：Meta 与中国企业合作开发人形机器人？傅利叶：暂不方便回复</a></li>
+<li><a href="https://tools.prnewswire.com/en-us/live/20813/release/20260106EN55830">PR Newswire：Fourier Makes CES Debut With GR-3（图片来源）</a></li>
+<li><a href="https://www.ithome.com/1/021/102.htm">IT之家：首届 CMG 世界机器人登泰山大赛赛果出炉（11/2）</a></li>
+<li><a href="https://k.sina.cn/article_7879996030_1d5af327e06801i982.html">新浪：机器狗登泰山大赛的赛制和积分规则（11/2）</a></li>
+<li><a href="https://www.sohu.com/a/1096022932_121347613">搜狐/新黄河：为了爬泰山，这个机器人换了“鞋底”、长了“腿”（11/2）</a></li>
+<li><a href="https://www.sina.cn/weibo/detail/5360738956740849.html">新浪：机器人登泰山，摔在石阶上的每一跤（11/2）</a></li>
+<li><a href="https://cbsnews.com/news/robots-race-china-mountain-eggs-watermelons">CBS News：Robots race up sacred China mountain（11/2）</a></li>
+<li><a href="https://superpowerdaily.com/posts/agility-robotics-expects-465-million-from-merger-financing-as-november-closing-nears">Superpower Daily：Agility expects $465 million from merger financing（10/30）</a></li>
+<li><a href="https://www.agilityrobotics.com/content/agility-robotics-and-churchill-capital-corp-xi-s-4-registration-statement-declared-effective-by-sec-in-connection-with-proposed-business-combination">Agility Robotics：S-4 Registration Statement Declared Effective（10/13，图片来源）</a></li>
+<li><a href="https://fool.com/investing/2026/11/01/the-first-us-humanoid-robot-stock-starts-trading-i">The Motley Fool：The First U.S. Humanoid Robot Stock Starts Trading in November（11/1）</a></li>
+<li><a href="https://www.humanoidsdaily.com/news/rhoda-ai-schrep-dva-factory-edge-case-demos">Humanoids Daily：Rhoda AI Shows Robots Recovering From Factory Edge Cases（11/1）</a></li>
+<li><a href="https://arxiv.org/abs/2610.41654">arXiv 2610.41654：∇Mimic: Ultra-Efficient Humanoid Control with Differentiable Simulation（10/30）</a></li>
+<li><a href="https://roboticsandautomationnews.com/2026/10/31/first-insurance-policy-for-domestic-humanoid-robots-in-the-uk/106568">Robotics & Automation News：UK launches 'first' insurance policy for domestic humanoid robots（10/31）</a></li>
+<li><a href="https://humanoidsdaily.com/news/tesla-optimus-reservations-december-humanoids-summit">Humanoids Daily：Tesla Reportedly Plans Optimus Reservations for Early December（10/30）</a></li>
+</ul>
+</main>
+<script>
+(function(){
+var s=document.getElementById('stepR'),l=document.getElementById('liftR'),
+sv=document.getElementById('stepV'),lv=document.getElementById('liftV'),o=document.getElementById('liftOut');
+function u(){var a=+s.value,b=+l.value,m=b-a;sv.textContent=a;lv.textContent=b;
+if(m>=5){o.textContent='余量 '+m+' cm：能稳稳越过台阶沿';o.style.color='var(--accent2)';}
+else if(m>=0){o.textContent='余量仅 '+m+' cm：脚尖容易擦边，石阶不平时危险';o.style.color='var(--accent)';}
+else{o.textContent='抬腿比台阶低 '+(-m)+' cm：会直接踢到台阶';o.style.color='#b91c1c';}}
+s.oninput=u;l.oninput=u;u();
+})();
+</script>
+</body>
+</html>
