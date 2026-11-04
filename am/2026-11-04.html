@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W4-1｜反馈与 PID</title>
+<style>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .chip{fill:#202226} .ontxt{fill:#f2efe8}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .chip{fill:#0d0e10} }
+.status{font-weight:700} .okc{color:var(--accent2)} .badc{color:#dc2626}
+.box ul{padding-left:20px;margin:6px 0} .box li{margin:6px 0}
+.ctrl button{min-width:9em}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 4 单元「关节控制」· 第 1 课</div>
+<h1>反馈与 PID：一个看舵手看入迷的工程师</h1>
+<p class="sub">约 18 分钟 · 主线：让一条机械臂稳稳停在 30°，再往它手里塞一瓶矿泉水</p>
+
+<div class="lead">
+<p>1922 年，一位叫尼古拉·米诺尔斯基（Nicolas Minorsky）的俄裔工程师在美国海军工程师学会的期刊上发表了一篇论文，题目很拗口：《自动操舵物体的方向稳定性》。他原本是沙俄海军的军官，革命后移居美国，在通用电气找了份工作，然后迷上了一件事：<b>好舵手到底是怎么把船开直的？</b></p>
+<p>他的观察是：老练的舵手不会等船头偏了很多才猛打舵，也不会船头一偏就死命压回去。他会看船头<b>现在偏了多少</b>，会留意船头<b>正在以多快的速度往外偏</b>，还会注意到“已经往一边偏了好一阵子”——比如有持续的侧风——于是多压一点舵把它抵消掉。米诺尔斯基把这三种直觉写成了一个方程。今天全世界工厂里绝大多数控制回路用的，就是这个方程的后代：<b>PID</b>。</p>
+<p>1923 年，美国海军在战列舰“新墨西哥号”（USS New Mexico）上试装了他的自动操舵装置。按控制史学者 Stuart Bennett 的整理，测试效果不错：加上改进后，舵角的摆动小到舵角指示器（最小刻度 5°）几乎看不出来。可结局很好笑——装置被拆了下来。海军方面的说法是：船上的操作人员<b>强烈反对</b>自动操舵，测完之后一点也不想再碰它。这项试验直到 1930 年才公开。</p>
+<p>一百年后，机器人的每个关节里都住着一个“米诺尔斯基舵手”，每秒做几千到几万次决定。今天我们就跟着一条机械臂，把这个舵手请出来看个清楚。</p>
+</div>
+
+<h2><span class="n">01</span>闭着眼走路，和睁着眼走路，差在哪？</h2>
+<p>先说最根本的一个词：<b>反馈（feedback）</b>。</p>
+<p>假设你让电机“输出 2 A 电流，转 1 秒”，然后就不管了——这叫<b>开环（open-loop）</b>：命令发出去，结果如何不看。就像闭着眼睛估摸着走十步去开门，地板滑一点、鞋底黏一点，你就撞到墙上了。</p>
+<p><b>闭环（closed-loop）</b>则是睁着眼走：每走一步都看一眼门在哪，偏了就修正。对关节来说，“眼睛”就是上一单元讲过的编码器，它不停地报告“我现在在几度”；“大脑”是驱动器里的控制程序，它拿<b>目标值（setpoint / goal）</b>减去<b>实测值</b>，得到<b>误差（error）</b>，再根据误差决定给电机多大电流。整个过程循环往复，所以叫“回路（loop）”。</p>
+
+<figure>
+<svg viewBox="0 0 520 300" role="img" aria-label="关节闭环反馈示意：目标、控制器、电机、机械臂、编码器组成一个圈">
+<defs>
+<marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="s-acc"/></marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="s-acc2"/></marker>
+<linearGradient id="gcan" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset=".5" stop-color="var(--can)"/><stop offset="1" stop-color="var(--steel)"/></linearGradient>
+</defs>
+<!-- target dial -->
+<g transform="translate(58,92)">
+<circle r="38" class="s-bg" stroke="var(--line)" stroke-width="2"/>
+<g class="st-ink2" stroke-width="1.4">
+<line x1="0" y1="-34" x2="0" y2="-28"/><line x1="34" y1="0" x2="28" y2="0"/><line x1="-34" y1="0" x2="-28" y2="0"/><line x1="0" y1="34" x2="0" y2="28"/>
+</g>
+<line x1="0" y1="0" x2="26" y2="-15" class="st-acc" stroke-width="3" stroke-linecap="round"/>
+<circle r="4" class="s-acc"/>
+<text y="56" text-anchor="middle" font-size="13" class="s-ink" font-weight="700">目标 30°</text>
+<text y="72" text-anchor="middle" font-size="11" class="s-ink2">setpoint</text>
+</g>
+<!-- summing junction -->
+<g transform="translate(150,92)">
+<circle r="16" class="s-bg2" stroke="var(--accent)" stroke-width="2"/>
+<text y="5" text-anchor="middle" font-size="16" class="s-acc" font-weight="700">−</text>
+<text x="-24" y="-12" font-size="12" class="s-ink2">+</text>
+<text x="0" y="-24" text-anchor="middle" font-size="11" class="s-ink2">相减</text>
+</g>
+<line x1="98" y1="92" x2="130" y2="92" class="st-acc" stroke-width="2" marker-end="url(#ar1)"/>
+<!-- controller chip -->
+<g transform="translate(214,62)">
+<rect width="92" height="60" rx="6" class="pcb"/>
+<rect x="24" y="12" width="44" height="36" rx="3" class="chip"/>
+<g class="s-steel"><rect x="18" y="16" width="6" height="3"/><rect x="18" y="24" width="6" height="3"/><rect x="18" y="32" width="6" height="3"/><rect x="18" y="40" width="6" height="3"/><rect x="68" y="16" width="6" height="3"/><rect x="68" y="24" width="6" height="3"/><rect x="68" y="32" width="6" height="3"/><rect x="68" y="40" width="6" height="3"/></g>
+<text x="46" y="35" text-anchor="middle" font-size="12" class="ontxt" font-weight="700">PID</text>
+<text x="46" y="78" text-anchor="middle" font-size="13" class="s-ink" font-weight="700">控制器</text>
+<text x="46" y="94" text-anchor="middle" font-size="11" class="s-ink2">算出该给多大电流</text>
+</g>
+<line x1="166" y1="92" x2="210" y2="92" class="st-acc" stroke-width="2" marker-end="url(#ar1)"/>
+<text x="188" y="84" text-anchor="middle" font-size="11" class="s-acc" font-weight="700">误差 e</text>
+<!-- motor + arm -->
+<g transform="translate(380,92)">
+<rect x="-30" y="-30" width="60" height="60" rx="12" fill="url(#gcan)" stroke="var(--ink2)" stroke-width="1"/>
+<circle r="10" class="s-bg2" stroke="var(--ink2)"/>
+<g transform="rotate(-30)">
+<rect x="0" y="-7" width="104" height="14" rx="7" class="s-wood" stroke="var(--copper2)" stroke-width="1"/>
+<g transform="translate(104,0)"><rect x="-8" y="-28" width="16" height="30" rx="5" class="s-water" opacity=".85"/><rect x="-5" y="-33" width="10" height="6" rx="2" class="s-acc2"/></g>
+</g>
+<circle r="5" class="s-ink"/>
+<line x1="12" y1="0" x2="100" y2="0" class="st-ink2" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M44,0 A44,44 0 0,0 38.1,-22" class="nofill st-acc" stroke-width="1.6"/>
+<text x="50" y="-6" font-size="11" class="s-acc">θ</text>
+<text x="0" y="50" text-anchor="middle" font-size="13" class="s-ink" font-weight="700">电机 + 机械臂</text>
+<text x="0" y="66" text-anchor="middle" font-size="11" class="s-ink2">被控对象 plant</text>
+</g>
+<line x1="306" y1="92" x2="346" y2="92" class="st-acc" stroke-width="2" marker-end="url(#ar1)"/>
+<text x="326" y="84" text-anchor="middle" font-size="11" class="s-ink2">电流</text>
+<!-- encoder -->
+<g transform="translate(380,232)">
+<circle r="26" class="s-bg2" stroke="var(--ink2)" stroke-width="1.5"/>
+<g class="st-ink" stroke-width="2">
+<line x1="0" y1="-22" x2="0" y2="-14"/><line x1="15.6" y1="-15.6" x2="9.9" y2="-9.9"/><line x1="22" y1="0" x2="14" y2="0"/><line x1="15.6" y1="15.6" x2="9.9" y2="9.9"/><line x1="0" y1="22" x2="0" y2="14"/><line x1="-15.6" y1="15.6" x2="-9.9" y2="9.9"/><line x1="-22" y1="0" x2="-14" y2="0"/><line x1="-15.6" y1="-15.6" x2="-9.9" y2="-9.9"/>
+</g>
+<circle r="5" class="s-acc2"/>
+<text x="40" y="-2" font-size="13" class="s-ink" font-weight="700">编码器</text>
+<text x="40" y="14" font-size="11" class="s-ink2">“眼睛”：现在 21°</text>
+</g>
+<path d="M380,148 L380,200" class="st-acc2 nofill" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar2)"/>
+<path d="M354,232 L150,232 L150,114" class="st-acc2 nofill" stroke-width="2.2" marker-end="url(#ar2)"/>
+<text x="250" y="224" text-anchor="middle" font-size="12" class="s-acc2" font-weight="700">反馈：实测角度</text>
+<text x="250" y="252" text-anchor="middle" font-size="11" class="s-ink2">每圈只要几十微秒，然后再来一圈</text>
+</svg>
+<figcaption><b>看图要看什么：</b>橙色是“命令往前走”，绿色是“结果绕回来”。只要绿线还连着，控制器就永远在问同一个问题：<b>离目标还差多少？</b>图为通用示意，不代表具体产品的内部结构。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比①：冬天洗澡调水温</div>
+<p>手伸进水里（传感器），觉得凉（误差），往热水那边拧一点（控制）。这就是反馈。可你一定有过这种经历：拧了半天没反应，再猛拧一把，过两秒突然烫得跳起来，再往回拧又冻得发抖——因为水从阀门流到喷头要时间，<b>你的反馈是“过期”的</b>。后面会看到，延迟正是让反馈系统发疯的头号元凶。</p>
+<p class="off">哪里不准：你调水温靠的是经验和耐心，会主动“拧一下等一等”；关节控制器没有耐心，它只按方程办事，每个周期都照算不误。</p></div>
+
+<p>好，主线登场：我们有一条 30 cm 长的轻质机械臂，由一个电机直接驱动，想让它从下垂的 −45° 抬到 <b>30°</b> 并停住。2.5 秒后，再往它末端挂一瓶 550 ml 的矿泉水。控制器该怎么写？</p>
+
+<h2><span class="n">02</span>最朴素的办法：差多少，就使多大劲？</h2>
+<p>第一直觉：离目标越远，使劲越大；到了目标，就不使劲。这就是 <b>P——比例（Proportional）</b>。</p>
+<p class="say">人话：力矩跟误差成正比，比例系数叫 Kp。</p>
+<div class="formula">τ = K<sub>p</sub> · e<small>τ 是电机输出力矩，e = 目标角度 − 实际角度（单位 rad）</small></div>
+<p>注意 Kp 的单位：<b>N·m/rad</b>。每偏 1 弧度，给多少牛·米的力矩——这和一根扭簧的“刚度”是同一个单位。所以<b>只用 P 的关节，行为就像一根看不见的弹簧</b>，把手臂往目标位置拽。</p>
+
+<div class="analogy"><div class="t">类比②：用橡皮筋拴住的门</div>
+<p>门被一根橡皮筋拴在门框上。你把门推开越多，橡皮筋拉得越狠。松手后门被拽回去——但它会冲过头、来回晃好几下才停下，因为橡皮筋只管“离多远”，不管“冲多快”。</p>
+<p class="off">哪里不准：真的橡皮筋多少有点内摩擦，晃几下就停了；控制器里的 P 如果遇上延迟，晃动不但不停，还可能越晃越大。</p></div>
+
+<p>弹簧有个天生的毛病：<b>要顶住一个持续的力，它必须先被拉长一点</b>。挂在弹簧秤上的苹果会把弹簧拉长，就是这个道理。来算一笔真实的账——</p>
+<div class="box work"><div class="t">算一算：一瓶矿泉水能把关节“压”下去多少？</div>
+<p>MIT 的四足机器人 Mini Cheetah 在 2019 年的论文里公开过它的关节增益：<b>Kp = 3 N·m/rad，Kd = 0.3 N·m·s/rad</b>（来源：Kim 等，arXiv:1909.06586）。我们借这个 Kp 当教学数字。</p>
+<p>一瓶 550 ml 矿泉水约 0.55 kg，挂在 0.3 m 远处水平举着，重力力矩 ≈ 0.55 × 9.8 × 0.3 ≈ <b>1.6 N·m</b>。</p>
+<p>只靠 Kp = 3 的“弹簧”顶住它，需要的误差 ≈ 1.6 ÷ 3 ≈ 0.54 rad ≈ <b>31°</b>。手臂会明显地往下塌一大截。</p>
+<p style="font-size:15px;color:var(--ink2)">注意：Mini Cheetah 真机不会这样塌，因为它的上层全身控制器会额外算好需要的力矩直接“前馈”给关节，PD 只负责修正小偏差。这里只借数字，不代表它的真实表现。机械臂尺寸、质量均为教学假设。</p></div>
+
+<p>那把 Kp 调大十倍不就好了？误差缩成三度。问题是：弹簧越硬，门晃得越凶——下面这个模拟器你自己试。</p>
+
+<figure id="fig3">
+<svg id="f3svg" viewBox="0 0 520 300" role="img" aria-label="PID 调参模拟器：左侧机械臂动画，右侧角度随时间曲线"></svg>
+<div class="seg" id="f3pre">
+<button data-p="3,0,0,0">只有 P</button>
+<button data-p="3,0,0.3,0" class="on">P + D</button>
+<button data-p="6,10,0.5,0">P + I + D</button>
+<button data-p="10,0,0.2,25">硬 P + 延迟</button>
+</div>
+<div class="ctrl"><label>Kp 比例</label><input type="range" id="f3kp" min="0" max="20" step="0.5" value="3"><output id="f3kpo"></output></div>
+<div class="ctrl"><label>Ki 积分</label><input type="range" id="f3ki" min="0" max="30" step="0.5" value="0"><output id="f3kio"></output></div>
+<div class="ctrl"><label>Kd 微分</label><input type="range" id="f3kd" min="0" max="1.2" step="0.05" value="0.3"><output id="f3kdo"></output></div>
+<div class="ctrl"><label>反馈延迟</label><input type="range" id="f3dl" min="0" max="40" step="1" value="0"><output id="f3dlo"></output></div>
+<div class="ctrl"><button id="f3play">▶ 播放动画</button></div>
+<div class="readout">
+<div>冲过头<b id="f3ov">–</b></div>
+<div>挂瓶前误差<b id="f3e1">–</b></div>
+<div>挂瓶后误差<b id="f3e2">–</b></div>
+<div>状态<b id="f3st">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>橙色曲线是手臂角度，绿色虚线是目标 30°，竖线是挂上水瓶的时刻。先点“只有 P”看它晃个不停；再点“P + D”看它不晃了但被水瓶压塌；再点“P + I + D”看它慢慢自己爬回 30°。最后点“硬 P + 延迟”。模型参数（臂长 0.3 m、等效质量 0.2 kg、电机力矩上限 4 N·m 等）为教学假设。</figcaption>
+</figure>
+
+<h2><span class="n">03</span>冲过头、晃不停，谁来踩刹车？</h2>
+<p>“只有 P”那条曲线晃得像荡秋千。原因很直观：手臂接近 30° 时误差变小，P 给的力矩也变小——但手臂此刻正<b>高速冲过来</b>，惯性带着它冲过头；过头后误差变负，P 又把它往回拽，于是来回荡。</p>
+<p>好舵手的第二个直觉此时登场：<b>看船头正在以多快的速度偏</b>。这就是 <b>D——微分（Derivative）</b>。</p>
+<p class="say">人话：转得越快，越往反方向使劲刹住它。</p>
+<div class="formula">τ = K<sub>p</sub> · e + K<sub>d</sub> · (ω<sub>目标</sub> − ω)<small>ω 是角速度（rad/s）。机器人关节里通常直接用编码器算出的速度，目标速度为 0 时就是 −K<sub>d</sub>·ω</small></div>
+<p>Kd 的单位是 N·m·s/rad，跟汽车减震器的“阻尼系数”是一回事。所以 <b>P + D 的关节 = 一根弹簧 + 一个减震器</b>。这个画面请记牢，明后两课讲阻抗控制时还会用到。</p>
+
+<div class="analogy"><div class="t">类比③：骑共享单车下坡接近红灯</div>
+<p>你不会等到车轮压线才捏闸——离停止线还有二十米、车速又快，你就开始轻捏了。决定你捏多狠的，不只是“还有多远”（P），更是“现在多快”（D）。</p>
+<p class="off">哪里不准：你是在<b>预判</b>未来；D 其实只是在看“此刻的速度”，它没有真正的预见能力。速度信号一抖，它就跟着乱捏闸。</p></div>
+
+<p>最后这句是 D 的软肋。速度是由编码器读数相减、除以时间算出来的；上单元讲过，编码器读数是一格一格跳的。相邻两次读数差一格，除以几十微秒，算出来就是一个不小的速度跳变。<b>D 会把噪声放大</b>，表现为电机发出“滋滋”声、发热、轻微抖动。这就是为什么很多工业回路干脆不用 D（见下面的冷知识）。</p>
+
+<figure>
+<svg id="f2svg" viewBox="0 0 520 280" role="img" aria-label="误差曲线上的过去、现在、未来：P 看当前值，I 看面积，D 看斜率"></svg>
+<div class="ctrl"><label>拖动时刻</label><input type="range" id="f2t" min="0.05" max="3.95" step="0.01" value="0.9"><output id="f2to"></output></div>
+<div class="readout">
+<div>P 看“现在”：误差<b id="f2p">–</b></div>
+<div>I 看“过去”：面积<b id="f2i">–</b></div>
+<div>D 看“趋势”：斜率<b id="f2d">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>同一条误差曲线，三个字母各看一样东西：P 只看此刻有多高（竖条），I 看从开始到现在攒下的<b>面积</b>（阴影，正负相抵），D 看此刻的<b>斜率</b>（切线）。拖到误差刚过零、还在往下走的地方：P≈0，可 D 已经在喊“刹车”。</figcaption>
+</figure>
+
+<h2><span class="n">04</span>为什么老是差那么一点点？</h2>
+<p>回到模拟器里的“P + D”：它不晃了，稳稳停住——停在大约 19°，而不是 30°；挂上水瓶后更是塌到 −11° 左右。这个永远补不上的差距叫<b>稳态误差（steady-state error）</b>。上面算过：弹簧要顶住重力，就必须被拉开一段。</p>
+<p>有意思的是，米诺尔斯基在 1922 年就算出了同一件事：只按“偏了多少”打舵的船，遇到<b>持续的侧风</b>，会稳稳地偏着航线走，永远差一个角度。他的解法，就是好舵手的第三个直觉：<b>偏了一阵子了，就越压越多</b>。</p>
+<p>这就是 <b>I——积分（Integral）</b>。</p>
+<p class="say">人话：把一路以来的误差都记在账上，账越多使劲越大；只要还有一点误差没消，账就一直在涨。</p>
+<div class="formula">τ = K<sub>p</sub>·e + K<sub>i</sub>·∫e dt + K<sub>d</sub>·(ω<sub>目标</sub> − ω)<small>∫e dt 就是误差曲线下面的面积，单位 rad·s</small></div>
+<p>只要误差不为零，积分就会不停增长，力矩也就不停加大，直到误差真正变成零为止。这时 P 和 D 都归零，<b>撑住水瓶的那 1.6 N·m 全靠积分项“记的账”</b>。</p>
+
+<div class="analogy"><div class="t">类比④：汽车定速巡航遇上长上坡</div>
+<p>车速设定 100 km/h。上坡时车速掉到 97，系统加油门。如果只按“掉了多少”加油门，车会稳稳停在 97 左右（掉 3 km/h 才对应得上坡需要的那点额外油门）。聪明的系统会发现“已经慢了好一会儿”，把油门再往下踩一点，直到回到 100。</p>
+<p class="off">哪里不准：车的惯性大、变化慢，积分慢慢加也无妨；关节动作快，积分加得太猛，就会像模拟器里“P+I+D”起步那样冲过头一截。</p></div>
+
+<p>积分有个出了名的坑：<b>积分饱和（integral windup）</b>。设想手臂被卡住了（撞到桌子、被人按住），误差一直在，积分账就一直涨，涨到天文数字。等障碍突然撤掉，这笔巨债会让关节猛地甩出去，冲过头一大截，然后花很久才“还清”。所以工程上的积分都要加限幅或“抗饱和（anti-windup）”逻辑。你在模拟器里把 Ki 拉到 30，看看起步那一下多吓人——那就是从 −45° 一路攒下来的账。</p>
+
+<div class="box cold"><div class="t">冷知识：工厂里 95% 以上的回路，其实用不上 D</div>
+<p>瑞典隆德大学控制系的 PID 讲义汇总过几份工业调查：霍尼韦尔 2002 年对 11,000 多个控制器的调查显示，98% 的基础控制器用的是 PID 反馈；一份造纸行业的统计说，一个普通纸厂有 3000–5000 个回路，<b>97% 只用 PI</b>，剩下 3% 才是 PID 或更高级的算法；广东省 100 台锅炉-汽轮机组的调查是 94.4% PI、3.7% PID。D 用得少，原因就是上面说的——它放大噪声，而温度、流量这类慢过程用不着“刹车”。机器人关节恰好相反：惯性小、反应快，非常需要 D 来刹车，所以机器人圈最常见的组合反而是 <b>PD</b>。</p></div>
+
+<h2><span class="n">05</span>两百年前的“机器舵手”长什么样？</h2>
+<p>反馈控制比米诺尔斯基还要老得多。1788 年前后，瓦特给蒸汽机装上了<b>离心调速器（centrifugal / flyball governor）</b>：两个铁球挂在一根随发动机旋转的立轴上。转得越快，离心力越大，铁球越往外甩、越往上抬；铁球带动套筒和杠杆，把进汽阀门关小一点，发动机就慢下来。转慢了，铁球垂下，阀门开大。没有一行代码，一个完整的反馈回路。</p>
+
+<figure class="photo">
+<img src="https://coimages.sciencemuseumgroup.org.uk/761/50/large_smg00655219.jpg" loading="lazy" referrerpolicy="no-referrer" alt="1858 年设计的 Porter 式蒸汽机离心调速器实物" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://collection.sciencemuseumgroup.org.uk/objects/co51295/porters-governor-designed-1858-for-stationary-engines">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>这是 C. T. Porter 在 1858 年前后设计的高速调速器，在瓦特那一版基础上，在套筒上加了一个大配重。找那两个小球和中间的滑动套筒：球甩起来，套筒就被提上去，通过杠杆去关阀门。这台是给 4 马力发动机配的 A 号型号。<br>图：Science Museum Group © The Board of Trustees of the Science Museum / <a href="https://collection.sciencemuseumgroup.org.uk/objects/co51295/porters-governor-designed-1858-for-stationary-engines">Science Museum Group Collection</a>，CC BY-NC-SA 4.0</figcaption>
+</figure>
+
+<figure>
+<svg id="f4svg" viewBox="0 0 520 300" role="img" aria-label="离心调速器动画：负载变化时，球升降、阀门开合、转速变化"></svg>
+<div class="ctrl"><button id="f4play">▶ 播放</button><button id="f4load">加负载</button></div>
+<div class="readout">
+<div>发动机转速<b id="f4w">–</b></div>
+<div>阀门开度<b id="f4v">–</b></div>
+<div>负载<b id="f4l">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>点“播放”，再点“加负载”（比如工厂多开了几台织布机）：转速先掉，铁球垂下，阀门开大，转速回升——但<b>回不到原来的转速</b>，只能停在一个稍低的值。这台调速器就是一个纯 P 控制器，它也有稳态误差。不播放时，静止画面上已标出各部件。转速数值为示意。</figcaption>
+</figure>
+
+<p>到了 1868 年，据隆德大学的控制史讲义统计，世界上已有约 <b>75,000 台</b>这样的调速器在转。它们有个让工程师头疼的毛病，叫 <b>hunting（“猎振”）</b>：转速忽高忽低地来回摆，像猎犬在嗅着找方向。物理学家麦克斯韦——就是写下电磁方程组的那位——在同年发表了论文《论调速器》（On Governors），第一次用数学说清楚了：什么样的参数会让它稳定，什么样的会让它自己晃起来。他还特别强调了<b>积分作用</b>能消除稳态偏差。这篇论文常被视为控制理论的起点。</p>
+
+<h2><span class="n">06</span>反馈一定是好东西吗？</h2>
+<p>模拟器里那个“硬 P + 延迟”按钮，你点过了吗？手臂不是晃，是彻底失控乱甩。原因还是洗澡那个道理：控制器根据 25 毫秒前的位置下命令，等力矩真正起作用，手臂早已不在那里了。<b>该刹车的时候它在加油，该加油的时候它在刹车</b>——反馈的方向在时间上被错开，本来用来“抵消”偏差的力，变成了“推波助澜”的力。</p>
+
+<div class="box fail"><div class="t">翻车现场：伦敦千禧桥，开放两天就关了</div>
+<p>2000 年 6 月 10 日，横跨泰晤士河的伦敦千禧桥开放，当天约 9 万人走过，桥上最多同时有约 2000 人。很快，桥开始左右摇晃，最大横向摆幅约 70 mm。6 月 12 日，桥就关闭了。</p>
+<p>原因是一个人和桥一起组成的<b>正反馈</b>：桥轻微向左晃 → 桥上的人为了站稳，不自觉地把脚步调成跟着桥的节奏、往外跨 → 成千上万双脚的侧向力同步了，推得桥晃得更厉害 → 更多人跟上节奏。工程上叫“同步横向激励（synchronous lateral excitation）”。限制过桥人数也不管用。最终的修法是加了 37 个黏滞流体阻尼器和 52 个调谐质量阻尼器——相当于给整座桥装上了“D 项”。改造花了 500 万英镑，2002 年 2 月 22 日才重新开放。</p>
+<p style="font-size:15px">对我们的启发：一个回路是“帮倒忙”还是“帮正忙”，不只看方向，还要看<b>时机</b>。延迟和相位一错，负反馈也能变成正反馈。</p></div>
+
+<figure>
+<svg viewBox="0 0 520 220" role="img" aria-label="千禧桥正反馈示意：桥晃动、行人同步步伐、侧向力增强形成闭环">
+<defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#dc2626"/></marker></defs>
+<rect x="0" y="150" width="520" height="70" class="s-water" opacity=".25"/>
+<path d="M0,165 q20,-6 40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0" class="nofill st-water" stroke-width="1.5" opacity=".7"/>
+<rect x="30" y="118" width="460" height="10" rx="3" class="s-steel"/>
+<path d="M30,118 Q260,92 490,118" class="nofill st-steel" stroke-width="3"/>
+<rect x="150" y="128" width="12" height="40" class="s-can"/><rect x="358" y="128" width="12" height="40" class="s-can"/>
+<g class="s-ink">
+<g transform="translate(120,92)"><circle r="5"/><rect x="-3" y="5" width="6" height="14" rx="2"/><path d="M-1,19 l-6,8 M1,19 l7,7" class="st-ink" stroke-width="2.4"/></g>
+<g transform="translate(200,90)"><circle r="5"/><rect x="-3" y="5" width="6" height="14" rx="2"/><path d="M-1,19 l-7,8 M1,19 l6,8" class="st-ink" stroke-width="2.4"/></g>
+<g transform="translate(270,89)"><circle r="5"/><rect x="-3" y="5" width="6" height="14" rx="2"/><path d="M-1,19 l-7,8 M1,19 l6,8" class="st-ink" stroke-width="2.4"/></g>
+<g transform="translate(330,90)"><circle r="5"/><rect x="-3" y="5" width="6" height="14" rx="2"/><path d="M-1,19 l-7,8 M1,19 l6,8" class="st-ink" stroke-width="2.4"/></g>
+<g transform="translate(410,92)"><circle r="5"/><rect x="-3" y="5" width="6" height="14" rx="2"/><path d="M-1,19 l-6,8 M1,19 l7,7" class="st-ink" stroke-width="2.4"/></g>
+</g>
+<g font-size="12" font-weight="700">
+<rect x="20" y="10" width="140" height="44" rx="10" class="s-bg2" stroke="#dc2626"/>
+<text x="90" y="30" text-anchor="middle" class="s-ink">① 桥轻微侧晃</text><text x="90" y="46" text-anchor="middle" class="s-ink2" font-weight="400" font-size="11">约 1 Hz 量级</text>
+<rect x="190" y="10" width="140" height="44" rx="10" class="s-bg2" stroke="#dc2626"/>
+<text x="260" y="30" text-anchor="middle" class="s-ink">② 行人跟着节奏迈步</text><text x="260" y="46" text-anchor="middle" class="s-ink2" font-weight="400" font-size="11">为了站稳，不自觉</text>
+<rect x="360" y="10" width="140" height="44" rx="10" class="s-bg2" stroke="#dc2626"/>
+<text x="430" y="30" text-anchor="middle" class="s-ink">③ 侧向力同相叠加</text><text x="430" y="46" text-anchor="middle" class="s-ink2" font-weight="400" font-size="11">推得桥晃得更大</text>
+</g>
+<path d="M160,32 L186,32" stroke="#dc2626" stroke-width="2" marker-end="url(#ar3)"/>
+<path d="M330,32 L356,32" stroke="#dc2626" stroke-width="2" marker-end="url(#ar3)"/>
+<path d="M500,40 C515,70 515,72 500,76 L30,76 C10,72 10,62 20,48" class="nofill" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar3)"/>
+<text x="260" y="72" text-anchor="middle" font-size="11" fill="#dc2626">正反馈：每转一圈，晃得更大</text>
+<text x="260" y="200" text-anchor="middle" font-size="12" class="s-ink2">修法：加阻尼器（≈ 给系统补上 D），把能量吃掉</text>
+</svg>
+<figcaption><b>看图要看什么：</b>红圈里每一步都“合情合理”，连起来却越转越大——这就是正反馈。“约 1 Hz 量级”只是示意；维基百科条目提到，横向频率低于约 1.3 Hz 的轻型桥梁都有类似风险。</figcaption>
+</figure>
+
+<h2><span class="n">07</span>那机器人关节里，到底用的是哪几个字母？</h2>
+<p>把今天的东西放回机器人身上，有三点值得记住。</p>
+<p><b>第一，腿足机器人的关节层最常见的是“PD + 前馈”。</b>回到 Mini Cheetah：论文里写，它的关节 PD 控制以 <b>40 kHz</b> 运行，比上层全身控制器（500 Hz）快 80 倍；上层每 2 毫秒算一次“各关节该出多大力”，底层 PD 负责在这 2 毫秒里把位置和速度的小偏差修掉。重力、加速度这些“已知的力”交给前馈，不靠积分慢慢去攒。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人实物" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>Mini Cheetah 的 12 个关节，每一个都在以 40 kHz 跑 PD——相当于每 25 微秒问一次“差多少、多快”。它的 Kp = 3 N·m/rad 听起来很软，正是因为“主力”由前馈力矩提供，PD 只管修正；软一点的弹簧，落地冲击时也更柔和。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<p><b>第二，一个关节里往往不止一个 PID。</b>BEAR 的 SDK 手册（BEAR-SDK-Manual-1.3.0-EN.pdf，第 2.4 节 PID Tuning）就分了好几组增益：电流环（id/iq）、速度环、位置环，以及直接力控模式（Direct Force Mode）的 P 和 D。手册里有几句话，正好印证今天讲的道理：</p>
+<table>
+<tr><th>手册里的建议</th><th>对应今天哪个道理</th></tr>
+<tr><td>电流环的 D 增益应始终保持为 0</td><td>D 放大噪声，电流信号本身就带噪声</td></tr>
+<tr><td>速度环建议从 P = 0.5～1、I = 0、D = 0 起步，必要时加很小（0～0.01）的 I</td><td>I 是“清账”用的，少量即可</td></tr>
+<tr><td>直接力控模式下，P 乘位置误差（rad），D 乘速度误差（rad/s），建议从 D = 0.1P 起调；强烈不建议加 I，否则很可能振荡</td><td>P + D = 弹簧 + 阻尼器</td></tr>
+<tr><td>先把电流环、速度环调好，再调位置环</td><td>内环不稳，外环怎么调都没用——明天的主题</td></tr>
+</table>
+<p style="font-size:15px;color:var(--ink2)">注意：手册表 4 给出了各型号电流环的推荐初值，<b>不同型号数值不同，不能互相套用</b>；寄存器里的增益是驱动器内部的数值，不要直接和上面 Mini Cheetah 的 N·m/rad 比大小。</p>
+
+<p><b>第三，“调好 PID”永远是在几样东西之间找平衡</b>：响应快（Kp 大）、不冲过头（Kd 合适）、没有稳态误差（Ki 或前馈）、不吵不抖（D 别太大）、不怕延迟（增益别贪高）。没有一组增益在所有负载下都最好——客户换了负载、换了连杆，常常就要重调。</p>
+
+<div class="box work"><div class="t">工作里会在哪遇到</div>
+<p>客户邮件里最常见的几种说法和它背后的意思：</p>
+<ul>
+<li>“The joint <b>oscillates / jitters</b> in position mode.” —— 增益过高、D 不够，或 D 太大放大了噪声；先问他调过哪个环。</li>
+<li>“It settles a few degrees <b>below the goal position</b> under load.” —— 典型的稳态误差：只有 P 在扛重力。</li>
+<li>“<b>What PID gains do you recommend?</b>” —— 手册有起步值，但最终取决于负载和应用，不能给“万能数”。</li>
+<li>“It <b>overshoots</b> and then slowly creeps back.” —— 积分在起作用，可能 I 偏大或发生了积分饱和。</li>
+</ul>
+<p>排查时一句很好用的英文：</p>
+<p class="en">Could you share the current-loop, velocity-loop and position-loop PID gains you are using, the operating mode, and a plot of goal position vs. present position during the motion? That will help us tell whether this is a tuning issue or a load/limit issue.</p></div>
+
+<h2><span class="n">08</span>自测三题</h2>
+<p class="q">1. 展会上客户推了推你们演示用的机械臂：“我一推它就让开一点，一松手又回来了，是不是没调好？”你怎么解释？</p>
+<details><summary>看答案</summary><p>这是位置控制的正常表现。只用 P（或 PD）的关节就像一根弹簧加减震器：被推开一点，误差产生，回复力随之产生；松手就回到目标。推开多少取决于 Kp（刚度）。如果想“推不动”，就得把刚度调得很高，代价是更容易振荡、碰撞时也更“硬”。对机器人来说，适度的柔顺常常是故意设计的。英文可以说：It behaves like a virtual spring-damper around the goal position; the stiffness is set by the position gain.</p></details>
+
+<p class="q">2. 一封邮件写着：“In position mode the joint settles about 2° below the target when holding our payload, and never reaches it.” 最可能的原因是什么？你会先建议对方做什么？</p>
+<details><summary>看答案</summary><p>最可能的是<b>稳态误差</b>：负载的重力力矩需要一个持续的力矩来扛，只有 P 时，这个力矩只能靠“留着一点误差”产生。可选的办法有：小心地加一点 I；或者在上位机算好重力力矩作为前馈；也可以适当提高刚度。按 BEAR SDK 手册的思路，先确认他的电流环和速度环增益是否合理——内环没调好时，位置环怎么调都可能“出不了力、追不上目标”。具体给什么数值，属于需要结合他的工况确认的内容。</p></details>
+
+<p class="q">3. 算一算：某关节只用 P 控制，Kp = 3 N·m/rad，末端挂着一个持续 0.6 N·m 的负载力矩。稳定后大约偏离目标多少度？如果 Kp 翻倍呢？</p>
+<details><summary>看答案</summary><p>误差 ≈ 0.6 ÷ 3 = 0.2 rad ≈ 0.2 × 57.3 ≈ <b>11.5°</b>。Kp 翻到 6，误差减半，约 <b>5.7°</b>。规律：稳态误差 ≈ 负载力矩 ÷ Kp。Kp 越大误差越小，但只要是有限值，就永远不会变成零——这正是 I 或前馈要解决的问题。（此处忽略了角度变化引起的重力力矩变化，是粗算。）</p></details>
+
+<h2><span class="n">09</span>今天的术语</h2>
+<table class="terms">
+<tr><th>中文</th><th>English</th><th>一句话</th></tr>
+<tr><td>反馈 / 闭环</td><td>feedback / closed-loop</td><td>把结果测回来，和目标比较</td></tr>
+<tr><td>开环</td><td>open-loop</td><td>只管下命令，不看结果</td></tr>
+<tr><td>目标值</td><td>setpoint / goal</td><td>BEAR 寄存器里叫 goal position 等</td></tr>
+<tr><td>误差</td><td>error</td><td>目标 − 实测</td></tr>
+<tr><td>比例 / 积分 / 微分</td><td>proportional / integral / derivative</td><td>看现在 / 看过去 / 看趋势</td></tr>
+<tr><td>增益</td><td>gain (Kp, Ki, Kd)</td><td>每个字母的“音量旋钮”</td></tr>
+<tr><td>稳态误差</td><td>steady-state error</td><td>停稳后仍然补不上的差距</td></tr>
+<tr><td>超调</td><td>overshoot</td><td>冲过目标的那一截</td></tr>
+<tr><td>振荡</td><td>oscillation</td><td>来回晃；严重时发散失控</td></tr>
+<tr><td>积分饱和</td><td>integral windup</td><td>积分账攒爆了，放开后猛冲</td></tr>
+<tr><td>阻尼</td><td>damping</td><td>D 项的物理意义：像减震器</td></tr>
+<tr><td>前馈</td><td>feedforward</td><td>已知的力提前算好直接给，不等误差出现</td></tr>
+</table>
+
+<div class="tease">今天我们一直假装控制器能“直接给出力矩”。可电机只认电流，电流又要靠电压去推——BEAR 手册说位置环的输出要先喂给速度环，速度环再喂给电流环。<b>为什么要套三层？一层直接从位置算到电压，不行吗？</b>明天，我们把这三层俄罗斯套娃一个个拆开。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li>S. Bennett, “Nicholas Minorsky and the Automatic Steering of Ships,” IEEE Control Systems Magazine, 1984（PDF）：<a href="https://skoge.folk.ntnu.no/puublications_others/1984_Bennett-PID%20history.pdf">skoge.folk.ntnu.no</a></li>
+<li>Chemistry World, “Keeping everything under control”（Minorsky 生平与新墨西哥号试验）：<a href="https://www.chemistryworld.com/opinion/minorskys-pid-algorithm-and-the-control-of-complex-systems/4019854.article">chemistryworld.com</a></li>
+<li>Lund University, History of Control 讲义 “Governors”（1788 年瓦特调速器、1868 年约 75,000 台、Maxwell《On Governors》）：<a href="https://control.lth.se/fileadmin/control/Education/DoctorateProgram/HistoryOfControl/2016/L02Governorseight.pdf">control.lth.se</a></li>
+<li>Lund University, PID Control 讲义（工业回路 PI/PID 占比调查）：<a href="https://www.control.lth.se/fileadmin/control/Education/DoctorateProgram/ControlSystemsSynthesis/2020/PIDeight.pdf">control.lth.se</a></li>
+<li>D. Kim 等, “Highly Dynamic Quadruped Locomotion via Whole-Body Impulse Control and Model Predictive Control,” arXiv:1909.06586（Mini Cheetah 关节 PD 40 kHz、kp = 3 N·m/rad、kd = 0.3 N·m·s/rad）：<a href="https://arxiv.org/pdf/1909.06586.pdf">arxiv.org</a></li>
+<li>Millennium Bridge, London（开放与关闭日期、摆幅、阻尼器数量、改造费用）：<a href="https://en.wikipedia.org/wiki/Millennium_Bridge,_London">Wikipedia</a></li>
+<li>Porter's Governor, designed 1858（照片与说明）：<a href="https://collection.sciencemuseumgroup.org.uk/objects/co51295/porters-governor-designed-1858-for-stationary-engines">Science Museum Group Collection</a></li>
+<li>MIT News, Mini Cheetah 新闻稿（照片）：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">news.mit.edu</a></li>
+<li>Westwood Robotics, BEAR-SDK-Manual-1.3.0-EN.pdf，第 2.3–2.4 节（运行模式与 PID 调校建议；项目内部资料）</li>
+</ul>
+</main>
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+var RM=false;try{RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+
+/* ---------- Fig 3: PID simulator ---------- */
+(function(){
+  var svg=$('f3svg');if(!svg)return;
+  function simulate(Kp,Ki,Kd,delayMs){
+    var g=9.81,l=0.3,m0=0.2,mb=0.55,Jm=0.012,b=0.02,tmax=4;
+    var dt=0.0005,T=5,N=Math.round(T/dt),dl=Math.round(delayMs/1000/dt);
+    var th=-45*Math.PI/180,w=0,I=0,ref=30*Math.PI/180;
+    var bufT=[],bufW=[],out=[];
+    for(var k=0;k<=N;k++){
+      var t=k*dt,m=t>=2.5?m0+mb:m0,J=m*l*l+Jm;
+      bufT.push(th);bufW.push(w);
+      var idx=Math.max(0,bufT.length-1-dl);
+      var thm=bufT[idx],wm=bufW[idx];
+      if(bufT.length>dl+5){bufT.shift();bufW.shift();}
+      var e=ref-thm;I+=e*dt;
+      var u=Kp*e+Ki*I-Kd*wm;
+      if(u>tmax)u=tmax;if(u<-tmax)u=-tmax;
+      var a=(u-m*g*l*Math.cos(th)-b*w)/J;
+      w+=a*dt;th+=w*dt;
+      if(th>Math.PI){th=Math.PI;w=0;}if(th<-Math.PI){th=-Math.PI;w=0;}
+      if(k%10===0)out.push(th*180/Math.PI);
+    }
+    return out;
+  }
+  var X0=170,X1=508,Y=function(d){return 150-(d)*1.25;};
+  var tx=function(t){return X0+(X1-X0)*t/5;};
+  // static frame
+  svg.appendChild(el('rect',{x:4,y:14,width:150,height:270,rx:12,'class':'s-bg',stroke:'var(--line)'}));
+  svg.appendChild(el('text',{x:79,y:34,'text-anchor':'middle','font-size':12,'class':'s-ink2'},'机械臂'));
+  var ax=el('g',{});svg.appendChild(ax);
+  [-45,0,30,60,90].forEach(function(d){
+    ax.appendChild(el('line',{x1:X0,x2:X1,y1:Y(d),y2:Y(d),stroke:'var(--line)','stroke-width':1}));
+    ax.appendChild(el('text',{x:X0-4,y:Y(d)+4,'text-anchor':'end','font-size':10,'class':'s-ink2'},d+'°'));
+  });
+  for(var s=0;s<=5;s++)ax.appendChild(el('text',{x:tx(s),y:278,'text-anchor':'middle','font-size':10,'class':'s-ink2'},s+' s'));
+  ax.appendChild(el('line',{x1:X0,x2:X1,y1:Y(30),y2:Y(30),stroke:'var(--accent2)','stroke-width':2,'stroke-dasharray':'6 4'}));
+  ax.appendChild(el('line',{x1:tx(2.5),x2:tx(2.5),y1:30,y2:262,stroke:'var(--water)','stroke-width':1.5,'stroke-dasharray':'3 3'}));
+  ax.appendChild(el('text',{x:tx(2.5)+4,y:28,'font-size':11,fill:'var(--water)','font-weight':700},'挂上水瓶'));
+  ax.appendChild(el('text',{x:X1,y:Y(30)-5,'text-anchor':'end','font-size':11,fill:'var(--accent2)'},'目标 30°'));
+  var clip=el('clipPath',{id:'f3clip'});clip.appendChild(el('rect',{x:X0,y:14,width:X1-X0,height:250}));svg.appendChild(clip);
+  var path=el('path',{fill:'none',stroke:'var(--accent)','stroke-width':2.4,'stroke-linejoin':'round','clip-path':'url(#f3clip)'});svg.appendChild(path);
+  var cur=el('circle',{r:4.5,fill:'var(--accent)'});svg.appendChild(cur);
+  // arm
+  var P={x:72,y:160};
+  svg.appendChild(el('rect',{x:P.x-22,y:P.y-22,width:44,height:44,rx:9,fill:'var(--can)',stroke:'var(--ink2)'}));
+  var ghost=el('line',{x1:P.x,y1:P.y,stroke:'var(--accent2)','stroke-width':2,'stroke-dasharray':'4 3'});svg.appendChild(ghost);
+  var arm=el('g',{});svg.appendChild(arm);
+  arm.appendChild(el('rect',{x:0,y:-6,width:70,height:12,rx:6,fill:'var(--wood)',stroke:'var(--copper2)'}));
+  var bottle=el('g',{transform:'translate(70,0)'});
+  bottle.appendChild(el('rect',{x:-7,y:4,width:14,height:28,rx:5,fill:'var(--water)',opacity:.85}));
+  bottle.appendChild(el('rect',{x:-4,y:0,width:8,height:5,rx:2,fill:'var(--accent2)'}));
+  arm.appendChild(bottle);
+  svg.appendChild(el('circle',{cx:P.x,cy:P.y,r:5,'class':'s-ink'}));
+  var angT=el('text',{x:79,y:262,'text-anchor':'middle','font-size':15,'font-weight':700,'class':'s-ink'},'');svg.appendChild(angT);
+  var timeT=el('text',{x:79,y:278,'text-anchor':'middle','font-size':11,'class':'s-ink2'},'');svg.appendChild(timeT);
+  var g1=30*Math.PI/180;ghost.setAttribute('x2',P.x+80*Math.cos(g1));ghost.setAttribute('y2',P.y-80*Math.sin(g1));
+
+  var data=[],playing=false,raf=0,t0=0;
+  function pose(i){
+    i=Math.max(0,Math.min(data.length-1,i));
+    var d=data[i],t=i*0.005;
+    var dd=Math.max(-60,Math.min(95,d));
+    arm.setAttribute('transform','translate('+P.x+','+P.y+') rotate('+(-d)+')');
+    bottle.setAttribute('transform','translate(70,0) rotate('+d+')');
+    bottle.style.display=t>=2.5?'':'none';
+    cur.setAttribute('cx',tx(t));cur.setAttribute('cy',Y(dd));
+    angT.textContent=d.toFixed(0)+'°';timeT.textContent='t = '+t.toFixed(2)+' s';
+  }
+  function fmt(v){return (v>=0?'':'−')+Math.abs(v).toFixed(1)+'°';}
+  function run(){
+    var kp=+$('f3kp').value,ki=+$('f3ki').value,kd=+$('f3kd').value,dl=+$('f3dl').value;
+    $('f3kpo').textContent=kp.toFixed(1);$('f3kio').textContent=ki.toFixed(1);$('f3kdo').textContent=kd.toFixed(2);$('f3dlo').textContent=dl+' ms';
+    data=simulate(kp,ki,kd,dl);
+    var d='';for(var i=0;i<data.length;i++){var v=Math.max(-70,Math.min(110,data[i]));d+=(i?'L':'M')+tx(i*0.005).toFixed(1)+','+Y(v).toFixed(1);}
+    path.setAttribute('d',d);
+    var pre=data.slice(0,500),ov=Math.max.apply(null,pre)-30;
+    var tail1=data.slice(400,500),tail2=data.slice(900);
+    var r1=Math.max.apply(null,tail1)-Math.min.apply(null,tail1),r2=Math.max.apply(null,tail2)-Math.min.apply(null,tail2);
+    $('f3ov').textContent=ov>0.3?fmt(ov):'无';
+    $('f3e1').textContent=r1>3?'还在晃':fmt(30-data[490]);
+    $('f3e2').textContent=r2>3?'还在晃':fmt(30-data[1000]);
+    var st=$('f3st');
+    var wild=Math.max.apply(null,data)>150||Math.min.apply(null,data)<-150;
+    if(wild||r2>40){st.textContent='失控';st.className='status badc';}
+    else if(r1>3||r2>3){st.textContent='振荡';st.className='status badc';}
+    else if(Math.abs(30-data[1000])<1){st.textContent='准且稳';st.className='status okc';}
+    else{st.textContent='稳，但有误差';st.className='status';}
+    if(!playing)pose(data.length-1);
+  }
+  function stop(){playing=false;cancelAnimationFrame(raf);$('f3play').textContent='▶ 播放动画';}
+  $('f3play').addEventListener('click',function(){
+    if(playing){stop();pose(data.length-1);return;}
+    if(RM){pose(data.length-1);return;}
+    playing=true;$('f3play').textContent='❚❚ 停止';t0=performance.now();
+    (function step(now){
+      var t=(now-t0)/1000*0.8;var i=Math.round(t/0.005);
+      if(i>=data.length){pose(data.length-1);stop();return;}
+      pose(i);raf=requestAnimationFrame(step);
+    })(t0);
+  });
+  ['f3kp','f3ki','f3kd','f3dl'].forEach(function(id){$(id).addEventListener('input',function(){
+    Array.prototype.forEach.call($('f3pre').querySelectorAll('button'),function(b){b.classList.remove('on');});run();});});
+  Array.prototype.forEach.call($('f3pre').querySelectorAll('button'),function(b){b.addEventListener('click',function(){
+    var p=b.getAttribute('data-p').split(',');$('f3kp').value=p[0];$('f3ki').value=p[1];$('f3kd').value=p[2];$('f3dl').value=p[3];
+    Array.prototype.forEach.call($('f3pre').querySelectorAll('button'),function(x){x.classList.remove('on');});b.classList.add('on');stop();run();});});
+  run();
+})();
+
+/* ---------- Fig 2: past / present / future ---------- */
+(function(){
+  var svg=$('f2svg');if(!svg)return;
+  function e(t){return 1.0*Math.exp(-t*0.9)*Math.cos(2.6*t);}
+  function de(t){return Math.exp(-t*0.9)*(-0.9*Math.cos(2.6*t)-2.6*Math.sin(2.6*t));}
+  var X0=40,X1=500,Y0=130,S=95,tx=function(t){return X0+(X1-X0)*t/4;},ty=function(v){return Y0-v*S;};
+  svg.appendChild(el('line',{x1:X0,x2:X1,y1:Y0,y2:Y0,stroke:'var(--ink2)','stroke-width':1}));
+  svg.appendChild(el('text',{x:X1,y:Y0+16,'text-anchor':'end','font-size':11,'class':'s-ink2'},'时间 →'));
+  svg.appendChild(el('text',{x:X0+4,y:22,'font-size':11,'class':'s-ink2'},'误差 e（目标 − 实际）'));
+  svg.appendChild(el('text',{x:X0-6,y:Y0+4,'text-anchor':'end','font-size':10,'class':'s-ink2'},'0'));
+  var areaP=el('path',{fill:'var(--accent2)',opacity:.22});svg.appendChild(areaP);
+  var areaN=el('path',{fill:'#dc2626',opacity:.18});svg.appendChild(areaN);
+  var d='';for(var i=0;i<=200;i++){var t=i/50;d+=(i?'L':'M')+tx(t).toFixed(1)+','+ty(e(t)).toFixed(1);}
+  svg.appendChild(el('path',{d:d,fill:'none',stroke:'var(--ink)','stroke-width':2.2}));
+  var pbar=el('line',{stroke:'var(--accent)','stroke-width':7,'stroke-linecap':'round'});svg.appendChild(pbar);
+  var tan=el('line',{stroke:'var(--blue)','stroke-width':2.4,'stroke-dasharray':'7 4'});svg.appendChild(tan);
+  var dot=el('circle',{r:6,fill:'var(--accent)',stroke:'var(--bg2)','stroke-width':2});svg.appendChild(dot);
+  var lg=el('g',{'font-size':12,'font-weight':700});svg.appendChild(lg);
+  [['P：此刻多高','var(--accent)'],['I：攒下的面积','var(--accent2)'],['D：此刻斜率','var(--blue)']].forEach(function(a,k){
+    lg.appendChild(el('rect',{x:60+k*150,y:244,width:14,height:10,rx:2,fill:a[1]}));
+    lg.appendChild(el('text',{x:80+k*150,y:254,fill:a[1]},a[0]));});
+  function draw(){
+    var t=+$('f2t').value;$('f2to').textContent=t.toFixed(2)+' s';
+    var pp='M'+tx(0)+','+Y0,pn='M'+tx(0)+','+Y0,I=0,n=Math.max(2,Math.round(t*60));
+    for(var i=0;i<=n;i++){var s=t*i/n,v=e(s);pp+='L'+tx(s).toFixed(1)+','+ty(Math.max(0,v)).toFixed(1);pn+='L'+tx(s).toFixed(1)+','+ty(Math.min(0,v)).toFixed(1);if(i)I+=v*t/n;}
+    pp+='L'+tx(t)+','+Y0+'Z';pn+='L'+tx(t)+','+Y0+'Z';
+    areaP.setAttribute('d',pp);areaN.setAttribute('d',pn);
+    var v=e(t),sl=de(t);
+    pbar.setAttribute('x1',tx(t));pbar.setAttribute('x2',tx(t));pbar.setAttribute('y1',Y0);pbar.setAttribute('y2',ty(v));
+    dot.setAttribute('cx',tx(t));dot.setAttribute('cy',ty(v));
+    var dtv=0.45;tan.setAttribute('x1',tx(t-dtv));tan.setAttribute('x2',tx(t+dtv));tan.setAttribute('y1',ty(v-sl*dtv));tan.setAttribute('y2',ty(v+sl*dtv));
+    $('f2p').textContent=v.toFixed(2);$('f2i').textContent=I.toFixed(2);
+    $('f2d').textContent=sl.toFixed(2)+(sl<-0.3?'（快速变小）':sl>0.3?'（快速变大）':'（平缓）');
+  }
+  $('f2t').addEventListener('input',draw);draw();
+})();
+
+/* ---------- Fig 4: flyball governor ---------- */
+(function(){
+  var svg=$('f4svg');if(!svg)return;
+  var C=150,TOP=40,L=78;
+  // base & engine
+  svg.appendChild(el('rect',{x:60,y:262,width:400,height:14,rx:3,'class':'s-wood'}));
+  svg.appendChild(el('rect',{x:C-4,y:TOP-8,width:8,height:230,rx:3,'class':'s-steel'}));
+  svg.appendChild(el('circle',{cx:C,cy:TOP,r:7,'class':'s-ink'}));
+  // flywheel
+  var fw=el('g',{transform:'translate('+C+',236)'});svg.appendChild(fw);
+  var fwr=el('g',{});fw.appendChild(fwr);
+  fwr.appendChild(el('circle',{r:26,fill:'none',stroke:'var(--ink2)','stroke-width':5}));
+  for(var k=0;k<6;k++){var a=k*Math.PI/3;fwr.appendChild(el('line',{x1:0,y1:0,x2:24*Math.cos(a),y2:24*Math.sin(a),stroke:'var(--ink2)','stroke-width':2.5}));}
+  fw.appendChild(el('circle',{r:5,'class':'s-acc'}));
+  svg.appendChild(el('text',{x:C-36,y:240,'text-anchor':'end','font-size':11,'class':'s-ink2'},'发动机飞轮'));
+  // arms
+  var la=el('line',{stroke:'var(--ink)','stroke-width':3}),ra=el('line',{stroke:'var(--ink)','stroke-width':3});
+  var ll=el('line',{stroke:'var(--ink2)','stroke-width':2}),rl=el('line',{stroke:'var(--ink2)','stroke-width':2});
+  [la,ra,ll,rl].forEach(function(x){svg.appendChild(x);});
+  var lb=el('circle',{r:13,fill:'var(--copper)',stroke:'var(--copper2)','stroke-width':1.5}),rb=el('circle',{r:13,fill:'var(--copper)',stroke:'var(--copper2)','stroke-width':1.5});
+  svg.appendChild(lb);svg.appendChild(rb);
+  var sl=el('rect',{x:C-11,width:22,height:14,rx:3,fill:'var(--accent)'});svg.appendChild(sl);
+  // lever & valve
+  var PV={x:250,y:150};
+  var lev=el('line',{stroke:'var(--ink)','stroke-width':3,'stroke-linecap':'round'});svg.appendChild(lev);
+  svg.appendChild(el('path',{d:'M'+(PV.x-8)+','+(PV.y+14)+' L'+PV.x+','+PV.y+' L'+(PV.x+8)+','+(PV.y+14)+'Z','class':'s-can'}));
+  var rod=el('line',{stroke:'var(--ink2)','stroke-width':2.5});svg.appendChild(rod);
+  // pipe
+  svg.appendChild(el('rect',{x:330,y:196,width:170,height:30,rx:4,fill:'var(--steel)',opacity:.55}));
+  svg.appendChild(el('text',{x:492,y:190,'text-anchor':'end','font-size':11,'class':'s-ink2'},'蒸汽 → 进气缸'));
+  var gate=el('rect',{x:376,width:14,rx:2,fill:'var(--ink)'});svg.appendChild(gate);
+  var steam=el('rect',{x:390,y:200,height:22,rx:3,fill:'var(--glow)',opacity:.55});svg.appendChild(steam);
+  // labels
+  var lab=el('g',{'font-size':11,'class':'s-ink2'});svg.appendChild(lab);
+  lab.appendChild(el('text',{x:20,y:30},'飞球：转得越快'));
+  lab.appendChild(el('text',{x:20,y:45},'甩得越高'));
+  lab.appendChild(el('text',{x:C+16,y:TOP+4},'旋转立轴'));
+  var slT=el('text',{x:C-18,'text-anchor':'end'},'滑动套筒');lab.appendChild(slT);
+  lab.appendChild(el('text',{x:PV.x,y:PV.y+30,'text-anchor':'middle'},'杠杆支点'));
+  lab.appendChild(el('text',{x:383,y:250,'text-anchor':'middle'},'进汽阀门'));
+  var w=1.0,load=0.5,phi,playing=false,raf=0,last=0,ang=0;
+  function ballsFor(wv){return Math.max(0.3,Math.min(1.15,0.3+(wv-0.6)*1.4));}
+  phi=ballsFor(w);
+  function valveFor(p){return Math.max(0.06,Math.min(1,1.25-0.95*p));}
+  // equilibrium init
+  for(var i=0;i<4000;i++)stepSim(0.01);
+  function stepSim(dt){
+    var v=valveFor(phi);
+    var dw=(1.6*v-load-0.25*w)/1.2;w+=dw*dt;if(w<0.05)w=0.05;
+    phi+=(ballsFor(w)-phi)*Math.min(1,dt*3);
+  }
+  function draw(){
+    var sx=L*Math.sin(phi),cy=TOP+L*Math.cos(phi),sy=TOP+2*L*Math.cos(phi);
+    var lx=C-sx,rx=C+sx;
+    la.setAttribute('x1',C);la.setAttribute('y1',TOP);la.setAttribute('x2',lx);la.setAttribute('y2',cy);
+    ra.setAttribute('x1',C);ra.setAttribute('y1',TOP);ra.setAttribute('x2',rx);ra.setAttribute('y2',cy);
+    ll.setAttribute('x1',lx);ll.setAttribute('y1',cy);ll.setAttribute('x2',C);ll.setAttribute('y2',sy);
+    rl.setAttribute('x1',rx);rl.setAttribute('y1',cy);rl.setAttribute('x2',C);rl.setAttribute('y2',sy);
+    lb.setAttribute('cx',lx);lb.setAttribute('cy',cy);rb.setAttribute('cx',rx);rb.setAttribute('cy',cy);
+    sl.setAttribute('y',sy-7);slT.setAttribute('y',sy+4);
+    var lend={x:C+11,y:sy};var k=(PV.y-lend.y)/(PV.x-lend.x);var ex=PV.x+60,ey=PV.y+k*60;
+    lev.setAttribute('x1',lend.x);lev.setAttribute('y1',lend.y);lev.setAttribute('x2',ex);lev.setAttribute('y2',ey);
+    var v=valveFor(phi),gy=196+ (1-v)*26;
+    gate.setAttribute('y',gy-34);gate.setAttribute('height',34);
+    rod.setAttribute('x1',ex);rod.setAttribute('y1',ey);rod.setAttribute('x2',383);rod.setAttribute('y2',gy-34);
+    steam.setAttribute('width',Math.max(2,v*100));steam.setAttribute('y',196+(1-v)*26+2);steam.setAttribute('height',Math.max(2,26*v));
+    fwr.setAttribute('transform','rotate('+ang+')');
+    $('f4w').textContent=Math.round(w*100)+' rpm';$('f4v').textContent=Math.round(v*100)+'%';$('f4l').textContent=load>0.6?'重':'轻';
+  }
+  function loop(now){
+    var dt=Math.min(0.05,(now-last)/1000);last=now;
+    for(var i=0;i<5;i++)stepSim(dt/5*2.2);
+    ang=(ang+w*dt*360)%360;draw();
+    if(playing)raf=requestAnimationFrame(loop);
+  }
+  $('f4play').addEventListener('click',function(){
+    if(RM){return;}
+    playing=!playing;$('f4play').textContent=playing?'❚❚ 暂停':'▶ 播放';
+    if(playing){last=performance.now();raf=requestAnimationFrame(loop);}else cancelAnimationFrame(raf);
+  });
+  $('f4load').addEventListener('click',function(){
+    load=load>0.6?0.5:0.8;$('f4load').textContent=load>0.6?'减负载':'加负载';
+    if(RM||!playing){for(var i=0;i<4000;i++)stepSim(0.01);draw();}
+  });
+  draw();
+})();
+})();
+</script>
+</body>
+</html>
