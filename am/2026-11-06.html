@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W4-3｜力矩控制与阻抗控制</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .chip{fill:#202226} .ontxt{fill:#f2efe8}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .chip{fill:#0d0e10} }
+.status{font-weight:700} .okc{color:var(--accent2)} .badc{color:#dc2626}
+.box ul{padding-left:20px;margin:6px 0} .box li{margin:6px 0}
+.ctrl button{min-width:9em}
+
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:0 4px;word-break:break-all}
+main ul{padding-left:22px} main li{margin:6px 0}
+#f3pre button,#f2seg button,#f4seg button{font-size:14px;padding:6px 12px}
+[hidden]{display:none!important}
+#f1seg button,#f2pre button{font-size:14px;padding:6px 12px}
+#f1svg{cursor:grab;user-select:none;-webkit-user-select:none}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 4 单元「关节控制」· 第 3 课</div>
+<h1>力矩控制与阻抗控制</h1>
+<p class="sub">一个关节怎样假装自己是一根弹簧——从一台陪中风病人练手的机器人说起 · 约 18 分钟</p>
+
+<div class="lead">
+<p>上世纪 90 年代末，波士顿的 Spaulding 康复医院里，一位中风后右臂不太听使唤的病人坐在桌前。她的前臂和手腕绑在一根机械臂的托架上，面前屏幕亮着几个点，任务是把它们连起来——像小学生做连线题。这台机器叫 MIT-Manus，名字取自 MIT 校训 “mens et manus”（头脑与双手），由机械工程教授 Neville Hogan 和研究科学家 Hermano Igo Krebs 带队，前前后后做了十来年。</p>
+<p>它最妙的地方不在于“会动”，而在于“会让”。病人一动不动时，机器人带着她的手臂走；病人自己开始使劲了，机器人就退到一边，只给一点可调的引导和帮扶。2000 年发表在《Neurology》上的第二轮试验里，56 位病人中每天多练一小时机器人的那一组，运动测试成绩按 MIT 新闻稿的说法“高出一倍”。</p>
+<p>问题来了。昨天讲的位置—速度—电流三环，是个“说去 30° 就去 30°”的死心眼：谁拦它，它就加大电流顶回去。把这样一个关节绑在病人胳膊上，等于让一个手臂无力的人去跟千斤顶掰手腕。MIT-Manus 走的是另一条路——Hogan 在 1985 年连发三篇论文，给它起名叫<b>阻抗控制</b>（impedance control）。今天就把这件事讲透：关节怎么从“我要去哪儿”，改成“我要有多软”。</p>
+</div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/200006/d20090831111107424.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Spaulding 康复医院里，治疗师在旁协助一位中风病人使用 MIT-Manus 机器人做上肢训练" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2000/manus">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>病人的手臂搁在托架里，治疗师站在一旁；机器人本体只是一根很朴素的水平连杆——它的本事不在外形，而在电机怎么出力。<br>图：Laura Wulf / <a href="https://news.mit.edu/2000/manus">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">01</span>死心眼的关节遇到一只手，会发生什么？</h2>
+<p>先回忆昨天的位置环：它盯着“目标角度 − 实际角度”这个误差，误差越大，要的电流越大。比例项（P）像一根很硬的弹簧；积分项（I）更狠——只要误差还在，它就一直往上加码。换句话说，<b>你推得越久，它顶得越凶</b>，直到电流撞上限幅为止。对搬砖的工业臂，这是美德；对一只伸过来的手，这就是灾难。</p>
+<p>下面这个关节可以用三种方式来控制。别急着看公式，先上手推一推：按住末端的小球往旁边拖，分别在三种模式里感受一下它“顶你”的方式有什么不同。</p>
+
+<figure id="f1">
+<svg id="f1svg" viewBox="0 0 360 290" role="img" aria-label="可拖动的单关节机械臂，比较位置模式、力矩模式和阻抗模式">
+<defs>
+<linearGradient id="g1link" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9ced6"/><stop offset=".5" stop-color="#eef1f5"/><stop offset="1" stop-color="#9aa1ab"/></linearGradient>
+<radialGradient id="g1ball" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#ffd7b8"/><stop offset=".6" stop-color="#e2792f"/><stop offset="1" stop-color="#9a3f0a"/></radialGradient>
+<radialGradient id="g1hub" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#5b6170"/><stop offset="1" stop-color="#22252b"/></radialGradient>
+</defs>
+<rect x="110" y="40" width="140" height="22" rx="4" fill="var(--wood)" opacity=".85"/>
+<text x="180" y="30" text-anchor="middle" font-size="12" fill="var(--ink2)">固定在桌边的关节（俯视“竖直面”）</text>
+<line id="f1ghost" x1="180" y1="92" x2="180" y2="92" stroke="var(--accent2)" stroke-width="2" stroke-dasharray="5 5"/>
+<circle id="f1gtip" cx="180" cy="92" r="9" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-dasharray="3 3"/>
+<polyline id="f1spring" points="" fill="none" stroke="var(--accent2)" stroke-width="2.2" stroke-linejoin="round"/>
+<g id="f1arm">
+<rect x="-11" y="0" width="22" height="125" rx="11" fill="url(#g1link)" stroke="#6b7280" stroke-width="1"/>
+<line x1="0" y1="18" x2="0" y2="108" stroke="#8a919c" stroke-width="1" stroke-dasharray="2 4"/>
+<circle cx="0" cy="125" r="15" fill="url(#g1ball)"/>
+</g>
+<circle cx="180" cy="92" r="26" fill="url(#g1hub)"/>
+<circle cx="180" cy="92" r="20" fill="none" stroke="var(--copper)" stroke-width="5" stroke-dasharray="3 2"/>
+<circle cx="180" cy="92" r="6" fill="#d9dde3"/>
+<line id="f1hand" x1="0" y1="0" x2="0" y2="0" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0"/>
+<circle id="f1handdot" cx="0" cy="0" r="10" fill="var(--glow)" opacity="0" stroke="var(--ink2)"/>
+<text id="f1hint" x="180" y="272" text-anchor="middle" font-size="13" fill="var(--accent)">按住橙色小球，往左右拖一拖</text>
+<g transform="translate(18,236)">
+<text x="0" y="-6" font-size="11" fill="var(--ink2)">电机力矩</text>
+<rect x="0" y="0" width="110" height="10" rx="5" fill="var(--line)"/>
+<rect id="f1bar" x="55" y="0" width="0" height="10" rx="2" fill="var(--accent)"/>
+<line x1="55" y1="-3" x2="55" y2="13" stroke="var(--ink2)"/>
+</g>
+</svg>
+<div class="seg" id="f1seg"><button data-m="pos" class="on">位置模式</button><button data-m="tq">力矩模式</button><button data-m="imp">阻抗模式</button></div>
+<div class="ctrl" id="f1tq" hidden><label>力矩指令</label><input type="range" id="f1tqr" min="-8" max="8" step="0.5" value="3"><output id="f1tqo">3.0 N·m</output></div>
+<div class="ctrl f1imp" hidden><label>刚度 K</label><input type="range" id="f1k" min="1" max="60" step="1" value="8"><output id="f1ko">8 N·m/rad</output></div>
+<div class="ctrl f1imp" hidden><label>阻尼 D</label><input type="range" id="f1d" min="0" max="4" step="0.1" value="0.6"><output id="f1do">0.6</output></div>
+<div class="readout"><div>关节角度<b id="f1a">60°</b></div><div>电机输出力矩<b id="f1t">0 N·m</b></div><div>你的手在推<b id="f1h">0 N·m</b></div></div>
+<div class="ctrl"><button id="f1play">▶ 开始模拟</button><button id="f1reset">复位</button></div>
+<p id="f1say" class="say">位置模式：目标 60°。你一推，它立刻加大力矩顶回来，推久了还会越顶越狠。</p>
+<figcaption><b>看图要看什么：</b>右侧“电机输出力矩”。位置模式下，你稍微推一点它就顶到上限；力矩模式下它根本不在乎自己在哪，只是一直给固定的力；阻抗模式下，它像被一根看不见的弹簧（绿色）拴在目标上，你推多远，它就按比例顶多大劲。模拟参数为教学假设：连杆等效 2 kg、0.3 m。</figcaption>
+</figure>
+
+<h2><span class="n">02</span>第一步：只管出多大力，不管走到哪——力矩模式</h2>
+<p>W1-3 讲过，永磁电机的力矩和电流成正比：</p>
+<p class="say">一句人话：电流给多大，力就多大，中间只隔一个“力矩常数”。</p>
+<div class="formula">T = K<sub>t</sub> · i<sub>q</sub><small>T：输出力矩 · K<sub>t</sub>：力矩常数 · i<sub>q</sub>：产生力矩的那部分电流</small></div>
+<p>所以最简单的“软关节”就是：把位置环、速度环全拆掉，只留最里面那层电流环，上位机直接下令“给我出 3 N·m”。这就是<b>力矩控制</b>（torque control）。在上面的图里切到“力矩模式”试试：它会垂下去，停在力矩指令刚好和重力打平的那个角度；你推它，它不会反抗，只会一直给那 3 N·m，不多也不少。</p>
+
+<div class="analogy"><div class="t">类比①：带力矩传感器的电助力自行车</div>
+<p>很多电助力自行车在中轴里装了力矩传感器：你蹬得越用力，电机帮得越多。注意电机管的是“出多大力”，不是“车速多少”——上坡慢、下坡快、顶风更慢，速度是力、坡度和阻力一起算出来的结果。力矩模式的关节也一样：力是它定的，位置是世界替它定的。</p>
+<p class="off">哪里不准：助力车的电机力跟着你的踩踏力成比例变，相当于一个“力放大器”；纯力矩模式的力是上位机直接给定的，外面的人怎么推都不会改变它。</p></div>
+
+<p>力矩模式的好处是“诚实”：关节不偷偷加戏，上面的控制器想让它出多少力就出多少。代价是，它<b>自己没有任何“回家”的本能</b>——连重力都扛不住，所有的聪明都得由上位机来提供。后面讲到全身控制（W9）时你会看到，人形机器人恰恰大量使用这种模式：一台中央电脑每毫秒算出几十个关节各该出多少力，然后一股脑下发。</p>
+
+<h2><span class="n">03</span>第二步：给关节装上看不见的弹簧和减震器</h2>
+<p>现在把两者的优点拼起来：既要有“回家”的方向，又不能死心眼。Hogan 的思路是——别再命令位置了，命令一种<b>力和运动之间的关系</b>：被推开一点，就温和地往回拉一点；动得太快，就刹一刹。</p>
+<p class="say">一句人话：偏离目标多少，就按比例往回拉；动得多快，就按比例往回刹；再额外补上一份已知的力（比如重力）。</p>
+<div class="formula">τ = K(θ<sub>d</sub> − θ) + D(θ̇<sub>d</sub> − θ̇) + τ<sub>ff</sub><small>K：虚拟弹簧的刚度（N·m/rad）· D：虚拟阻尼（N·m·s/rad）· τ<sub>ff</sub>：前馈力矩，例如重力补偿</small></div>
+<p>眼尖的话你会发现：这不就是昨天的 PD 吗？长得确实一样，区别在“心态”。位置控制希望 K 越大越好，再补一个 I 把误差彻底消灭；阻抗控制则把 K、D 当成<b>刻意挑选的手感</b>，通常故意不要 I，而且算出来的结果直接变成力矩（电流）指令，不再绕道速度环。K 小，关节就像软弹簧，人一推就让；K 大，它就像硬弹簧，但依然“推多少顶多少”，不会越推越狠。</p>
+<p>Westwood 的 BEAR 执行器正好有一个对应的模式。据《BEAR SDK Manual 1.3.0》，它的第 3 种工作模式叫 <b>Direct Force Mode（直接力控模式）</b>：手册原话的意思是，这个模式下 BEAR “近似模拟一个弹簧—阻尼系统”——P 增益乘以位置误差（rad），D 增益乘以速度误差（rad/s），还可以叠加一份目标电流 goal_iq，最后统统汇入内部的 iq 电流环。手册还给了调参起点：先取 D = 0.1P，并且明确不建议加 I 增益，因为很可能引起振荡。这几句话，几乎就是上面那个公式的说明书版。</p>
+
+<div class="analogy"><div class="t">类比②：写字楼门上的闭门器</div>
+<p>门顶上那个小铁盒就是一套现成的“弹簧 + 阻尼”：里面的弹簧负责把门拉回关闭位置（K），油缸负责让它别“砰”地摔上（D）。弹簧太硬、油太稀，门会摔得山响；油太稠，门半天关不上，后面的人只能干等。</p>
+<p class="off">哪里不准：闭门器的 K 和 D 是装死的零件，而且它只会消耗能量；关节里的虚拟弹簧每一毫秒都能改参数，还能做到“前后软、左右硬”这种真弹簧做不到的事——但它也可能因为控制延迟“凭空造出能量”而抖起来，真弹簧永远不会这样。第 05 节细说。</p></div>
+
+<div class="box cold"><div class="t">冷知识：你的胳膊天生就是一台阻抗控制器</div>
+<p>端一杯满满的热茶穿过人群时，你会下意识地绷紧手臂——不是为了换个位置，而是让手臂“变硬”，被人撞一下也不晃。肱二头肌和肱三头肌同时用力、互相抵消，位置不变，刚度却上去了。Hogan 在 1984 年就专门写过论文，讨论人如何靠这种“拮抗肌共同收缩”来调节手臂的机械阻抗。一年后他把同样的想法搬到了机器人身上。</p></div>
+
+<h2><span class="n">04</span>弹簧多硬、阻尼多大，到底怎么挑？</h2>
+<p>K 和 D 再加上关节自身的转动惯量 J（W2-1 讲过的“转起来的笨重程度”），就决定了关节被扰动之后会怎么“回家”。工程师习惯把它们换算成两个更好懂的数：</p>
+<p class="say">一句人话：第一个数说它“晃得多快”，第二个数说它“晃几下才停”。</p>
+<div class="formula">ω<sub>n</sub> = √(K / J) &nbsp;&nbsp; ζ = D / (2√(K·J))<small>ω<sub>n</sub>：固有频率 · ζ：阻尼比。ζ &lt; 1 会弹几下；ζ ≈ 1 干脆利落；ζ &gt; 1 慢吞吞</small></div>
+
+<div class="analogy"><div class="t">类比③：汽车的减震</div>
+<p>车轮上方是一根大弹簧加一支减震筒。减震筒漏油老化了，车过减速带就像船一样上下颠好几下——这是阻尼比太小；减震调得太硬，每块小石子都硌屁股——这是刚度和阻尼都太大。好悬挂的目标正是 ζ 接近 1：压下去、弹回来、停住。</p>
+<p class="off">哪里不准：汽车悬挂是被动的，一辆车出厂就定了调；关节的 K 可以在运行中切换，比如腿在空中时软、落地撑住身体时变硬，一步之内能换好几次。</p></div>
+
+<p>下面这张图让你亲手调。场景是：关节原本静止，目标突然往前挪了约 11°（0.2 rad），看它怎么跟过去。关节惯量假设为 0.05 kg·m²（教学假设）。第三个滑块是“控制延迟”——先别管它，留到下一节。</p>
+
+<figure id="f2">
+<svg id="f2svg" viewBox="0 0 360 220" role="img" aria-label="阶跃响应曲线，可调刚度、阻尼和延迟">
+<rect x="40" y="14" width="306" height="170" rx="6" fill="var(--bg)" stroke="var(--line)"/>
+<g id="f2grid"></g>
+<line id="f2target" x1="40" x2="346" y1="0" y2="0" stroke="var(--accent2)" stroke-dasharray="5 4" stroke-width="1.5"/>
+<text id="f2tlabel" x="342" y="0" text-anchor="end" font-size="11" fill="var(--accent2)">目标</text>
+<path id="f2path" d="" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round"/>
+<text x="193" y="210" text-anchor="middle" font-size="11" fill="var(--ink2)">时间（秒）</text>
+<text x="12" y="100" font-size="11" fill="var(--ink2)" transform="rotate(-90 12 100)" text-anchor="middle">角度（°）</text>
+<text id="f2warn" x="193" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626"></text>
+</svg>
+<div class="seg" id="f2pre"><button data-k="10" data-d="1.4" data-l="2">软而稳</button><button data-k="60" data-d="3.5" data-l="2">硬而稳</button><button data-k="200" data-d="0.3" data-l="2">硬但没阻尼</button><button data-k="150" data-d="2" data-l="12">硬 + 延迟</button></div>
+<div class="ctrl"><label>刚度 K</label><input type="range" id="f2k" min="1" max="200" step="1" value="60"><output id="f2ko"></output></div>
+<div class="ctrl"><label>阻尼 D</label><input type="range" id="f2d" min="0" max="8" step="0.1" value="1"><output id="f2do"></output></div>
+<div class="ctrl"><label>控制延迟</label><input type="range" id="f2l" min="0" max="20" step="1" value="2"><output id="f2lo"></output></div>
+<div class="readout"><div>固有频率<b id="f2wn"></b></div><div>阻尼比 ζ<b id="f2z"></b></div><div>超调<b id="f2os"></b></div><div>评价<b id="f2v" class="status"></b></div></div>
+<figcaption><b>看图要看什么：</b>橙线冲过绿虚线多少（超调）、来回晃几下才停。先只拉 K：越硬晃得越快；再把 D 拉到 ζ≈1，曲线会变成一个干净的“爬上去就停住”。最后试“硬 + 延迟”。</figcaption>
+</figure>
+
+<p>给你一个真实世界的“硬度”刻度：MIT-Manus 团队 2004 年的论文里写到，他们的控制器能在机器人末端稳定地“装出”超过 2000 N/m 的刚度。换算一下：把手柄推开 1 厘米，它回顶 20 N，差不多是拎着一桶 2 升矿泉水的感觉。对一位中风病人，这已经是一堵结实的“墙”；而治疗时它通常会被调得软得多。</p>
+
+<h2><span class="n">05</span>那为什么不干脆把弹簧调到无限硬？</h2>
+<p>刚才最后一个预设大概让你吓了一跳：同样的 K 和 D，只是多了 12 毫秒延迟，曲线就越抖越大、彻底失控。这是阻抗控制最核心的限制——<b>虚拟弹簧是“算”出来的，而计算永远慢半拍</b>。控制器用的是上一刻的角度，算出的力在下一刻才生效；弹簧越硬，这半拍的偏差带来的力就越大，一来一回，就像有人在秋千最高点又推了一把，能量越攒越多。</p>
+
+<div class="analogy"><div class="t">类比④：老房子里调洗澡水</div>
+<p>热水器离淋浴头远，拧了水龙头要过好几秒水温才变。你嫌凉，猛拧向热；热水还没到，你又拧一点；等烫水冲下来，赶紧猛拧回冷……来回几次，水温忽冷忽热。手越“急”（相当于 K 越大），延迟越长，晃得越凶。</p>
+<p class="off">哪里不准：水温的延迟是秒级，关节控制的延迟是毫秒级；但道理完全相同——要么手慢一点（降 K），要么多一点“刹车”（加 D），要么想办法把延迟本身缩短。</p></div>
+
+<p>除了延迟，还有几道天花板：阻尼 D 乘的是速度，而速度是由编码器角度差分出来的，噪声会被 D 一起放大，所以 D 也不能无限加；再硬的弹簧也顶不过电机的电流上限；减速器和连杆本身并不是绝对刚体，它们自带的弹性会和虚拟弹簧打架。所以说一个关节“支持阻抗控制”时，真正的问题是：<b>它能稳定地装出多大范围的 K 和 D？</b></p>
+
+<h2><span class="n">06</span>关节怎么知道自己到底出了多少力？</h2>
+<p>阻抗控制装得像不像，还取决于一个更底层的问题：关节输出的力，有多少真正到了外面？电流对应的是电机转子上的力矩，中间隔着减速器的摩擦、惯量和间隙。如果这段传动很“厚”，你在外面推它，电机那头几乎感觉不到——工程上叫“不透明”。业界大致有三条路解决这个问题：</p>
+
+<figure id="f3">
+<svg viewBox="0 0 360 300" role="img" aria-label="三种获取关节力矩的方法：电流估算、串联弹簧、力矩传感器">
+<defs>
+<linearGradient id="g3can" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d8de"/><stop offset=".45" stop-color="#f3f5f7"/><stop offset="1" stop-color="#8d949e"/></linearGradient>
+<linearGradient id="g3cu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3a668"/><stop offset="1" stop-color="#8a4e1c"/></linearGradient>
+<linearGradient id="g3gear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9aa1ab"/><stop offset="1" stop-color="#555b65"/></linearGradient>
+</defs>
+<!-- row a -->
+<text x="8" y="20" font-size="13" font-weight="700" fill="var(--accent)">① 看电流估算</text>
+<rect x="20" y="32" width="90" height="50" rx="10" fill="url(#g3can)" stroke="#6b7280"/>
+<rect x="30" y="40" width="70" height="34" rx="6" fill="url(#g3cu)" opacity=".9"/>
+<text x="65" y="62" text-anchor="middle" font-size="11" fill="#fff">电机</text>
+<rect x="112" y="40" width="34" height="34" rx="5" fill="url(#g3gear)"/>
+<text x="129" y="95" text-anchor="middle" font-size="10" fill="var(--ink2)">低减速比</text>
+<rect x="146" y="52" width="70" height="10" rx="5" fill="#b8bec7"/>
+<text x="232" y="48" font-size="11" fill="var(--ink)">τ ≈ K<tspan font-size="8" dy="2">t</tspan><tspan dy="-2"> × 电流</tspan></text>
+<text x="232" y="66" font-size="10" fill="var(--ink2)">不加传感器，便宜</text>
+<text x="232" y="80" font-size="10" fill="var(--ink2)">前提：传动薄、摩擦小</text>
+<!-- row b -->
+<text x="8" y="120" font-size="13" font-weight="700" fill="var(--accent2)">② 量弹簧变形</text>
+<rect x="20" y="132" width="90" height="50" rx="10" fill="url(#g3can)" stroke="#6b7280"/>
+<rect x="30" y="140" width="70" height="34" rx="6" fill="url(#g3cu)" opacity=".9"/>
+<text x="65" y="162" text-anchor="middle" font-size="11" fill="#fff">电机</text>
+<rect x="112" y="137" width="34" height="40" rx="5" fill="url(#g3gear)"/>
+<text x="129" y="195" text-anchor="middle" font-size="10" fill="var(--ink2)">减速器</text>
+<polyline points="148,157 154,145 162,169 170,145 178,169 186,145 194,169 200,157 214,157" fill="none" stroke="var(--accent2)" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="181" cy="185" r="6" fill="#202226"/><text x="181" y="200" text-anchor="middle" font-size="9" fill="var(--ink2)">测变形</text>
+<text x="232" y="148" font-size="11" fill="var(--ink)">τ = k<tspan font-size="8" dy="2">弹簧</tspan><tspan dy="-2"> × 变形角</tspan></text>
+<text x="232" y="166" font-size="10" fill="var(--ink2)">胡克定律，抗冲击</text>
+<text x="232" y="180" font-size="10" fill="var(--ink2)">代价：更软、更难做快</text>
+<!-- row c -->
+<text x="8" y="220" font-size="13" font-weight="700" fill="var(--blue)">③ 关节力矩传感器</text>
+<rect x="20" y="232" width="90" height="50" rx="10" fill="url(#g3can)" stroke="#6b7280"/>
+<rect x="30" y="240" width="70" height="34" rx="6" fill="url(#g3cu)" opacity=".9"/>
+<text x="65" y="262" text-anchor="middle" font-size="11" fill="#fff">电机</text>
+<rect x="112" y="234" width="40" height="46" rx="5" fill="url(#g3gear)"/>
+<text x="132" y="296" text-anchor="middle" font-size="10" fill="var(--ink2)">高减速比</text>
+<rect x="156" y="236" width="22" height="42" rx="4" fill="var(--bg2)" stroke="var(--blue)" stroke-width="2"/>
+<path d="M160 244h14M160 250h14M160 256h14M160 262h14M160 268h14" stroke="var(--blue)" stroke-width="1"/>
+<rect x="180" y="252" width="36" height="10" rx="5" fill="#b8bec7"/>
+<text x="232" y="248" font-size="11" fill="var(--ink)">应变片直接量输出端</text>
+<text x="232" y="266" font-size="10" fill="var(--ink2)">准，不怕减速器摩擦</text>
+<text x="232" y="280" font-size="10" fill="var(--ink2)">代价：贵、怕过载</text>
+</svg>
+<figcaption><b>看图要看什么：</b>三条路的区别在于“力从哪里量”：①在电机这头估，②和③在减速器之后量。传动越“厚”，就越需要在后面量。这正好对应 W2-4 讲过的准直驱、串联弹性和高减速比三条执行器路线。</figcaption>
+</figure>
+
+<p><b>第一条路：看电流估算。</b>减速比低、摩擦小的时候，T ≈ K<sub>t</sub>·i 就足够准，外面推一下，电机那头立刻“感觉得到”。MIT-Manus 本身就是一台直驱（不带减速器）的平面机械臂，Buerger、Krebs、Hogan 等人在 2004 年的论文里写得很清楚：正因为硬件本身摩擦低、末端阻抗低，最简单的阻抗控制就够用了。MIT 后来的猎豹机器人走的也是这条低减速比路线——2018 年的 Cheetah 3 不靠摄像头就能爬满是杂物的楼梯，研究者在跑步机上踢它、推它、在楼梯上拽它的牵引绳，它都能用腿上的反作用力稳住。BEAR 的 Torque Mode 同样是这个思路：SDK 手册里写明，输出力矩可以用 T = iq × K<sub>T</sub> “粗略估算”。注意“粗略”二字——摩擦和温度都会让估算有偏差。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201807/MIT-Cheetah-PRESS.JPG" loading="lazy" referrerpolicy="no-referrer" alt="MIT Cheetah 3 四足机器人在台阶上行走" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>注意它粗短的腿和集中在身体、大腿根部的电机——低减速比的关节能“顺着”地面的冲击，控制器也能直接指挥每条腿该出多大力。这台约 41 公斤（90 磅）的机器狗爬楼时没用任何摄像头。<br>图：Courtesy of the researchers / <a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<p><b>第二条路：在传动链里串一根弹簧，量它被扭了多少。</b>NASA 约翰逊航天中心为 2013 年 DARPA 机器人挑战赛初赛造的人形机器人 Valkyrie（R5）几乎全身都是串联弹性执行器。德州大学和 NASA 的论文介绍，它的旋转关节里有一根扭簧，用光学传感器读出扭转角，再按胡克定律 τ = kθ 算出力矩；肘关节的力矩带宽最高能做到 70 Hz，可控的力矩分辨率达到 0.002 N·m。“力矩带宽”是什么？这是明天的主角。</p>
+
+<figure class="photo">
+<img src="https://www.nasa.gov/wp-content/uploads/2015/11/valkyrie-robot-4.jpg" loading="lazy" referrerpolicy="no-referrer" alt="NASA 的 Valkyrie（R5）人形机器人全身照" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/technology/r5/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>身高约 1.88 米、体重约 136 公斤、44 个自由度。外壳下面，手臂、腰、髋、腿和脚踝的大部分关节都是串联弹性执行器——它是靠“量弹簧”来知道自己用了多大力的。<br>图：NASA / Bill Stafford, James Blair, Regan Geeseman，<a href="https://www.nasa.gov/technology/r5/">NASA</a>，NASA 影像（公有领域）</figcaption>
+</figure>
+
+<p><b>第三条路：直接在关节输出端装力矩传感器。</b>德国宇航中心（DLR）2003 年推出的第三代轻型机械臂 LWR III，每个关节里都有一个力矩传感器。2004 年这项技术授权给了库卡（KUKA），一路演变成 2013 年的 LBR iiwa——今天很多实验室里那台能被人手牵着走的协作臂。这条路允许用高减速比的谐波减速器，因为不管减速器里摩擦多大，传感器量到的都是真正送到外面的那一份力。</p>
+
+<h2><span class="n">07</span>反过来行不行？先测力，再决定怎么走</h2>
+<p>阻抗控制是“测运动、算力”：看你把我推偏了多少，决定回顶多大劲。还有一种镜像做法叫<b>导纳控制</b>（admittance control）：“测力、算运动”——在手腕上装个力传感器，读到你推了多少牛，就算出“一个虚拟的质量—弹簧—阻尼被这么推会怎么动”，然后交给一个又硬又准的位置环去执行。</p>
+
+<figure id="f4">
+<svg viewBox="0 0 360 200" role="img" aria-label="阻抗控制与导纳控制的对比">
+<rect x="6" y="8" width="168" height="184" rx="12" fill="var(--soft2)"/>
+<rect x="186" y="8" width="168" height="184" rx="12" fill="var(--soft)"/>
+<text x="90" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent2)">阻抗控制</text>
+<text x="270" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">导纳控制</text>
+<!-- left flow -->
+<circle cx="40" cy="70" r="16" fill="var(--glow)" stroke="var(--ink2)"/><text x="40" y="74" text-anchor="middle" font-size="11">手</text>
+<path d="M58 70h26" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="88" y="54" width="76" height="32" rx="8" fill="var(--bg2)" stroke="var(--accent2)"/>
+<text x="126" y="68" text-anchor="middle" font-size="10">编码器读到</text><text x="126" y="81" text-anchor="middle" font-size="10">“偏了多少”</text>
+<path d="M126 88v18" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="88" y="110" width="76" height="32" rx="8" fill="var(--bg2)" stroke="var(--accent2)"/>
+<text x="126" y="124" text-anchor="middle" font-size="10">K、D 算出</text><text x="126" y="137" text-anchor="middle" font-size="10">“该顶多大力”</text>
+<path d="M88 126h-26" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<text x="40" y="130" text-anchor="middle" font-size="10" fill="var(--ink2)">电流环</text><text x="40" y="143" text-anchor="middle" font-size="10" fill="var(--ink2)">出力</text>
+<text x="90" y="166" text-anchor="middle" font-size="10" fill="var(--ink)">适合：传动薄、能反驱</text>
+<text x="90" y="181" text-anchor="middle" font-size="10" fill="var(--ink2)">难点：装“很硬”</text>
+<!-- right flow -->
+<circle cx="220" cy="70" r="16" fill="var(--glow)" stroke="var(--ink2)"/><text x="220" y="74" text-anchor="middle" font-size="11">手</text>
+<path d="M238 70h26" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="268" y="54" width="76" height="32" rx="8" fill="var(--bg2)" stroke="var(--accent)"/>
+<text x="306" y="68" text-anchor="middle" font-size="10">力传感器读到</text><text x="306" y="81" text-anchor="middle" font-size="10">“推了几牛”</text>
+<path d="M306 88v18" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="268" y="110" width="76" height="32" rx="8" fill="var(--bg2)" stroke="var(--accent)"/>
+<text x="306" y="124" text-anchor="middle" font-size="10">虚拟模型算出</text><text x="306" y="137" text-anchor="middle" font-size="10">“该挪到哪”</text>
+<path d="M268 126h-26" stroke="var(--ink2)" stroke-width="2" marker-end="url(#ar)"/>
+<text x="220" y="130" text-anchor="middle" font-size="10" fill="var(--ink2)">位置环</text><text x="220" y="143" text-anchor="middle" font-size="10" fill="var(--ink2)">执行</text>
+<text x="270" y="166" text-anchor="middle" font-size="10" fill="var(--ink)">适合：高减速比、硬的臂</text>
+<text x="270" y="181" text-anchor="middle" font-size="10" fill="var(--ink2)">难点：装“很软很轻”</text>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink2)"/></marker></defs>
+</svg>
+<figcaption><b>看图要看什么：</b>两边的箭头方向正好相反。阻抗控制靠编码器、输出是力；导纳控制靠力传感器、输出是位置。哪种更合适，看的是你手里的硬件“天生”是软还是硬。</figcaption>
+</figure>
+
+<p>经验法则是：<b>硬件天生软（能反驱），就用阻抗；硬件天生硬（高减速比、摩擦大），就用导纳。</b>准直驱关节和 MIT-Manus 属于前者；很多工业臂加装腕部力传感器做“拖动示教”，属于后者。两者各有软肋：阻抗控制很难装出一堵非常硬的墙（第 05 节那个延迟问题）；导纳控制则很难装得非常轻、非常软，而且一旦碰到同样坚硬的环境，两个“硬家伙”顶在一起，也容易抖。</p>
+
+<div class="box fail"><div class="t">翻车现场：下棋机器人夹住了孩子的手指</div>
+<p>2022 年 7 月的莫斯科国际象棋公开赛上，一台下棋机械臂吃掉对手一个棋子后，7 岁的小棋手很快伸手去走下一步，机械臂却夹住了他的手指，四个大人冲上去才把他解救出来。孩子手指骨折，第二天打着石膏继续比完了比赛。莫斯科棋协主席说，这台机器人此前在很多活动中都没出过事。</p>
+<p>公开报道没有披露这台机器人内部用的是什么控制方式，所以别替它下结论。但它把今天的问题摆得清清楚楚：一个只认“走到哪儿”的机械臂，并不知道路上多了一根手指；要让它“让一下”，需要力矩限制、碰撞检测，或者干脆从一开始就是一个“软”的关节。这正是明天要讲的碰撞安全。</p></div>
+
+<h2><span class="n">08</span>工作里会在哪遇到</h2>
+<div class="box work">
+<ul>
+<li><b>手册里的四种模式。</b>《BEAR SDK Manual 1.3.0》第 2.3 节列出：0 Torque Mode（力矩模式，写 goal_iq，单位 A）、1 Velocity Mode、2 Position Mode、3 Direct Force Mode（弹簧—阻尼式的直接力控）。客户问“支不支持阻抗控制”，对应的就是模式 3；问“能不能直接给力矩”，对应模式 0。</li>
+<li><b>安全限制，回邮件时不能省。</b>同一本手册的 WARNING：在 Direct Force Mode 下，输出速度<b>不受</b> limit_velocity_max 限制。另外，watchdog 通信超时保护手册注明只对模式 0（力矩模式）生效；limit_i_max 在所有模式下都有效，相当于力矩上限。</li>
+<li><b>调参起点。</b>Direct Force Mode 建议从 D = 0.1P 开始，不建议加 I。客户抱怨“关节嗡嗡抖”，先问 P、D 设了多少、控制循环多快。</li>
+<li><b>规格书和邮件里的关键词：</b>torque control、impedance control、compliance、backdrivability、torque bandwidth、“Is torque measured or estimated from current?”</li>
+</ul>
+<p class="say">一段可以直接改用的英文回复：</p>
+<p class="en">BEAR supports a Direct Force Mode (Mode 3), in which the actuator behaves like a spring-damper: the P gain acts on position error (rad) and the D gain on velocity error (rad/s), and a feedforward current (goal_iq) can be added. We recommend starting with D = 0.1 × P and no I gain. Please note that in this mode the output speed is not limited by limit_velocity_max. In Torque Mode (Mode 0), output torque is estimated from the torque current as T ≈ iq × K<sub>T</sub> (BEAR SDK Manual 1.3.0).</p>
+</div>
+
+<h2><span class="n">09</span>三道自测题</h2>
+<p class="q">1. 展会上，一位客户把手按在演示关节上，一推就动，皱着眉问：“这么软，是不是力矩不够？”你怎么解释？</p>
+<details><summary>看答案</summary><p>“软”很可能是参数，不是能力。关节如果工作在阻抗类模式（BEAR 的 Direct Force Mode）且刚度 K 设得小，它就会像一根软弹簧一样“推多少让多少”，这恰恰是为了安全和接触任务。它最大能出多少力由电机和 limit_i_max 决定，跟此刻的 K 是两回事。可以现场把 K 调高给他感受一下差别。</p></details>
+<p class="q">2. 客户邮件写道：“We use Direct Force Mode with a high P gain and D = 0. The joint buzzes.”第一反应是什么？</p>
+<details><summary>看答案</summary><p>阻尼比几乎为零，再加上任何控制延迟，硬弹簧就会抖甚至发散（回想图 2 的“硬但没阻尼”和“硬 + 延迟”）。建议：先降 P，按手册从 D = 0.1P 起加阻尼，不要加 I；同时问清控制循环频率和通信延迟。</p></details>
+<p class="q">3. 一个关节在阻抗模式下，K = 20 N·m/rad，已做重力补偿、目标静止。外力把它推开 0.1 rad 后停住不动，关节回顶多大力矩？若连杆长 0.4 m，推的人在末端感到多大的力？</p>
+<details><summary>看答案</summary><p>静止时阻尼项为零，τ = K × Δθ = 20 × 0.1 = 2 N·m。末端力 F = τ / L = 2 / 0.4 = 5 N，差不多是半瓶 1 升装矿泉水的重量。对比一下：MIT-Manus 末端 2000 N/m 的刚度，推开 1 cm 就要顶回 20 N。</p></details>
+
+<h2>中英术语对照</h2>
+<table class="terms">
+<tr><td>力矩控制</td><td>Torque control —— 直接给定输出力矩，不管位置</td></tr>
+<tr><td>阻抗控制</td><td>Impedance control —— 测运动、算力，让关节像弹簧 + 阻尼</td></tr>
+<tr><td>导纳控制</td><td>Admittance control —— 测力、算运动，再交给位置环</td></tr>
+<tr><td>刚度</td><td>Stiffness (K) —— 偏离单位角度回顶多少力矩，N·m/rad</td></tr>
+<tr><td>阻尼</td><td>Damping (D) —— 按速度刹车的程度，N·m·s/rad</td></tr>
+<tr><td>阻尼比</td><td>Damping ratio (ζ) —— 晃几下才停；≈1 最干脆</td></tr>
+<tr><td>固有频率</td><td>Natural frequency (ω<sub>n</sub>) —— 晃得多快</td></tr>
+<tr><td>前馈 / 重力补偿</td><td>Feedforward / Gravity compensation —— 事先算好、直接加上的力</td></tr>
+<tr><td>柔顺</td><td>Compliance —— “会让”的程度，刚度的反义</td></tr>
+<tr><td>串联弹性执行器</td><td>Series elastic actuator (SEA) —— 传动链里串弹簧，靠变形测力</td></tr>
+<tr><td>关节力矩传感器</td><td>Joint torque sensor —— 在输出端直接量力</td></tr>
+<tr><td>透明度</td><td>Transparency —— 外部的力能多真实地被关节“感觉”到</td></tr>
+</table>
+
+<div class="tease">今天我们反复提到一个词却没解释：Valkyrie 的肘关节“力矩带宽 70 Hz”。这个数字到底在说什么？如果那台下棋机器人想在孩子手指骨折之前松手，它得在多少毫秒之内“意识到”撞上了东西？明天，W4-4「带宽、力矩带宽与碰撞安全」。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://news.mit.edu/2000/manus">MIT News (2000): Robot helps stroke patients（MIT-Manus 第二轮试验，含照片）</a></li>
+<li><a href="https://news.mit.edu/1999/manus-1124">MIT News (1999): MIT-Manus 第一轮试验与 Spaulding 医院</a></li>
+<li><a href="https://skoge.folk.ntnu.no/prost/proceedings/acc04/Papers/0578_ThMI1.2.pdf">Buerger, Palazzolo, Krebs, Hogan (2004), Rehabilitation Robotics: Adapting Robot Behavior to Suit Patient Needs and Abilities, ACC 2004</a></li>
+<li><a href="https://library.iut.ac.ir/Inventory/104/2702.htm">Hogan, N. (1985). Impedance Control: An Approach to Manipulation, Part I–III. ASME J. Dyn. Sys., Meas., Control 107</a></li>
+<li><a href="https://bibbase.org/network/publication/hogan-adaptivecontrolofmechanicalimpedancebycoactivationofantagonistmuscles-1984">Hogan, N. (1984). Adaptive control of mechanical impedance by coactivation of antagonist muscles</a></li>
+<li><a href="https://news.mit.edu/2018/blind-cheetah-robot-climb-stairs-obstacles-disaster-zones-0705">MIT News (2018): “Blind” Cheetah 3 robot can climb stairs littered with obstacles（含照片）</a></li>
+<li><a href="https://www.nasa.gov/technology/r5/">NASA: R5 / Valkyrie（规格与照片）</a></li>
+<li><a href="https://sites.utexas.edu/hcrl/wp-content/uploads/sites/3888/2016/01/jfr-valkyrie-actuator-control-final.pdf">Paine et al., Actuator Control for the NASA-JSC Valkyrie Humanoid Robot (Journal of Field Robotics)</a></li>
+<li><a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii/history-of-the-dlr-lwr">DLR: History of the DLR LWR</a></li>
+<li><a href="https://techxplore.com/news/2022-07-chess-playing-robot-child-finger-moscow.html">TechXplore / AP (2022): Chess-playing robot breaks child's finger at Moscow event</a></li>
+<li>Westwood Robotics，《BEAR SDK Manual 1.3.0》（EN/CN）第 2.2–2.4 节：工作模式、限位与 PID 调校（项目知识库文件）</li>
+</ul>
+</main>
+<script>
+(function(){
+/* ---------- F1: push the joint ---------- */
+var svg=document.getElementById('f1svg'); if(!svg) return;
+var PX=180,PY=92,L=125,LM=0.3,M=2,G=9.81,J=M*LM*LM,B=0.03,TMAX=25;
+var thd=60*Math.PI/180, th=thd, w=0, integ=0, mode='pos', running=false, raf=null;
+var drag=false, ptr=null, tauH=0, tau=0;
+var arm=document.getElementById('f1arm'), ghost=document.getElementById('f1ghost'), gtip=document.getElementById('f1gtip'),
+    spring=document.getElementById('f1spring'), hand=document.getElementById('f1hand'), hdot=document.getElementById('f1handdot'),
+    bar=document.getElementById('f1bar'), hint=document.getElementById('f1hint');
+var $=function(id){return document.getElementById(id)};
+var K=8,D=0.6,TQ=3;
+var says={pos:'位置模式：目标 60°。你一推，它立刻加大力矩顶回来，推久了还会越顶越狠，直到撞上 25 N·m 的上限。',
+ tq:'力矩模式：它只管输出你给的力矩，停在哪里由重力决定。你推它，它不反抗，也不回家。',
+ imp:'阻抗模式：它被一根看不见的弹簧拴在 60°。推开多少，就按 K 回顶多少；松手后在 D 的“刹车”下回家。'};
+function tipXY(a,r){return [PX+r*Math.sin(a), PY+r*Math.cos(a)];}
+function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a;}
+function gravity(a){return -M*G*LM*Math.sin(a);}
+function step(dt){
+  tauH=0;
+  if(drag&&ptr){var phi=Math.atan2(ptr[0]-PX,ptr[1]-PY);tauH=Math.max(-12,Math.min(12,30*wrap(phi-th)));}
+  var gc=-gravity(th);
+  if(mode==='pos'){var e=thd-th;integ+=e*dt;integ=Math.max(-0.03,Math.min(0.03,integ));tau=300*e-8*w+600*integ+gc;}
+  else if(mode==='tq'){tau=TQ;}
+  else{tau=K*(thd-th)-D*w+gc;}
+  tau=Math.max(-TMAX,Math.min(TMAX,tau));
+  var acc=(tau+tauH+gravity(th)-B*w)/J;
+  w+=acc*dt; th+=w*dt;
+  var lim=160*Math.PI/180; if(th>lim){th=lim;w=0;} if(th<-lim){th=-lim;w=0;}
+}
+function draw(){
+  arm.setAttribute('transform','translate('+PX+','+PY+') rotate('+(-th*180/Math.PI)+')');
+  var showT=mode!=='tq';
+  var g=tipXY(thd,L), t=tipXY(th,L);
+  ghost.setAttribute('x2',g[0]);ghost.setAttribute('y2',g[1]);gtip.setAttribute('cx',g[0]);gtip.setAttribute('cy',g[1]);
+  ghost.style.opacity=gtip.style.opacity=showT?1:0;
+  if(mode==='imp'){
+    var dx=t[0]-g[0],dy=t[1]-g[1],len=Math.hypot(dx,dy);
+    if(len>4){var ux=dx/len,uy=dy/len,nx=-uy,ny=ux,n=10,amp=5,pts=[g[0]+','+g[1]];
+      for(var i=1;i<n;i++){var s=i/n,sg=(i%2?1:-1)*amp;pts.push((g[0]+dx*s+nx*sg)+','+(g[1]+dy*s+ny*sg));}
+      pts.push(t[0]+','+t[1]);spring.setAttribute('points',pts.join(' '));}
+    else spring.setAttribute('points','');
+  } else spring.setAttribute('points','');
+  if(drag&&ptr){hand.setAttribute('x1',t[0]);hand.setAttribute('y1',t[1]);hand.setAttribute('x2',ptr[0]);hand.setAttribute('y2',ptr[1]);
+    hdot.setAttribute('cx',ptr[0]);hdot.setAttribute('cy',ptr[1]);hand.setAttribute('opacity',1);hdot.setAttribute('opacity',.85);}
+  else{hand.setAttribute('opacity',0);hdot.setAttribute('opacity',0);}
+  var bw=Math.abs(tau)/TMAX*55; bar.setAttribute('width',bw); bar.setAttribute('x',tau>=0?55:55-bw);
+  bar.style.fill=Math.abs(tau)>=TMAX-0.01?'#dc2626':'';
+  $('f1a').textContent=Math.round(th*180/Math.PI)+'°';
+  $('f1t').textContent=tau.toFixed(1)+' N·m'+(Math.abs(tau)>=TMAX-0.01?'（顶满）':'');
+  $('f1h').textContent=tauH.toFixed(1)+' N·m';
+}
+function loop(){ for(var i=0;i<33;i++) step(0.0005); draw(); if(running) raf=requestAnimationFrame(loop); }
+function start(){ if(running) return; running=true; $('f1play').textContent='❚❚ 暂停'; hint.textContent=''; raf=requestAnimationFrame(loop); }
+function stop(){ running=false; cancelAnimationFrame(raf); $('f1play').textContent='▶ 继续模拟'; }
+$('f1play').onclick=function(){ running?stop():start(); };
+$('f1reset').onclick=function(){ th=thd; w=0; integ=0; tau=mode==='tq'?TQ:0; draw(); };
+function setMode(m){ mode=m; integ=0;
+  [].forEach.call(document.querySelectorAll('#f1seg button'),function(b){b.classList.toggle('on',b.dataset.m===m);});
+  $('f1tq').hidden=m!=='tq'; [].forEach.call(document.querySelectorAll('.f1imp'),function(e){e.hidden=m!=='imp';});
+  $('f1say').textContent=says[m]; if(!running) draw(); }
+[].forEach.call(document.querySelectorAll('#f1seg button'),function(b){b.onclick=function(){setMode(b.dataset.m);};});
+$('f1tqr').oninput=function(){TQ=+this.value;$('f1tqo').textContent=TQ.toFixed(1)+' N·m';};
+$('f1k').oninput=function(){K=+this.value;$('f1ko').textContent=K+' N·m/rad';};
+$('f1d').oninput=function(){D=+this.value;$('f1do').textContent=D.toFixed(1)+' N·m·s/rad';};
+$('f1do').textContent='0.6 N·m·s/rad';
+function svgPt(ev){var r=svg.getBoundingClientRect();return [(ev.clientX-r.left)/r.width*360,(ev.clientY-r.top)/r.height*290];}
+svg.addEventListener('pointerdown',function(ev){var p=svgPt(ev),t=tipXY(th,L);
+  if(Math.hypot(p[0]-t[0],p[1]-t[1])<40){drag=true;ptr=p;svg.setPointerCapture(ev.pointerId);ev.preventDefault();start();}});
+svg.addEventListener('pointermove',function(ev){if(drag){ptr=svgPt(ev);ev.preventDefault();}});
+function up(){drag=false;ptr=null;}
+svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+svg.style.touchAction='none';
+draw();
+
+/* ---------- F2: step response ---------- */
+var JJ=0.05, TGT=0.2, T=1.0, DT=0.0005;
+var X0=40,X1=346,Y0=184,Y1=14, YMAX=0.4;
+function yv(v){v=Math.max(-0.05,Math.min(YMAX,v));return Y0-(v+0.05)/(YMAX+0.05)*(Y0-Y1);}
+var grid=$('f2grid'),gs='';
+for(var s=0;s<=10;s+=2){var x=X0+s/10*(X1-X0);gs+='<line x1="'+x+'" x2="'+x+'" y1="'+Y1+'" y2="'+Y0+'" stroke="var(--line)"/><text x="'+x+'" y="'+(Y0+14)+'" font-size="10" text-anchor="middle" fill="var(--ink2)">'+(s/10)+'</text>';}
+[0,0.1,0.2,0.3,0.4].forEach(function(v){var y=yv(v);gs+='<line x1="'+X0+'" x2="'+X1+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)"/><text x="'+(X0-4)+'" y="'+(y+3)+'" font-size="10" text-anchor="end" fill="var(--ink2)">'+Math.round(v*180/Math.PI)+'</text>';});
+grid.innerHTML=gs;
+var ty=yv(TGT); $('f2target').setAttribute('y1',ty);$('f2target').setAttribute('y2',ty);$('f2tlabel').setAttribute('y',ty-4);
+function f2(){
+  var k=+$('f2k').value,d=+$('f2d').value,dl=+$('f2l').value;
+  $('f2ko').textContent=k+' N·m/rad';$('f2do').textContent=d.toFixed(1)+' N·m·s/rad';$('f2lo').textContent=dl+' ms';
+  var n=Math.round(dl/1000/DT),thv=0,wv=0,buf=[],out=[],N=Math.round(T/DT);
+  for(var i=0;i<N;i++){buf.push([thv,wv]);var o=buf[Math.max(0,buf.length-1-n)];
+    var tq=k*(TGT-o[0])-d*o[1]; wv+=tq/JJ*DT; thv+=wv*DT; if(Math.abs(thv)>50){thv=50*Math.sign(thv);} out.push(thv);}
+  var path='',mx=0;
+  for(var j=0;j<N;j+=8){var x=X0+j/N*(X1-X0);path+=(j?'L':'M')+x.toFixed(1)+' '+yv(out[j]).toFixed(1);}
+  for(j=0;j<N;j++) if(out[j]>mx) mx=out[j];
+  $('f2path').setAttribute('d',path);
+  var wn=Math.sqrt(k/JJ),z=d/(2*Math.sqrt(k*JJ));
+  $('f2wn').textContent=(wn/2/Math.PI).toFixed(1)+' Hz';$('f2z').textContent=z.toFixed(2);
+  var tail=0,early=0;for(j=N-400;j<N;j++)tail=Math.max(tail,Math.abs(out[j]-TGT));for(j=200;j<600;j++)early=Math.max(early,Math.abs(out[j]-TGT));
+  var os=Math.max(0,(mx-TGT)/TGT*100), v,cls;
+  $('f2os').textContent=os>999?'失控':Math.round(os)+'%';
+  if(tail>TGT*0.3&&tail>=early*0.8){v='发散：越抖越大';cls='badc';$('f2warn').textContent='失控！延迟 + 硬弹簧在“凭空造能量”';}
+  else{ $('f2warn').textContent='';
+    if(tail>TGT*0.05){v='还在晃';cls='badc';}
+    else if(os>15){v='弹好几下';cls='badc';}
+    else if(z>1.6){v='太肉，回得慢';cls='';}
+    else{v='干脆利落';cls='okc';}}
+  var e=$('f2v');e.textContent=v;e.className='status '+cls;
+}
+['f2k','f2d','f2l'].forEach(function(id){$(id).oninput=f2;});
+[].forEach.call(document.querySelectorAll('#f2pre button'),function(b){b.onclick=function(){
+  $('f2k').value=b.dataset.k;$('f2d').value=b.dataset.d;$('f2l').value=b.dataset.l;f2();};});
+f2();
+})();
+</script>
+
+</body>
+</html>
