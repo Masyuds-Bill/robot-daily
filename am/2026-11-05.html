@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W4-2｜位置、速度、电流三环</title>
+<style>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .chip{fill:#202226} .ontxt{fill:#f2efe8}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .chip{fill:#0d0e10} }
+.status{font-weight:700} .okc{color:var(--accent2)} .badc{color:#dc2626}
+.box ul{padding-left:20px;margin:6px 0} .box li{margin:6px 0}
+.ctrl button{min-width:9em}
+
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:0 4px;word-break:break-all}
+main ul{padding-left:22px} main li{margin:6px 0}
+#f3pre button,#f2seg button,#f4seg button{font-size:14px;padding:6px 12px}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 4 单元「关节控制」· 第 2 课</div>
+<h1>三层套娃：位置环、速度环、电流环</h1>
+<p class="sub">约 18 分钟 · 主线：一句“去 30°”，是怎么一层层变成电机线圈里的电流的</p>
+
+<div class="lead">
+<p>1992 年 4 月 25 日，美国加州爱德华兹空军基地。洛克希德的 YF-22 原型机——后来 F-22“猛禽”的前身——在做低空通场试验。试飞员汤姆·摩根费尔德（Tom Morgenfeld）第二次低空通场后收起起落架，准备拉起复飞。就在这时，飞机开始上下“点头”，而且一下比一下猛。几秒钟后，它的机腹砸在了跑道上。</p>
+<p>摩根费尔德毫发无伤地出来了。美国空军后来的历史回顾里，事故原因写得很克制，只有两条：一是起落架收起前后，俯仰操纵的响应方式发生了切换；二是<b>舵面的速率限制（rate limiting）</b>——舵面偏转有个最快速度，飞控计算机想让它转得再快一点，物理上也做不到。修改后的飞控软件后来用在了量产型 F-22 上。</p>
+<p>这类事故有个专门的名字：<b>驾驶员诱发振荡（PIO，pilot-induced oscillation）</b>。用控制的眼光看，飞机里其实套着两层回路：<b>外层是飞行员</b>，他盯着机头的位置决定怎么拉杆；<b>内层是飞控计算机和舵面作动器</b>，负责把“拉杆”变成真实的舵面偏转。内层一旦跟不上，外层的每一次修正都晚了半拍——本来是灭火，结果成了扇风。</p>
+<p>机器人的每个关节里，也套着这样的回路，而且通常是三层。昨天我们学会了 PID 这位“舵手”，今天的问题是：<b>为什么一个关节要请三位舵手，还非得排成套娃？</b></p>
+</div>
+
+<h2><span class="n">01</span>电机其实只听得懂一句话</h2>
+<p>昨天我们偷了个懒，假装控制器可以直接下令“给我 1.6 N·m 的力矩”。真实情况是：驱动器手里唯一的“油门”，是加在线圈两端的<b>电压</b>（上一单元讲过，靠 PWM 开关调出来）。从“电压”到“手臂停在 30°”，中间要过四道关，每一道都要花时间：</p>
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="从电压到位置的四道关：电压推电流、电流生力矩、力矩推速度、速度积成位置">
+<defs>
+<linearGradient id="g1cu" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e9a25f"/><stop offset="1" stop-color="#8a4e1c"/></linearGradient>
+<linearGradient id="g1st" x1="0" x2="1"><stop offset="0" stop-color="#c9ced6"/><stop offset="1" stop-color="#7d838d"/></linearGradient>
+<marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--accent)"/></marker>
+</defs>
+<!-- battery -->
+<g transform="translate(18,70)">
+<rect x="0" y="10" width="70" height="110" rx="10" fill="#2b2f36"/><rect x="22" y="0" width="26" height="12" rx="3" fill="#2b2f36"/>
+<rect x="8" y="22" width="54" height="20" rx="4" fill="#facc15"/><rect x="8" y="48" width="54" height="20" rx="4" fill="#facc15" opacity=".75"/><rect x="8" y="74" width="54" height="20" rx="4" fill="#facc15" opacity=".5"/>
+<text x="35" y="142" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">电压 u</text>
+<text x="35" y="160" text-anchor="middle" font-size="12" fill="var(--ink2)">驱动器能直接改的</text>
+</g>
+<!-- coil -->
+<g transform="translate(150,70)">
+<rect x="0" y="20" width="90" height="90" rx="12" fill="url(#g1st)"/>
+<g fill="none" stroke="url(#g1cu)" stroke-width="7"><path d="M14,36h62M14,50h62M14,64h62M14,78h62M14,92h62"/></g>
+<text x="45" y="142" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">电流 i</text>
+<text x="45" y="160" text-anchor="middle" font-size="12" fill="var(--ink2)">线圈电感拖着它</text>
+</g>
+<!-- rotor -->
+<g transform="translate(300,70)">
+<circle cx="45" cy="65" r="48" fill="url(#g1st)"/><circle cx="45" cy="65" r="36" fill="#3a3f47"/>
+<path d="M45,29A36,36 0 0 1 81,65L45,65z" fill="var(--magN)"/><path d="M45,101A36,36 0 0 1 9,65L45,65z" fill="var(--magN)"/>
+<path d="M81,65A36,36 0 0 1 45,101L45,65z" fill="var(--magS)"/><path d="M9,65A36,36 0 0 1 45,29L45,65z" fill="var(--magS)"/>
+<circle cx="45" cy="65" r="9" fill="#d7dbe1"/>
+<text x="45" y="142" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">力矩 τ → 速度 ω</text>
+<text x="45" y="160" text-anchor="middle" font-size="12" fill="var(--ink2)">惯量拖着它</text>
+</g>
+<!-- arm -->
+<g transform="translate(470,70)">
+<circle cx="30" cy="95" r="16" fill="#3a3f47"/>
+<rect x="24" y="-2" width="120" height="14" rx="7" fill="var(--wood)" transform="rotate(-30 30 95) translate(6 90)"/>
+<circle cx="30" cy="95" r="6" fill="#d7dbe1"/>
+<path d="M60,95A30,30 0 0 0 56,80" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+<text x="72" y="88" font-size="13" fill="var(--accent2)">30°</text>
+<text x="75" y="142" text-anchor="middle" font-size="14" fill="var(--ink)" font-weight="700">位置 θ</text>
+<text x="75" y="160" text-anchor="middle" font-size="12" fill="var(--ink2)">速度一点点攒出来</text>
+</g>
+<g stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#ar1)">
+<path d="M96,135H142"/><path d="M248,135H292"/><path d="M402,135H462"/>
+</g>
+<g font-size="12" fill="var(--accent)" text-anchor="middle">
+<text x="119" y="60">①要时间</text><text x="270" y="60">②几乎瞬时</text><text x="432" y="60">③④要时间</text>
+</g>
+<rect x="18" y="250" width="604" height="38" rx="10" fill="var(--soft2)"/>
+<text x="320" y="274" text-anchor="middle" font-size="13" fill="var(--ink)">① 电感让电流“涨”得慢 · ② τ = Kt·i · ③ 力矩要先推动惯量 · ④ 速度积分成位置</text>
+<text x="320" y="36" text-anchor="middle" font-size="15" fill="var(--ink)" font-weight="700">从一个电压，到一个角度：四道关</text>
+</svg>
+<figcaption><b>看图要看什么：</b>四道关里只有第②道是“说到就到”的，其余三道都有各自的“惯性”：电流被线圈的电感拖着、速度被转子和连杆的惯量拖着、位置又是速度慢慢攒出来的。三种慢，快慢量级各不相同——这就是要分层管理的根本原因。示意图，不代表具体产品结构。</figcaption>
+</figure>
+<p>第②道关就是第 1 单元的老朋友：<b>力矩约等于转矩常数乘以力矩电流</b>。BEAR 的 SDK 手册（BEAR-SDK-Manual-1.3.0-EN.pdf，第 2.3 节公式 1）里写的正是这个关系：</p>
+<p class="say">人话：想要多大劲，就给多少“力矩电流”。</p>
+<div class="formula">τ ≈ K<sub>t</sub> · i<sub>q</sub><small>i<sub>q</sub>：力矩电流（单位 A），K<sub>t</sub>：转矩常数（N·m/A）</small></div>
+<p>那么问题来了：能不能只用一个 PID，从“位置误差”直接算出“该加多少电压”？理论上可以，实践中很痛苦。这个 PID 要同时对付三种快慢完全不同的“惯性”，一组增益顾了这头顾不了那头。而且你没法单独给“电流”设上限——电流一旦失控，电机和驱动器先冒烟。</p>
+
+<div class="analogy"><div class="t">类比①：高铁上的三个人</div>
+<p>调度员只管“这趟车 10:42 要到南京南”（位置）；司机看着限速牌，决定现在开 300 还是 250（速度）；牵引变流器则一刻不停地控制着电机里的电流（力）。调度员不会去教司机怎么推手柄，司机也不会去算每个电机该给几安培。每个人只盯一个量，只对自己下面那一层发命令。</p>
+<p class="off">哪里不准：真实高铁有列控系统自动防护，分工比这复杂得多；而且调度员不会每秒给司机发几百次指令——关节里的外环可是每秒算几百到几千次的。</p></div>
+
+<h2><span class="n">02</span>套娃怎么套：外环下命令，内环去跑腿</h2>
+<p>串级控制（cascade control）的思路很简单：<b>外环的输出，不是电压，而是给内环的“目标”</b>。</p>
+<p>BEAR 的 SDK 手册对位置模式是这样描述的：位置 PID 的计算结果送进速度环，速度 PID 的计算结果再送进 iq 电流环。写成三行就是：</p>
+<p class="say">人话：离目标越远，就要求跑得越快。</p>
+<div class="formula">ω* = K<sub>p,pos</sub> · (θ* − θ)<small>位置环：输入位置误差（rad），输出目标速度（rad/s）</small></div>
+<p class="say">人话：跑得比要求的慢，就要更多电流。</p>
+<div class="formula">i<sub>q</sub>* = PI( ω* − ω )<small>速度环：输入速度误差，输出目标电流（A）</small></div>
+<p class="say">人话：电流没到位，就加电压。</p>
+<div class="formula">u = PI( i<sub>q</sub>* − i<sub>q</sub> )<small>电流环：输入电流误差，输出电压（再经 PWM 和 FOC 加到线圈上）</small></div>
+<p>星号（*）表示“目标值”。注意每一行的输出，正好是下一行的目标——像俄罗斯套娃一样，一层装着一层。下面这张图，你可以点“播放”看看三层回路各自“转圈”的节奏：</p>
+
+<figure>
+<svg id="f2svg" viewBox="0 0 640 380" role="img" aria-label="三层串级回路示意动画：电流环在最里层转得最快"></svg>
+<div class="ctrl"><button id="f2play">▶ 播放</button>
+<div class="seg" id="f2seg"><button data-k="all" class="on">全部</button><button data-k="pos">位置环</button><button data-k="vel">速度环</button><button data-k="cur">电流环</button></div></div>
+<figcaption><b>看图要看什么：</b>三个圈从外到内依次是位置环、速度环、电流环，每个光点绕自己的圈跑一圈，就代表那一层算了一次。播放后数一数：位置环的光点跑一圈时，电流环已经跑了很多圈。点按钮可以单独高亮某一层，看它从谁那里接命令、又把命令交给谁。转速比例只是示意，不代表具体产品的控制频率。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比②：电梯不会“一脚油门冲到 8 楼”</div>
+<p>你按下 8 楼，电梯不会把电机开到最大一路冲上去，否则到了 8 楼根本刹不住。它会先慢慢加速、匀速跑一段、再提前减速，平平稳稳地对准楼层。也就是说：“去哪一层”被翻译成了“现在该多快”，再由下一层把“该多快”翻译成“电机该出多大力”。这就是位置环 → 速度环 → 电流环。</p>
+<p class="off">哪里不准：电梯的速度曲线大多是事先规划好的轨迹，不完全是靠“离目标还差多少”现算出来的；关节的位置环 P 更像“边走边看”。下一课讲到前馈时，你会发现两者常常一起用。</p></div>
+
+<h2><span class="n">03</span>为什么非得“里快外慢”？</h2>
+<p>套娃有一条铁律：<b>越往里的环，反应必须越快</b>。原因跟 YF-22 一模一样——外环每发出一个命令，都默认内环“马上就能办到”。如果内环拖拖拉拉，外环看到的永远是过时的结果，于是它加码、再加码，等内环终于追上来，已经冲过头了。</p>
+
+<div class="analogy"><div class="t">类比③：端着一碗满满的汤走路</div>
+<p>你的脚一秒钟迈一两步，这是慢的外环；手腕却时时刻刻在微调碗的角度，汤一晃就压回去，这是快的内环。要是反过来——手腕反应比脚步还慢——第二步汤就洒了。</p>
+<p class="off">哪里不准：人的“手腕”和“脚步”更像是并行协作，并不是严格的一层套一层；而且人会预判（看到台阶提前抬碗），这在控制里叫前馈，纯反馈的套娃做不到。</p></div>
+
+<p>“快”在控制里有个专门的说法：<b>带宽（bandwidth）</b>，粗略理解就是“这一层每秒最多能跟上多少次来回变化的命令”，单位 Hz。工程上常用的经验法则是：<b>内环带宽要比外环高几倍到十倍</b>。注意，这是行业里的经验做法，不是物理定律，具体留多少余量要看系统。</p>
+<p>来看几个真实世界的数字：</p>
+<ul>
+<li>MIT 的四足机器人 Mini Cheetah，2019 年论文里公开过它的分层节奏：最上层的模型预测控制（MPC）每秒算 30 次，全身控制（WBIC）每秒 500 次，而每个关节电机驱动器上的 PD 控制以 <b>40 kHz</b> 运行——论文自己算过，比全身控制快 80 倍。</li>
+<li>工业伺服也一样拼“内环速度”。安川电机（Yaskawa）宣传其 Sigma-7 伺服时，打出的招牌指标之一就是 <b>3.1 kHz 的速度频率响应</b>。</li>
+</ul>
+<p>别光听我说，下面这个模拟器里，你就是那个调参工程师。关节要从 0 转到 0.5 rad，0.7 秒时末端突然被压上一个负载。试试把速度环带宽拉低，让它和位置环差不多、甚至比位置环还慢：</p>
+
+<figure>
+<svg id="f3svg" viewBox="0 0 640 430" role="img" aria-label="串级控制模拟器：位置、速度、电流三条曲线"></svg>
+<div class="seg" id="f3pre"><button data-v="40" data-p="4" data-i="8" class="on">内环快 10 倍</button><button data-v="10" data-p="5" data-i="8">只快 2 倍</button><button data-v="4" data-p="8" data-i="8">内环反而更慢</button><button data-v="40" data-p="4" data-i="3">限流太低</button></div>
+<div class="ctrl"><label>速度环带宽</label><input type="range" id="f3v" min="3" max="60" step="1" value="40"><output id="f3vo"></output></div>
+<div class="ctrl"><label>位置环带宽</label><input type="range" id="f3p" min="1" max="15" step="0.5" value="4"><output id="f3po"></output></div>
+<div class="ctrl"><label>电流上限</label><input type="range" id="f3i" min="2" max="12" step="0.5" value="8"><output id="f3io"></output></div>
+<div class="ctrl"><button id="f3play">▶ 播放动画</button></div>
+<div class="readout">
+<div>内外带宽比<b id="f3r">–</b></div>
+<div>冲过头<b id="f3o">–</b></div>
+<div>被负载压下<b id="f3d">–</b></div>
+<div>电流顶到上限<b id="f3s">–</b></div>
+</div>
+<figcaption><b>看图要看什么：</b>上面橙色是位置，中间绿色是速度，下面蓝色是电流，红色虚线是电流上限。“内环快 10 倍”时，位置平稳到位，被压后很快恢复；点“内环反而更慢”，位置会冲过头再来回晃，负载压上来时也塌得更深。最后点“限流太低”：增益没变，可电流一直顶在红线上，关节只能“慢吞吞地爬”——这就是内环饱和。模型参数（惯量 0.002 kg·m²、转矩常数 0.1 N·m/A、电流环带宽约 800 Hz、负载 0.3 N·m 等）全部是教学假设，不对应任何真实产品。</figcaption>
+</figure>
+
+<p>那么这三层环在实物里住在哪？答案是：越往里的环，离电机越近。MIT 的新闻稿介绍 Mini Cheetah 的关节电机时说，每个模块里都装着定子、控制器、贴满磁铁的转子、6:1 的减速器，还有一个位置传感器。也就是说，测电流的、测角度的、算三层环的，全塞在一个梅森罐盖子那么大的盒子里。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-03-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 的关节电机模块，研究者手持展示" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>注意这颗电机有多扁、多小。Katz 把航模和无人机用的现成小电机改造成了机器人关节：控制器和位置传感器就装在电机旁边，测电流、算电流环都在“家门口”完成，这是内环能跑得飞快的前提之一。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">04</span>套娃的隐藏福利：每一层都是一道闸门</h2>
+<p>串级结构还有一个常被忽略的好处：<b>每两层之间，都是一个天然的“限幅点”</b>。</p>
+<ul>
+<li>位置环算出的“目标速度”，可以先截一刀再交给速度环——这就是<b>限速</b>。</li>
+<li>速度环算出的“目标电流”，也可以先截一刀——电流对应力矩，所以这就是<b>限力矩</b>，也是在保护电机和驱动器。</li>
+</ul>
+<p>无人机也是这么干的。开源飞控 PX4 的多旋翼控制器是四层套娃：位置环（只用 P）→ 速度环（PID）→ 姿态环（P）→ 角速度环（PID），文档里专门写了每一层输出的命令都会被限幅，积分项也有防饱和处理。你看，最外层常常只用一个 P——因为它下面那几层已经把“快”和“稳”的活干完了。</p>
+<p>BEAR 执行器的寄存器表（SDK 手册表 2）里，也能找到对应的几道闸门：<code>limit_position_min / max</code>（位置范围）、<code>limit_velocity_max</code>（最大速度）、<code>limit_i_max</code>（最大电流）。这里有两个容易误会的地方，回客户时一定要说清楚：</p>
+<ul>
+<li><b>超限的命令是“不执行”，不是“打折执行”。</b>手册的 CAUTION 写明：比如位置模式下 <code>goal_position</code> 超出位置范围，BEAR 不会执行这条命令。</li>
+<li><b><code>limit_i_max</code> 只是寄存器设定值，不是硬件额定值。</b>手册表 2 下方专门注明了这一点；实际最大力矩还受电源能提供的最大电流限制。</li>
+</ul>
+
+<div class="box fail"><div class="t">翻车现场：同一个软件问题，摔了两架鹰狮</div>
+<p>1989 年 2 月 2 日，瑞典 JAS 39“鹰狮”战斗机原型机在林雪平进行第 6 次试飞，降落时发生驾驶员诱发振荡，摔在跑道上。试飞员 Lars Rådeström 肘部骨折。当天风很大，但事故调查最后认定问题出在飞控软件。</p>
+<p>四年后，1993 年 8 月 8 日，斯德哥尔摩水上节的飞行表演，还是这位飞行员，驾驶一架量产型鹰狮在市中心上空做低速机动时失速，又一次陷入 PIO。他弹射跳伞，挂在了树上；地面有一人受伤。后来查明，祸根和 1989 年是<b>同一个软件问题</b>，直到 1995 年才彻底修正。</p>
+<p>教训：外环（飞行员）看不见内环的“极限”在哪里。对关节控制来说也是一样——外环增益调得再漂亮，只要内环某处饱和或变慢，整个套娃的表现就会突变。后来航空界专门研究过“舵面速率限制如何诱发 PIO”，这已经是一个独立的研究课题。</p></div>
+
+<h2><span class="n">05</span>你从第几层套娃开始“接管”？</h2>
+<p>理解了三层环，再看 BEAR 的四种控制模式（SDK 手册第 2.3 节），就一目了然了：<b>模式的区别，就是你把命令塞进哪一层</b>。点下面的按钮看看：</p>
+
+<figure>
+<svg id="f4svg" viewBox="0 0 640 330" role="img" aria-label="BEAR 四种控制模式分别使用哪些控制环"></svg>
+<div class="seg" id="f4seg"><button data-m="0">0 力矩模式</button><button data-m="1">1 速度模式</button><button data-m="2" class="on">2 位置模式</button><button data-m="3">3 直接力控</button></div>
+<div class="readout" style="grid-template-columns:1fr"><div id="f4txt" style="font-size:15px;color:var(--ink)"></div></div>
+<figcaption><b>看图要看什么：</b>亮起的方块是该模式下真正在工作的环，灰掉的就被跳过了。不管选哪个模式，最右边的 iq 电流环永远亮着——它是所有模式的地基。直接力控模式不是“套娃”而是“并联”：位置误差和速度误差各乘一个增益，加上你给的电流，一起送进电流环。图根据 BEAR-SDK-Manual-1.3.0-EN.pdf 第 2.3、2.4 节绘制，为简化示意。</figcaption>
+</figure>
+
+<p>直接力控模式有一条 <b>WARNING 级</b>的提醒，务必记住：在这个模式下，输出速度<b>不受</b> <code>limit_velocity_max</code> 限制；而且即使 <code>goal_position</code> 超出位置范围，BEAR 仍会执行。换句话说，前面讲的那几道闸门，在直接力控模式里有一部分是“敞开”的，安全保护要由上层控制器自己负责。</p>
+
+<div class="box cold"><div class="t">冷知识：Mini Cheetah 的关节，干脆不要速度环</div>
+<p>前面说 Mini Cheetah 的关节 PD 跑在 40 kHz。它的结构其实不是“位置 → 速度 → 电流”的三层套娃：上层全身控制器每次给关节发三样东西——目标位置、目标速度、前馈力矩；驱动器把位置误差乘 Kp、速度误差乘 Kd，加上前馈力矩，直接算出要的电流。这和 BEAR 直接力控模式“弹簧 + 阻尼 + 前馈电流”的思路是同一类。</p>
+<p>为什么足式机器人爱这么干？因为腿每一步都要砸地，关节需要像弹簧一样“软硬可调”，而不是死守某个速度。这正是明天的主题。</p></div>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-00-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT 研究者 Benjamin Katz 和 Jared Di Carlo 在电脑前给 Mini Cheetah 编程" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="imgfail"><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>主要开发者 Benjamin Katz 和合作者 Jared Di Carlo 在给 Mini Cheetah 编后空翻的程序。他们写的上层“大脑”，在机器人身上每秒运行几十到几百次；而腿上那 12 颗电机里，跑的是每秒 4 万次的“脊髓反射”。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">06</span>调参为什么一定要从里往外？</h2>
+<p>BEAR 的 SDK 手册在 PID 调校一节（第 2.4 节）里反复强调一个顺序：<b>先把 id/iq 电流环调对，再调速度环，最后才调位置环</b>。手册甚至直说：如果电流环或速度环的增益不对，那可能才是 BEAR 出不了足够力矩、跟不上目标位置的真正原因——<b>不管位置环增益怎么调</b>。</p>
+<p>道理用套娃一想就通：外环所有的“假设”，都建立在内环“说到做到”的基础上。地基歪了，楼上怎么装修都没用。具体到起步值，手册给的建议是：</p>
+<table>
+<tr><th>哪一层</th><th>手册建议</th></tr>
+<tr><td>电流环（id/iq）</td><td>按表 4 的分型号推荐值起步；id 和 iq 两组增益正常应保持一致；D 始终为 0。各型号数值不同，不能互相套用</td></tr>
+<tr><td>速度环</td><td>P = 0.5～1，I = 0，D = 0 起步；必要时加很小的 I（0～0.01）</td></tr>
+<tr><td>位置环</td><td>手册说不同型号、不同应用之间差别“非常大”，没有通用起步值</td></tr>
+</table>
+<p>最后，把今天出现的所有“节奏”放在同一把尺子上看：</p>
+
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="从每秒一两次到每秒四万次：机器人里各层控制的频率尺">
+<defs><linearGradient id="g5" x1="0" x2="1"><stop offset="0" stop-color="var(--accent2)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<text x="320" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">一把对数尺子：每往右一格，快 10 倍</text>
+<rect x="40" y="140" width="560" height="14" rx="7" fill="url(#g5)"/>
+<g font-size="12" fill="var(--ink2)" text-anchor="middle">
+<line x1="40" y1="134" x2="40" y2="160" stroke="var(--ink2)"/><text x="40" y="176">1 Hz</text>
+<line x1="133" y1="134" x2="133" y2="160" stroke="var(--ink2)"/><text x="133" y="176">10</text>
+<line x1="227" y1="134" x2="227" y2="160" stroke="var(--ink2)"/><text x="227" y="176">100</text>
+<line x1="320" y1="134" x2="320" y2="160" stroke="var(--ink2)"/><text x="320" y="176">1 k</text>
+<line x1="413" y1="134" x2="413" y2="160" stroke="var(--ink2)"/><text x="413" y="176">10 k</text>
+<line x1="507" y1="134" x2="507" y2="160" stroke="var(--ink2)"/><text x="507" y="176">100 k</text>
+</g>
+<!-- markers: x = 40 + 93.3*log10(f) -->
+<g font-size="12.5">
+<circle cx="68" cy="147" r="8" fill="#fff" stroke="var(--accent2)" stroke-width="3"/>
+<line x1="68" y1="138" x2="68" y2="96" stroke="var(--line)" stroke-width="1.5"/>
+<text x="56" y="70" fill="var(--ink)" font-weight="700">人走路</text><text x="56" y="88" fill="var(--ink2)">每秒约两步</text>
+<circle cx="178" cy="147" r="8" fill="#fff" stroke="var(--accent2)" stroke-width="3"/>
+<line x1="178" y1="156" x2="178" y2="196" stroke="var(--line)" stroke-width="1.5"/>
+<text x="150" y="214" fill="var(--ink)" font-weight="700">MPC 30 Hz</text><text x="150" y="232" fill="var(--ink2)">Mini Cheetah 的规划层</text>
+<circle cx="292" cy="147" r="8" fill="#fff" stroke="var(--accent)" stroke-width="3"/>
+<line x1="292" y1="138" x2="292" y2="96" stroke="var(--line)" stroke-width="1.5"/>
+<text x="228" y="70" fill="var(--ink)" font-weight="700">WBIC 500 Hz</text><text x="228" y="88" fill="var(--ink2)">Mini Cheetah 全身控制</text>
+<circle cx="366" cy="147" r="8" fill="#fff" stroke="var(--accent)" stroke-width="3"/>
+<line x1="366" y1="156" x2="366" y2="196" stroke="var(--line)" stroke-width="1.5"/>
+<text x="330" y="214" fill="var(--ink)" font-weight="700">3.1 kHz</text><text x="330" y="232" fill="var(--ink2)">安川 Sigma-7</text><text x="330" y="250" fill="var(--ink2)">速度频率响应</text>
+<circle cx="469" cy="147" r="8" fill="#fff" stroke="var(--accent)" stroke-width="3"/>
+<line x1="469" y1="138" x2="469" y2="96" stroke="var(--line)" stroke-width="1.5"/>
+<text x="420" y="70" fill="var(--ink)" font-weight="700">关节 PD 40 kHz</text><text x="420" y="88" fill="var(--ink2)">Mini Cheetah 电机驱动器</text>
+</g>
+<text x="40" y="286" font-size="12" fill="var(--ink2)">← 越往左越“动脑”，越往右越“反射”</text>
+</svg>
+<figcaption><b>看图要看什么：</b>注意这是对数刻度，从左到右跨了四万倍。同一台机器人里，“想”和“动”的节奏差了好几个数量级——慢的层管大方向，快的层管细节，正是套娃结构的放大版。人走路的步频只是生活常识级的粗略值；其余数据见文末来源。注意：控制频率（每秒算几次）和带宽（能跟上多快的变化）是两个相关但不同的指标，这里放在一起只为看数量级。</figcaption>
+</figure>
+
+<h2><span class="n">07</span>工作里会在哪遇到</h2>
+<div class="box work">
+<p><b>规格书和 SDK 里：</b>寄存器表里成组出现的 <code>p_gain_iq</code>、<code>p_gain_velocity</code>、<code>p_gain_position</code>、<code>p_gain_direct_force</code>，就是今天这几层环的增益；<code>mode</code> 寄存器的 0～3 就是四种模式。</p>
+<p><b>客户邮件里常见的问法：</b></p>
+<ul>
+<li>“Position mode feels sluggish and doesn't reach the goal under load.” —— 先问内环调过没有，手册的顺序是电流 → 速度 → 位置。</li>
+<li>“Which mode should we use for a legged robot?” —— 足式应用常用“位置 + 速度 + 前馈力矩”的组合，对应直接力控模式；但具体推荐属于应用建议，需要结合他的控制架构。</li>
+<li>“We set limit_velocity_max, but the joint still moved faster than that.” —— 先问是不是在直接力控模式：手册写明该模式下速度不受这个设定限制。</li>
+<li>“What is the bandwidth of your current / velocity / position loop?” —— 现有手册和知识库里没有这些数字，<b>不要凭感觉报</b>，回复时标 [待技术确认]，转工程团队。</li>
+</ul>
+<p class="en">In Position Mode, the position loop feeds the velocity loop, which in turn feeds the iq current loop, so the gains should be tuned from the inside out: current loop first, then velocity, then position. Could you share which mode you are using and your current-, velocity- and position-loop gains? Please also note that in Direct Force Mode the output speed is not limited by limit_velocity_max, so velocity protection needs to be handled by your upper-level controller.</p>
+</div>
+
+<h2><span class="n">08</span>自测三题</h2>
+<p class="q">1. 展会上一位学生问你：“三层环多麻烦，为什么不用一个 PID，从位置误差直接算电压？”你怎么一句话讲清楚？</p>
+<details><summary>看答案</summary>因为从电压到位置有好几种快慢完全不同的“惯性”：电流被电感拖着，速度被惯量拖着，位置又是速度积出来的。一个 PID 很难同时照顾好它们。拆成三层后，每层只管一个量，内层又快又准，外层就可以简单（常常一个 P 就够）；而且层与层之间能分别设限速、限流。英文可以说：Cascading lets each loop handle one physical quantity at its own speed, and gives us natural places to limit velocity and current.</details>
+
+<p class="q">2. 一封邮件写着：“During a drop test in Direct Force Mode, the joint exceeded our limit_velocity_max setting. Is this a firmware bug?” 你的回复要点是什么？</p>
+<details><summary>看答案</summary>按 BEAR SDK 手册，这是预期行为，不是 bug：直接力控模式下，输出速度不受 limit_velocity_max 限制（手册 WARNING），且 goal_position 超出位置范围时仍会执行。所以在这个模式下，速度和位置保护需要由客户的上层控制器实现。至于针对他的跌落测试具体该怎么做保护、推荐哪些设置，属于 [待技术确认] 的应用建议，要转工程团队。</details>
+
+<p class="q">3. 算一算：某关节位置环的带宽按 5 Hz 设计。按“内环比外环快 5～10 倍”的经验法则，速度环至少要多少？电流环呢？再对比一下 Mini Cheetah：它的关节 PD 比全身控制快多少倍？</p>
+<details><summary>看答案</summary>速度环约 25～50 Hz；电流环再快 5～10 倍，约 125～500 Hz 起步（真实产品的电流环通常远比这快）。Mini Cheetah：40 kHz ÷ 500 Hz = 80 倍。注意：前两个是按经验法则推出来的“最低要求”，不是任何产品的规格；而 Mini Cheetah 的数字是控制频率，不能和带宽直接画等号。</details>
+
+<h2><span class="n">09</span>今天的术语</h2>
+<table class="terms">
+<tr><th>中文</th><th>English</th><th>一句话</th></tr>
+<tr><td>串级控制</td><td>cascade control</td><td>外环输出当内环的目标，一层套一层</td></tr>
+<tr><td>内环 / 外环</td><td>inner / outer loop</td><td>内环快、管细节；外环慢、管大方向</td></tr>
+<tr><td>电流环</td><td>current loop (id / iq loop)</td><td>最里层，管住力矩</td></tr>
+<tr><td>速度环</td><td>velocity loop</td><td>把“目标速度”变成“目标电流”</td></tr>
+<tr><td>位置环</td><td>position loop</td><td>把“目标位置”变成“目标速度”</td></tr>
+<tr><td>带宽</td><td>bandwidth</td><td>能跟上多快变化的命令，单位 Hz</td></tr>
+<tr><td>控制频率</td><td>control / loop rate</td><td>每秒算几次，和带宽相关但不同</td></tr>
+<tr><td>限幅 / 饱和</td><td>limit / saturation</td><td>命令被截住；内环饱和时外环会“失灵”</td></tr>
+<tr><td>速率限制</td><td>rate limiting</td><td>执行机构变化速度有上限，YF-22 的祸根之一</td></tr>
+<tr><td>驾驶员诱发振荡</td><td>pilot-induced oscillation (PIO)</td><td>人这个外环和飞机内环“对不上拍”</td></tr>
+<tr><td>控制模式</td><td>control mode</td><td>BEAR：0 力矩、1 速度、2 位置、3 直接力控</td></tr>
+<tr><td>前馈</td><td>feedforward</td><td>提前算好直接给，不等误差出现</td></tr>
+</table>
+
+<div class="tease">今天的关节像个死心眼的士兵：说去 30° 就去 30°，谁推它，它就用全力顶回去。可你跟人握手时不会这样，机器人的腿砸到地面时更不能这样。如果客户要的不是“到哪儿”，而是“多软”——一个关节怎么才能假装自己是一根弹簧？明天，W4-3「力矩控制与阻抗控制」。</div>
+
+<h2>来源</h2>
+<ol class="src">
+<li>AFLCMC History Office, “This week in AFLCMC history – April 25–29, 2022”（YF-22 1992 年 4 月 25 日事故经过与原因）：<a href="https://www.aflcmc.af.mil/NEWS/Article/3009139/this-week-in-aflcmc-history-april-25-29-2022/">aflcmc.af.mil</a></li>
+<li>Pilot-induced oscillation（PIO 定义、YF-22 与速率限制）：<a href="https://en.wikipedia.org/wiki/Pilot-induced_oscillation">Wikipedia</a></li>
+<li>Accidents and incidents involving the JAS 39 Gripen（1989、1993 年事故与 1995 年软件修正）：<a href="https://en.wikipedia.org/wiki/Accidents_and_incidents_involving_the_JAS_39_Gripen">Wikipedia</a></li>
+<li>TU Delft, “Pilot-Induced Oscillations and Control Surface Rate Limiting: Comprehension, Analysis, Mitigation, and Detection”：<a href="https://research.tudelft.nl/en/publications/pilot-induced-oscillations-and-control-surface-rate-limiting-comp/">research.tudelft.nl</a></li>
+<li>D. Kim 等, “Highly Dynamic Quadruped Locomotion via Whole-Body Impulse Control and Model Predictive Control”（MPC 30 Hz、WBIC 500 Hz、关节 PD 40 kHz）：<a href="https://arxiv.org/abs/1909.06586">arxiv.org</a></li>
+<li>MIT News, “Mini cheetah is the first four-legged robot to do a backflip”（电机模块构成与照片）：<a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">news.mit.edu</a></li>
+<li>Automation World, “400 Volt Users Now Gain Sigma-7 Performance”（3.1 kHz 频率响应）：<a href="https://www.automationworld.com/home/news/13318447/400-volt-users-now-gain-sigma-7-performance">automationworld.com</a></li>
+<li>PX4 User Guide, Controller Diagrams（多旋翼串级结构与各层限幅）：<a href="https://docs.px4.io/v1.12/en/flight_stack/controller_diagrams.html">docs.px4.io</a></li>
+<li>Westwood Robotics, BEAR-SDK-Manual-1.3.0-EN.pdf，第 2.3 节（控制模式、CAUTION/WARNING）、第 2.4 节（PID 调校顺序、表 4）、表 2（寄存器）（项目内部资料）</li>
+</ol>
+</main>
+
+<script>
+(function(){
+var RM=false;try{RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+var NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,text){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+
+/* ---------- Figure 2: nested loops ---------- */
+(function(){
+var svg=document.getElementById('f2svg');if(!svg)return;
+var L=[
+ {k:'pos',name:'位置环',sub:'目标位置 → 目标速度',x:20,y:60,w:600,h:300,c:'var(--accent)',sp:1},
+ {k:'vel',name:'速度环',sub:'目标速度 → 目标电流',x:70,y:110,w:500,h:200,c:'var(--accent2)',sp:5},
+ {k:'cur',name:'电流环',sub:'目标电流 → 电压',x:125,y:160,w:390,h:100,c:'var(--blue)',sp:25}
+];
+el('text',{x:320,y:30,'text-anchor':'middle','font-size':15,'font-weight':700,fill:'var(--ink)'},svg,'外环下命令，内环去跑腿');
+var groups={},dots=[],counters=[];
+L.forEach(function(l,i){
+ var g=el('g',{},svg);groups[l.k]=g;
+ el('rect',{x:l.x,y:l.y,width:l.w,height:l.h,rx:28,fill:'none',stroke:l.c,'stroke-width':4,opacity:.9},g);
+ el('text',{x:l.x+20,y:l.y+26,'font-size':15,'font-weight':700,fill:l.c},g,l.name);
+ el('text',{x:l.x+20,y:l.y+44,'font-size':12,fill:'var(--ink2)'},g,l.sub);
+ var cnt=el('text',{x:l.x+l.w-20,y:l.y+26,'text-anchor':'end','font-size':12,fill:'var(--ink2)'},g,'算了 0 次');
+ counters.push(cnt);
+ var d=el('circle',{r:7,fill:l.c,stroke:'var(--bg2)','stroke-width':2},g);dots.push(d);
+});
+/* motor in the middle */
+var m=el('g',{transform:'translate(320,210)'},svg);
+el('circle',{r:26,fill:'#8a8f98'},m);el('circle',{r:18,fill:'#3a3f47'},m);
+el('path',{d:'M0,-18A18,18 0 0 1 18,0L0,0z',fill:'var(--magN)'},m);el('path',{d:'M0,18A18,18 0 0 1 -18,0L0,0z',fill:'var(--magN)'},m);
+el('path',{d:'M18,0A18,18 0 0 1 0,18L0,0z',fill:'var(--magS)'},m);el('path',{d:'M-18,0A18,18 0 0 1 0,-18L0,0z',fill:'var(--magS)'},m);
+el('circle',{r:5,fill:'#d7dbe1'},m);
+el('text',{x:320,y:252,'text-anchor':'middle','font-size':12,fill:'var(--ink2)'},svg,'电机');
+el('text',{x:320,y:345,'text-anchor':'middle','font-size':12,fill:'var(--ink2)'},svg,'光点每绕一圈 = 这一层算了一次（比例为示意）');
+function perim(l,t){var p=2*(l.w+l.h);var s=((t%1)+1)%1*p;var x,y;
+ if(s<l.w){x=l.x+s;y=l.y;}else if(s<l.w+l.h){x=l.x+l.w;y=l.y+s-l.w;}else if(s<2*l.w+l.h){x=l.x+l.w-(s-l.w-l.h);y=l.y+l.h;}else{x=l.x;y=l.y+l.h-(s-2*l.w-l.h);}return [x,y];}
+var T=0;function draw(){L.forEach(function(l,i){var p=perim(l,T*l.sp/6);dots[i].setAttribute('cx',p[0]);dots[i].setAttribute('cy',p[1]);counters[i].textContent='算了 '+Math.floor(T*l.sp/6)+' 次';});}
+draw();
+var run=false,last=0,btn=document.getElementById('f2play');
+function loop(ts){if(!run)return;if(last)T+=(ts-last)/1000*0.5;last=ts;draw();requestAnimationFrame(loop);}
+btn.addEventListener('click',function(){
+ if(RM){T+=6/25;draw();btn.textContent='▶ 前进一步';return;}
+ run=!run;btn.textContent=run?'❚❚ 暂停':'▶ 播放';last=0;if(run)requestAnimationFrame(loop);});
+var seg=document.getElementById('f2seg');
+seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ [].forEach.call(seg.children,function(x){x.classList.toggle('on',x===b);});
+ var k=b.getAttribute('data-k');for(var g in groups)groups[g].setAttribute('opacity',(k==='all'||k===g)?1:0.18);});
+})();
+
+/* ---------- Figure 3: cascade simulator ---------- */
+(function(){
+var svg=document.getElementById('f3svg');if(!svg)return;
+var W=640,X0=56,X1=620,TT=1.2;
+var panels=[{y:40,h:110,name:'位置 θ (rad)',min:-0.05,max:0.75,c:'var(--accent)'},{y:175,h:100,name:'速度 ω (rad/s)',min:-8,max:14,c:'var(--accent2)'},{y:300,h:100,name:'电流 iq (A)',min:-13,max:13,c:'var(--blue)'}];
+var paths=[],limU,limL,tgt;
+el('text',{x:W/2,y:20,'text-anchor':'middle','font-size':14,'font-weight':700,fill:'var(--ink)'},svg,'关节从 0 转到 0.5 rad，0.7 s 时被压上负载');
+function sx(t){return X0+(X1-X0)*t/TT;}
+panels.forEach(function(p,i){
+ el('rect',{x:X0,y:p.y,width:X1-X0,height:p.h,fill:'var(--bg)',stroke:'var(--line)',rx:6},svg);
+ el('text',{x:X0+6,y:p.y+15,'font-size':12,fill:p.c,'font-weight':700},svg,p.name);
+ var y0=p.y+p.h*(p.max)/(p.max-p.min);
+ el('line',{x1:X0,x2:X1,y1:y0,y2:y0,stroke:'var(--line)','stroke-width':1},svg);
+ el('text',{x:X0-6,y:y0+4,'text-anchor':'end','font-size':11,fill:'var(--ink2)'},svg,'0');
+ paths.push(el('path',{fill:'none',stroke:p.c,'stroke-width':2.4,'stroke-linejoin':'round'},svg));
+});
+function sy(i,v){var p=panels[i];v=Math.max(p.min,Math.min(p.max,v));return p.y+p.h*(p.max-v)/(p.max-p.min);}
+tgt=el('path',{fill:'none',stroke:'var(--accent2)','stroke-width':1.5,'stroke-dasharray':'5 4'},svg);
+tgt.setAttribute('d','M'+sx(0)+','+sy(0,0)+'H'+sx(0.05)+'V'+sy(0,0.5)+'H'+sx(TT));
+el('text',{x:X1-4,y:sy(0,0.5)-5,'text-anchor':'end','font-size':11,fill:'var(--accent2)'},svg,'目标 0.5 rad');
+limU=el('line',{x1:X0,x2:X1,stroke:'#dc2626','stroke-width':1.5,'stroke-dasharray':'6 4'},svg);
+limL=el('line',{x1:X0,x2:X1,stroke:'#dc2626','stroke-width':1.5,'stroke-dasharray':'6 4'},svg);
+var limT=el('text',{x:X1-4,'text-anchor':'end','font-size':11,fill:'#dc2626'},svg,'电流上限');
+[0.7].forEach(function(t){el('line',{x1:sx(t),x2:sx(t),y1:panels[0].y,y2:panels[2].y+panels[2].h,stroke:'var(--warnline)','stroke-width':1.2,'stroke-dasharray':'3 4'},svg);
+ el('text',{x:sx(t)+4,y:panels[0].y+p0y(),'font-size':11,fill:'var(--warnline)'},svg,'压上负载');});
+function p0y(){return 100;}
+for(var t=0;t<=1.2001;t+=0.2){el('text',{x:sx(t),y:panels[2].y+panels[2].h+16,'text-anchor':'middle','font-size':11,fill:'var(--ink2)'},svg,t.toFixed(1)+' s');}
+var cursor=el('line',{y1:panels[0].y,y2:panels[2].y+panels[2].h,stroke:'var(--ink2)','stroke-width':1,opacity:0},svg);
+
+function sim(fv,fp,imax){
+ var J=0.002,Kt=0.1,dt=0.0001,tc=1/(2*Math.PI*800),tf=0.002;
+ var Kv=2*Math.PI*fv*J/Kt,Ki=Kv*2*Math.PI*fv/5,Kp=2*Math.PI*fp,wmax=30;
+ var th=0,w=0,i=0,wf=0,I=0,res=[],over=0,sag=0,sat=0;
+ for(var k=0;k*dt<=TT;k++){var t=k*dt,tg=t>0.05?0.5:0,dist=t>0.7?-0.3:0;
+  var wc=Kp*(tg-th);wc=Math.max(-wmax,Math.min(wmax,wc));
+  var ev=wc-wf,ic=Kv*ev+I;if(Math.abs(ic)<imax)I+=Ki*ev*dt;ic=Math.max(-imax,Math.min(imax,ic));if(Math.abs(ic)>=imax-1e-9)sat++;
+  i+=(ic-i)*dt/tc;var tau=Kt*i+dist;w+=tau/J*dt;th+=w*dt;wf+=(w-wf)*dt/tf;
+  if(t<0.7)over=Math.max(over,th-0.5);else sag=Math.max(sag,0.5-th);
+  if(k%20===0)res.push([t,th,w,i]);}
+ return {r:res,over:over,sag:sag,sat:sat*dt};
+}
+var vS=document.getElementById('f3v'),pS=document.getElementById('f3p'),iS=document.getElementById('f3i');
+var cur=null,anim=false,raf=0;
+function render(n){var r=cur.r;n=n==null?r.length:n;
+ for(var j=0;j<3;j++){var d='';for(var q=0;q<n;q++){d+=(q?'L':'M')+sx(r[q][0]).toFixed(1)+','+sy(j,r[q][j+1]).toFixed(1);}paths[j].setAttribute('d',d);}
+ if(n<r.length){cursor.setAttribute('x1',sx(r[n-1][0]));cursor.setAttribute('x2',sx(r[n-1][0]));cursor.setAttribute('opacity',.6);}else cursor.setAttribute('opacity',0);}
+function update(){
+ var fv=+vS.value,fp=+pS.value,im=+iS.value;
+ document.getElementById('f3vo').textContent=fv+' Hz';document.getElementById('f3po').textContent=fp+' Hz';document.getElementById('f3io').textContent=im+' A';
+ cur=sim(fv,fp,im);
+ limU.setAttribute('y1',sy(2,im));limU.setAttribute('y2',sy(2,im));limL.setAttribute('y1',sy(2,-im));limL.setAttribute('y2',sy(2,-im));limT.setAttribute('y',sy(2,im)-4);
+ var ratio=fv/fp;var rEl=document.getElementById('f3r');rEl.textContent=ratio.toFixed(1)+' 倍';rEl.className=ratio>=5?'okc':(ratio<2?'badc':'');
+ var o=document.getElementById('f3o');o.textContent=(cur.over/0.5*100).toFixed(0)+'%';o.className=cur.over>0.025?'badc':'okc';
+ document.getElementById('f3d').textContent=(cur.sag*57.3).toFixed(1)+'°';
+ var s=document.getElementById('f3s');s.textContent=(cur.sat*1000).toFixed(0)+' ms';s.className=cur.sat>0.15?'badc':'';
+ if(!anim)render();
+}
+[vS,pS,iS].forEach(function(s){s.addEventListener('input',function(){[].forEach.call(document.getElementById('f3pre').children,function(x){x.classList.remove('on');});update();});});
+document.getElementById('f3pre').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});vS.value=b.getAttribute('data-v');pS.value=b.getAttribute('data-p');iS.value=b.getAttribute('data-i');update();});
+var pb=document.getElementById('f3play');
+pb.addEventListener('click',function(){
+ if(RM){render();return;}
+ if(anim){anim=false;cancelAnimationFrame(raf);pb.textContent='▶ 播放动画';render();return;}
+ anim=true;pb.textContent='❚❚ 停止';var st=0,n=1;
+ function step(ts){if(!anim)return;if(!st)st=ts;n=Math.min(cur.r.length,1+Math.floor((ts-st)/3000*cur.r.length));render(n);
+  if(n<cur.r.length)raf=requestAnimationFrame(step);else{anim=false;pb.textContent='▶ 播放动画';render();}}
+ raf=requestAnimationFrame(step);});
+update();
+})();
+
+/* ---------- Figure 4: BEAR modes ---------- */
+(function(){
+var svg=document.getElementById('f4svg');if(!svg)return;
+el('text',{x:320,y:24,'text-anchor':'middle','font-size':14,'font-weight':700,fill:'var(--ink)'},svg,'命令从哪里进来，就从哪一层开始工作');
+var B={
+ pos:{x:20,y:60,w:140,h:56,t:'位置 PID',s:'goal_position'},
+ vel:{x:200,y:60,w:140,h:56,t:'速度 PID',s:'goal_velocity'},
+ cur:{x:400,y:120,w:120,h:76,t:'iq / id 电流环',s:'goal_iq'},
+ df:{x:20,y:200,w:320,h:60,t:'直接力控：P×位置误差 + D×速度误差',s:'goal_position + goal_velocity'},
+ mot:{x:552,y:128,w:72,h:60,t:'电机',s:''}
+};
+var G={};
+for(var k in B){var b=B[k];var g=el('g',{},svg);G[k]=g;
+ el('rect',{x:b.x,y:b.y,width:b.w,height:b.h,rx:12,fill:k==='mot'?'#5b616b':'var(--bg2)',stroke:k==='cur'?'var(--blue)':'var(--line)','stroke-width':2.5},g);
+ el('text',{x:b.x+b.w/2,y:b.y+b.h/2-(b.s?2:-5),'text-anchor':'middle','font-size':k==='df'?13:14,'font-weight':700,fill:k==='mot'?'#fff':'var(--ink)'},g,b.t);
+ if(b.s)el('text',{x:b.x+b.w/2,y:b.y+b.h/2+16,'text-anchor':'middle','font-size':11,fill:'var(--ink2)'},g,b.s);}
+var A={
+ pv:el('path',{d:'M160,88H196',stroke:'var(--accent)','stroke-width':3,fill:'none'},svg),
+ vc:el('path',{d:'M340,88H370V146H396',stroke:'var(--accent)','stroke-width':3,fill:'none'},svg),
+ dc:el('path',{d:'M340,230H370V172H396',stroke:'var(--accent)','stroke-width':3,fill:'none'},svg),
+ cm:el('path',{d:'M520,158H548',stroke:'var(--accent)','stroke-width':3,fill:'none'},svg),
+ ff:el('path',{d:'M460,290V200',stroke:'var(--accent)','stroke-width':3,fill:'none','stroke-dasharray':'5 4'},svg)
+};
+var ffT=el('text',{x:470,y:300,'font-size':11,fill:'var(--ink2)'},svg,'+ goal_iq（前馈电流）');
+var TX={
+ 0:'<b>0 力矩模式（Torque Mode）</b>：直接写 goal_iq（单位 A），只有 iq/id 电流环在工作，输出力矩约为 iq × Kt。goal_iq 超过 limit_i_max 时命令不被执行。',
+ 1:'<b>1 速度模式（Velocity Mode）</b>：写 goal_velocity（rad/s），速度 PID 的结果送进 iq 环。速度命令超过 limit_velocity_max 时不被执行；实际速度还受供电电压和负载限制。',
+ 2:'<b>2 位置模式（Position Mode）</b>：写 goal_position（rad），位置 PID → 速度 PID → iq 环，三层套娃全开。超出位置范围的命令不被执行；速度受 limit_velocity_max 和电压约束，力矩受 limit_i_max 和电源电流约束。',
+ 3:'<b>3 直接力控（Direct Force Mode）</b>：同时给位置、速度和 iq，像一个“弹簧-阻尼器 + 前馈力矩”。<b style="color:#dc2626">WARNING：此模式下输出速度不受 limit_velocity_max 限制；goal_position 超出位置范围时仍会执行。</b>速度或 iq 命令超过各自上限时不被执行。'
+};
+var ON={0:['cur','mot','cm','ff'],1:['vel','cur','mot','vc','cm'],2:['pos','vel','cur','mot','pv','vc','cm'],3:['df','cur','mot','dc','cm','ff']};
+function set(m){var on=ON[m];for(var k in G)G[k].setAttribute('opacity',on.indexOf(k)>=0?1:0.2);for(var a in A)A[a].setAttribute('opacity',on.indexOf(a)>=0?1:0.12);
+ ffT.setAttribute('opacity',on.indexOf('ff')>=0?1:0.2);document.getElementById('f4txt').innerHTML=TX[m];}
+var seg=document.getElementById('f4seg');
+seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(seg.children,function(x){x.classList.toggle('on',x===b);});set(+b.getAttribute('data-m'));});
+set(2);
+})();
+})();
+</script>
+</body>
+</html>
