@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>论文精讲 11/6｜在虚拟房子里学会走进真家</title>
+<style>
+:root{
+  --bg:#f6f4ef; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5d574e; --line:#e1dbcf;
+  --accent:#b4441a; --accent2:#0f766e; --soft:#fbefe6; --soft2:#e5f1ef;
+  --metal:#9aa1ab; --metal2:#5b6370; --cable:#c2410c; --skin:#d9dde3; --floor:#cfc7b8; --wood:#b98a5a;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --bg2:#1d2024; --ink:#ebe7df; --ink2:#a8a297; --line:#33373d;
+    --accent:#f08a4b; --accent2:#2dd4bf; --soft:#2a2019; --soft2:#14292a;
+    --metal:#7b838e; --metal2:#b3bbc6; --cable:#f59e5b; --skin:#4a5059; --floor:#3a3d42; --wood:#8a6642;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:10px 16px 60px}
+a{color:var(--accent2);word-break:break-word}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:8px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-size:27px;line-height:1.35;margin:6px 0 4px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 20px}
+h2{font-size:21px;line-height:1.45;margin:40px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+h3{font-size:16px;margin:18px 0 2px;color:var(--accent2)}
+p{margin:10px 0}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:16px 0;font-size:15px;line-height:1.7}
+.card b{color:var(--accent)}
+.three{background:var(--soft);border-radius:14px;padding:12px 16px;margin:16px 0}
+.three ol{margin:6px 0;padding-left:1.3em}
+.three li{margin:6px 0}
+.note{font-size:15px;color:var(--ink2);border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin:14px 0}
+.term{font-size:14px;background:var(--soft2);color:var(--accent2);padding:0 6px;border-radius:6px}
+figure{margin:20px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px}
+figure img{width:100%;height:auto;display:block;border-radius:8px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.65;margin-top:8px}
+figcaption b{color:var(--accent)}
+.fail{display:none;font-size:14px;padding:10px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+th,td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+th{color:var(--ink2);font-weight:600}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btns button{font:inherit;font-size:15px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.bar{height:18px;border-radius:9px;background:var(--line);overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--accent2);transition:width .4s}
+.readout{font-size:15px;color:var(--ink2)}
+.readout b{color:var(--ink);font-size:20px}
+.more li{margin:10px 0}
+.src{font-size:14px;color:var(--ink2)}
+.src li{margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<div class="kicker">本周论文精讲 · 2026 年 11 月 6 日</div>
+<h1>在一千套虚拟房子里练，然后走进从没见过的真家</h1>
+<p class="sub">论文：HALO: Perceptive Humanoid Motion from Simulation ｜ 作者单位：Apple ｜ 约 15 分钟</p>
+
+<div class="three">
+<b>先说结论</b>
+<ol>
+<li>苹果的一个团队让宇树 G1 人形机器人只靠头上的摄像头和一句话指令，在 6 个<b>从没去过</b>的真实房间里完成"走到某物旁边、坐到椅子上、穿过半开的门、钻桌底、推箱子"等动作，360 次实机试验平均成功 91%。</li>
+<li>它最大的卖点不是哪个动作多炫，而是<b>训练数据一条都没靠人去遥控采集</b>：全部在电脑生成的 1000 套虚拟房间里合成，"数据量随算力增长，而不是随人工增长"。</li>
+<li>但单个动作做得好，不等于连起来做得好：两三个动作串起来，真机成功率掉到 50%–100% 不等，平均 70%。这正是这篇论文最诚实、也最值得琢磨的地方。</li>
+</ol>
+</div>
+
+<h2><span class="n">01</span>它想解决什么问题</h2>
+<p>想象你要教一个人形机器人"去客厅，坐到那把灰色椅子上"。这句话背后藏着三件事：<b>看懂</b>（哪把是灰色椅子、离我多远、中间有没有茶几），<b>规划</b>（先绕过茶几、转身、屈膝），<b>执行</b>（29 个关节在每一瞬间该转到哪个角度，同时别摔倒）。</p>
+<p>今天行业里最热的做法叫 <span class="term">VLA（Vision-Language-Action，视觉-语言-动作模型）</span>：把摄像头画面和文字指令一起喂给一个大模型，让它直接输出动作。问题是这种模型极度"吃数据"，而且是成对的数据——"这个画面 + 这句话 → 这串关节动作"。目前主流的数据来源是 <span class="term">遥操作（teleoperation）</span>：人戴上动捕设备或 VR 头显，"附身"在机器人上做一遍。论文开篇就算了一笔账：<b>一小时数据大约要花一小时人工</b>。想要几千小时、几万种房间的数据，人力根本堆不起来。</p>
+<p>所以作者问的是：能不能把"人"从数据生产线上拿掉，让数据像渲染电影一样，<b>加 GPU 就能多出来</b>？</p>
+
+<h2><span class="n">02</span>之前的做法卡在哪</h2>
+<p>"在仿真里练、拿到现实里用"（<span class="term">sim-to-real，仿真到现实迁移</span>）并不新。机器狗、人形机器人走路、跑步、翻跟头，这几年几乎都是这么练出来的。但那些技能有个共同点：<b>机器人主要靠"体感"</b>——关节角度、角速度、身体姿态（<span class="term">本体感觉，proprioception</span>），最多再加一张粗糙的地形高度图。仿真里的关节和现实里的关节，只要物理参数调得够接近，就能迁移。</p>
+<p>一旦要用<b>彩色摄像头</b>看懂"灰色椅子""半开的门"，难度就翻了个跟头：仿真渲染出来的画面和真实照片在光照、材质、反光上差得很远，这叫 <span class="term">视觉域差（visual domain gap）</span>。过去不少"看图做全身动作"的人形工作，要么事先把测试房间三维扫描进仿真里（等于开卷考试），要么只在两三个场景里测几十次。作者在论文里专门列了一张表：同类工作里，有的 120 次试验只用 2 个环境、而且都是训练时扫描过的；有的只有 45 次试验、3 个环境。HALO 想证明的是：<b>360 次、6 个没扫描过的真实房间</b>，也能成。</p>
+
+<h2><span class="n">03</span>核心思路：一个"导演—编舞—演员"的三层班子</h2>
+<p>HALO 把机器人的大脑拆成快慢不同的三层，可以类比成一个剧组：</p>
+<div class="card">
+<b>导演（编排器，约 0.5 Hz）</b>：一个视觉语言模型，听懂"先蹲下看看箱子，再走过去推"这种长指令，拆成一个个子任务，决定现在该演哪一场。<br>
+<b>编舞（动作生成器，约 3 Hz）</b>：看着头部摄像头的画面和当前子任务，画出接下来 5 秒的"舞谱"——150 帧、每帧 29 个关节角度加骨盆的位置和朝向。<br>
+<b>演员（动作跟踪器，50 Hz）</b>：一个小而快的神经网络，跑在机器人自带的 Jetson Orin NX 上，盯着舞谱，结合关节传感器和脚下的深度图，算出 29 个关节的目标位置，交给关节里的 PD 控制器去执行。
+</div>
+<p>你在早课里学过的"里快外慢"的控制环，在这里又出现了一次，只是被搬到了 AI 的层面：越靠近电机的层越快、越"笨"、越可靠；越靠近语言的层越慢、越"聪明"。</p>
+
+<figure>
+<svg viewBox="0 0 680 420" role="img" aria-label="HALO 三层结构示意图：头部摄像头到编排器、动作生成器、跟踪器再到关节电机">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+  </defs>
+  <!-- floor -->
+  <rect x="0" y="388" width="680" height="32" fill="var(--floor)"/>
+  <!-- chair -->
+  <g transform="translate(560,300)">
+    <rect x="0" y="0" width="70" height="10" rx="3" fill="var(--wood)"/>
+    <rect x="58" y="-70" width="10" height="72" rx="3" fill="var(--wood)"/>
+    <rect x="4" y="10" width="6" height="78" fill="var(--wood)"/>
+    <rect x="58" y="10" width="6" height="78" fill="var(--wood)"/>
+  </g>
+  <text x="595" y="222" font-size="13" fill="var(--ink2)" text-anchor="middle">"坐到椅子上"</text>
+  <!-- robot -->
+  <g transform="translate(440,120)">
+    <rect x="-16" y="-34" width="34" height="30" rx="9" fill="var(--skin)" stroke="var(--metal2)" stroke-width="2"/>
+    <circle cx="14" cy="-20" r="6" fill="var(--ink)"/>
+    <circle cx="14" cy="-20" r="2.5" fill="var(--accent2)"/>
+    <path d="M20,-20 L120,40 M20,-20 L120,-60" stroke="var(--accent2)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".8"/>
+    <rect x="-24" y="0" width="48" height="74" rx="10" fill="var(--metal)" stroke="var(--metal2)" stroke-width="2"/>
+    <rect x="-36" y="10" width="14" height="10" rx="3" fill="var(--metal2)"/>
+    <rect x="-20" y="30" width="22" height="22" rx="4" fill="var(--bg2)" stroke="var(--cable)" stroke-width="2"/>
+    <text x="-9" y="45" font-size="9" fill="var(--cable)" text-anchor="middle">Orin</text>
+    <rect x="-22" y="80" width="16" height="70" rx="7" fill="var(--metal)" stroke="var(--metal2)" stroke-width="2"/>
+    <rect x="6" y="80" width="16" height="70" rx="7" fill="var(--metal)" stroke="var(--metal2)" stroke-width="2"/>
+    <circle cx="-14" cy="115" r="8" fill="var(--metal2)"/><circle cx="-14" cy="115" r="3" fill="var(--cable)"/>
+    <circle cx="14" cy="115" r="8" fill="var(--metal2)"/><circle cx="14" cy="115" r="3" fill="var(--cable)"/>
+    <rect x="-28" y="150" width="24" height="10" rx="4" fill="var(--metal2)"/>
+    <rect x="4" y="150" width="24" height="10" rx="4" fill="var(--metal2)"/>
+    <rect x="-34" y="4" width="10" height="64" rx="5" fill="var(--metal)" stroke="var(--metal2)" stroke-width="2"/>
+    <rect x="24" y="4" width="10" height="64" rx="5" fill="var(--metal)" stroke="var(--metal2)" stroke-width="2"/>
+  </g>
+  <text x="440" y="300" font-size="12" fill="var(--ink2)" text-anchor="middle">膝关节执行器</text>
+  <!-- layers -->
+  <g font-size="14" fill="var(--ink)">
+    <rect x="16" y="20" width="250" height="70" rx="12" fill="var(--soft)" stroke="var(--accent)"/>
+    <text x="30" y="46" font-weight="700">① 导演：编排器 ~0.5 Hz</text>
+    <text x="30" y="70" font-size="12" fill="var(--ink2)">VLM 拆长指令为子任务</text>
+    <rect x="16" y="130" width="250" height="78" rx="12" fill="var(--soft)" stroke="var(--accent)"/>
+    <text x="30" y="156" font-weight="700">② 编舞：动作生成器 ~3 Hz</text>
+    <text x="30" y="178" font-size="12" fill="var(--ink2)">看彩色画面 → 未来 5 秒"舞谱"</text>
+    <text x="30" y="196" font-size="12" fill="var(--ink2)">150 帧 × 36 个数</text>
+    <rect x="16" y="250" width="250" height="78" rx="12" fill="var(--soft2)" stroke="var(--accent2)"/>
+    <text x="30" y="276" font-weight="700">③ 演员：跟踪器 50 Hz</text>
+    <text x="30" y="298" font-size="12" fill="var(--ink2)">舞谱 + 体感 + 脚下深度图</text>
+    <text x="30" y="316" font-size="12" fill="var(--ink2)">→ 29 个关节目标角度</text>
+  </g>
+  <path d="M140,90 L140,128" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M140,208 L140,248" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M266,290 C340,290 380,240 420,236" stroke="var(--accent2)" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <text x="300" y="350" font-size="12" fill="var(--ink2)">关节里的 PD 控制器（更快）把角度变成力矩</text>
+  <path d="M426,96 C340,96 300,150 268,165" stroke="var(--ink2)" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+  <text x="300" y="120" font-size="12" fill="var(--ink2)">头部鱼眼摄像头</text>
+</svg>
+<figcaption><b>看图要看什么：</b>越往下越快、越靠近电机。最上层"想清楚做什么"，最下层"保证别摔"。注意第③层的输出仍是<b>关节角度目标</b>，真正出力的还是每个关节里的执行器和它自己的控制环。图：本页自绘示意，非论文原图，比例不准确。</figcaption>
+</figure>
+
+<h3>数据从哪来：一条"虚拟片场"流水线</h3>
+<p>这部分是论文的真正"肌肉"。作者用开源的程序化场景生成器 Infinigen 自动生成了 <b>1000 套</b>客厅、办公室、卧室（另留 178 套做考试用），家具摆放、材质、灯光都随机。为了让画面接近真实，他们先用离线光线追踪把光照"烘焙"进贴图里，再在 Isaac Sim 里快速渲染；渲染时还会故意乱调颜色、模糊、噪声，这叫 <span class="term">域随机化（domain randomization）</span>——让模型见惯了各种"失真"，到真实世界反而不挑。</p>
+<p>动作则交给一个叫 Kimodo 的 <span class="term">动作扩散模型（motion diffusion model）</span>：给它一句文字、几个路径点和关键姿势，它就生成一段人形动作，再用运动学检查挑出最合理的一条，摆进虚拟房间里，从机器人头部视角录下来。整个过程在 250 张 H100 GPU 上跑了约 48 小时，产出约 16 万段、约 296 小时的"画面 + 指令 + 动作"配对数据。</p>
+<p class="note">要严谨一点：论文说主体数据<b>不需要动捕或遥操作</b>，但训练"演员"跟踪器的第一阶段，仍用了一个公开的人体动捕数据集 LAFAN1 做底子。所以更准确的说法是"不需要为这个任务专门采人类数据"，而不是"从未用过人类动作"。</p>
+
+<h3>"演员"是怎么练出来的</h3>
+<p>跟踪器分三步练：先在仿真里给每类技能训练一个"开了天眼"的专家（能直接读到环境真实状态，叫 <span class="term">特权信息（privileged information）</span>）；再让一个只能看深度图的"学生"网络去模仿这些专家（<span class="term">蒸馏（distillation）</span>）；最后用强化学习在带深度图的条件下再打磨一遍。这套"老师带学生"的套路在腿足机器人里已经很成熟，HALO 的贡献是把它和上面那条视觉数据流水线接了起来。</p>
+
+<h2><span class="n">04</span>实验结果：说明了什么</h2>
+<table>
+<tr><th>单项任务（真机）</th><th>成功率</th></tr>
+<tr><td>走到指定物体旁（Go-To）</td><td>92%</td></tr>
+<tr><td>坐到椅子上（Sit）</td><td>85%</td></tr>
+<tr><td>穿过半开的门（Door）</td><td>93%</td></tr>
+<tr><td>蹲下（Crouch）</td><td>100%</td></tr>
+<tr><td>钻过桌底（Crawl）</td><td>90%</td></tr>
+<tr><td>推箱子（Push）</td><td>88%</td></tr>
+<tr><td><b>平均</b></td><td><b>91%</b></td></tr>
+</table>
+
+<figure>
+<img src="https://arxiv.org/html/2611.06908v1/figures/teaser.jpg" loading="lazy" referrerpolicy="no-referrer" alt="宇树 G1 人形机器人在真实房间中按语言指令执行全身动作的论文首图" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<div class="fail"><a href="https://arxiv.org/html/2611.06908v1">图片未能加载，点此查看原图</a></div>
+<figcaption><b>看图要看什么：</b>这是一台加装了头部相机和背部外壳的宇树 G1，在没有事先扫描过的真实家居环境里执行指令。留意它头部那个相机——整套系统的"眼睛"只有这一个彩色镜头，外加一个朝下看路的深度相机。<br>图：Siyuan Hu 等 / <a href="https://arxiv.org/html/2611.06908v1">arXiv:2611.06908 论文图 1</a>，作者公开的论文配图（arXiv 非独占分发许可），未作修改。</figcaption>
+</figure>
+
+<p>这组数字说明的东西其实很具体：</p>
+<p><b>第一，仿真和现实的成绩几乎一样。</b>在 100 个没见过的虚拟房间里，单项平均也是 91%。仿真分数能这么准地预测真机分数，对工程团队来说比"91%"本身更值钱——它意味着以后可以先在仿真里大规模筛方案，再上真机。</p>
+<p><b>第二，房间越多越好，但边际收益在变小。</b>作者做了一个很漂亮的对照实验：只用 1 套房间训练，仿真考试成功率 43%；10 套 64%；100 套 81%；1000 套 84%。你可以点下面的按钮感受一下这条曲线。</p>
+
+<figure>
+<div class="btns" id="scn">
+<button data-v="43" data-n="1">1 套房间</button>
+<button data-v="64" data-n="10">10 套</button>
+<button data-v="81" data-n="100">100 套</button>
+<button data-v="84" data-n="1000" class="on">1000 套</button>
+</div>
+<div class="bar"><i id="scnbar" style="width:84%"></i></div>
+<div class="readout" id="scnout">用 <b>1000</b> 套虚拟房间训练 → 在 100 个没见过的虚拟房间里成功率 <b>84%</b></div>
+<figcaption><b>看图要看什么：</b>从 1 到 100 套，成功率涨了近一倍；从 100 到 1000 套，只多了 3 个百分点。"堆场景"有用，但不是无限有用。数据：论文消融实验（仿真）。</figcaption>
+</figure>
+
+<p><b>第三，几个设计选择是硬需要。</b>把"编舞"的生成方式从 <span class="term">流匹配（flow matching，一种和扩散模型同族的生成方法）</span>换成简单的回归，仿真成功率从 84% 暴跌到 19%，机器人会出现"脚底打滑"的怪动作；去掉脚下的深度图，从 84% 降到 74%。</p>
+
+<h2><span class="n">05</span>没说明什么：串起来就掉链子</h2>
+<p>真正的家务从来不是单个动作。论文测了三个"组合任务"，真机结果是：</p>
+<table>
+<tr><th>组合任务（真机）</th><th>成功率</th></tr>
+<tr><td>穿门 → 走到物体旁</td><td>100%</td></tr>
+<tr><td>蹲下 → 坐到椅子上</td><td>60%</td></tr>
+<tr><td>蹲下 → 走过去 → 推箱子</td><td>50%</td></tr>
+<tr><td><b>平均</b></td><td><b>70%</b></td></tr>
+</table>
+<p>你可能会想：每步 90% 左右，三步连乘大约 73%，掉到 50% 也不算离谱？作者自己做了这个对比，而且发现<b>实际比"连乘"还要差</b>：比如仿真里"穿门 → 走过去"，按两步独立计算应有 89%，实测只有 71%。下面这个小工具帮你感受"连乘"本身有多残酷：</p>
+
+<figure>
+<div class="btns" id="chain">
+<button data-k="1">1 步</button>
+<button data-k="2">2 步</button>
+<button data-k="3" class="on">3 步</button>
+<button data-k="5">5 步</button>
+<button data-k="10">10 步</button>
+</div>
+<div class="readout">假设每一步都有 <b>91%</b> 成功率（HALO 单项平均）</div>
+<div class="bar"><i id="chbar" style="width:75%"></i></div>
+<div class="readout" id="chout">连续 3 步全部成功的概率 ≈ <b>75%</b></div>
+<figcaption><b>看图要看什么：</b>这只是理想化的"独立连乘"，论文实测的组合任务比这还低。做 10 步家务，单步 91% 远远不够。示意计算，非论文数据。</figcaption>
+</figure>
+
+<p>为什么串起来更糟？作者分析的失败原因很有画面感：<b>上一个动作结束时，下一个目标往往不在视野里</b>——比如蹲下看完箱子，头正好转开了；穿过门后，因为门的角度不同，出门方向偏了，要找的东西不在画面中；还有一次"坐到椅子上"，机器人坐到了旁边的沙发上。这些都不是"腿不够好"，而是"眼睛和记忆不够好"。</p>
+
+<h2><span class="n">06</span>局限与存疑之处</h2>
+<p><b>样本量：</b>360 次听起来多，但拆开是每个任务、每个环境各 10 次。一个 10 次里成功 9 次的结果，误差范围相当宽，85% 和 92% 之间的差别不宜过度解读。</p>
+<p><b>没有正面对比：</b>论文和同类工作比的是"测了多少次、多少个环境"，并没有在同一套房间里让别的方法也跑一遍、比成功率。所以"HALO 比别人强多少"目前说不清，只能说它的测试更"严格"。</p>
+<p><b>"零样本"有边界：</b>测试房间没被扫描、没进训练，这是真的；但任务种类是事先设计好的六类，新任务仍需人写提示词、手工给关键姿势——作者自己也承认这一点。</p>
+<p><b>只有眼睛，没有手感：</b>系统靠视觉，不知道自己有没有真正"碰到"东西。推箱子这种接触多的任务，物体一出画面就丢了。作者提出未来要加 <span class="term">触觉（tactile sensing）</span>。</p>
+<p><b>算力门槛：</b>数据合成用了 250 张 H100 跑两天，生成器又用了 64 张 B200。"用算力换人力"成立，但这是大公司量级的算力，不是每个实验室都烧得起。</p>
+<p><b>演示视频：</b>论文项目页提供了视频，本报未能核实视频是否有剪辑；论文本身说明系统是全自主运行、不依赖遥操作，这一点是作者的陈述。</p>
+
+<h2><span class="n">07</span>和执行器、人形机器人硬件的关系</h2>
+<p>这是一篇"大脑"论文，但它和关节硬件的关系比看上去紧密：</p>
+<p><b>1. 最后一公里仍是关节。</b>不管上层模型多聪明，输出到底层都变成"每个关节转到某个角度"，由关节的 PD 控制器把角度误差变成力矩。如果真实关节的力矩上限、摩擦、响应速度和仿真里的模型对不上，"演员"在仿真里练得再好，真机上也会走样。这正是我们 10 月 23 日那期讲过的"执行器的仿真到现实差距"——HALO 能做到仿真 91% ≈ 真机 91%，前提是 G1 的关节在仿真里被建模得足够准。</p>
+<p><b>2. "钻桌底""蹲下""从椅子上站起"都是大负载工况。</b>这些全身动作对膝、髋关节的瞬时力矩和发热都是考验，和平地走路很不一样。当行业开始用这类"家居全身动作"做标准测试，客户问执行器的问题也会从"峰值力矩多少"变成"连续蹲起若干次温度会怎样"。</p>
+<p><b>3. 仿真友好的硬件更受欢迎。</b>如果数据越来越多来自仿真，那么<b>能被准确建模</b>的关节（参数透明、行为线性、可做系统辨识）会更容易被研究团队选用。这对做执行器的公司是个值得留意的趋势：除了规格表，能不能提供可靠的仿真模型，可能会成为卖点之一。</p>
+<p class="note">以上是基于论文内容的行业分析，不代表对任何具体产品性能的判断。</p>
+
+<h2><span class="n">08</span>想深入可以接着看什么</h2>
+<ul>
+<li>论文原文与项目页：<a href="https://arxiv.org/abs/2611.06908">arXiv:2611.06908</a>；视频和代码见 <a href="https://apple-aiml-research.github.io/ml-halo/">项目页</a>。建议先看三层结构图（论文图 2）和多任务失败分析部分。</li>
+<li>如果想补"老师带学生"的蒸馏套路，可以回看本系列 10 月 16 日的"人形机器人全身负重搬运"那期。</li>
+<li>如果想补关节建模，回看 10 月 23 日"执行器的仿真到现实差距"。</li>
+</ul>
+
+<h2><span class="n">+</span>本周其他值得一看</h2>
+<ul class="more">
+<li><b>Agility Robotics 登陆纳斯达克（11/5）。</b>通过与 Churchill Capital Corp XI 的 SPAC 合并上市，股票代码 AGLT，被称为美国首家上市的纯人形机器人公司；交易及相关融资约 4.65 亿美元，公司称 Digit 5 预订单超过 3 亿美元，2027 年上半年开始早期交付。<a href="https://siliconangle.com/2026/11/05/humanoid-robot-maker-agility-robotics-debuts-on-the-nasdaq-after-spac-merger">SiliconANGLE</a> · <a href="https://techcrunch.com/2026/11/05/agility-is-the-first-pure-humanoid-robot-company-on-the-stock-market-are-you-buying/">TechCrunch</a></li>
+<li><b>韩国 KIST 人形机器人 KAPEX：核心部件国产化超 90%（11/4）。</b>据报道，其自研关节执行器能装进人体关节大小的空间、最大力矩约 300 N·m，可负重 20 kg 以上行走；技术已转让给 LG 电子做量产平台。数字均来自媒体报道和研究方的介绍。<a href="https://en.sedaily.com/technology/2026/11/04/kist-builds-humanoid-robot-with-90-percent-local-parts">Seoul Economic Daily</a></li>
+<li><b>首尔大学 RISE：走路和拿东西分开教，机器人自己学会接起来（11/3）。</b>用多个"专家"子模型加一个调度器，在宇树 G1（带两只灵巧手）上做最多 5 步的组合任务，实机成功率 50%，基线 30%——和 HALO 一样，"串联"是今年人形研究的共同难点。已被 IROS 2026 接收。<a href="https://www.progressiverobot.com/2026/11/03/humanoid-ai-rise-robot-walking-grabbing/">报道</a></li>
+<li><b>Torch-Hand：21 自由度、全连杆驱动的灵巧手（10/27 预印本）。</b>拇指 5 个自由度、其余四指各 4 个，全部电机藏在手掌里，用丝杠-连杆而非腱绳传动，主打大握力和负载。对关心"手部执行器怎么塞进手掌"的读者值得一翻。<a href="https://arxiv.org/abs/2610.36789">arXiv:2610.36789</a></li>
+</ul>
+
+<h2><span class="n">术</span>今日术语</h2>
+<div class="card">
+<b>sim-to-real（仿真到现实迁移）</b>：在电脑里的虚拟世界训练机器人，再把学到的本事直接用到真机器人上。好处是快、便宜、不怕摔；难点是虚拟和现实总有差距——画面不一样、关节手感不一样。<br><br>
+<b>程序化生成（procedural generation）</b>：不是一个个手工搭场景，而是写一套规则让电脑自动"批量盖房子"，每套布局、家具、灯光都不同。HALO 的 1000 套房间就是这么来的，它让"多见世面"这件事变成了只花电费。
+</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://arxiv.org/abs/2611.06908">Hu et al., Perceptive Humanoid Motion from Simulation, arXiv:2611.06908（2026-11-04）</a></li>
+<li><a href="https://arxiv.org/html/2611.06908v1">同上，HTML 全文版</a></li>
+<li><a href="https://apple-aiml-research.github.io/ml-halo/">HALO 项目页</a></li>
+<li><a href="https://siliconangle.com/2026/11/05/humanoid-robot-maker-agility-robotics-debuts-on-the-nasdaq-after-spac-merger">SiliconANGLE：Agility 上市（2026-11-05）</a></li>
+<li><a href="https://manilatimes.net/2026/11/05/tmt-newswire/globenewswire/agility-becomes-first-us-publicly-listed-pure-play-humanoid-robotics-company-begins-trading-today-on-nasdaq-as-aglt/2462782">GlobeNewswire 转载：Agility 新闻稿（股票代码 AGLT）</a></li>
+<li><a href="https://techcrunch.com/2026/11/05/agility-is-the-first-pure-humanoid-robot-company-on-the-stock-market-are-you-buying/">TechCrunch：Agility 上市（2026-11-05）</a></li>
+<li><a href="https://en.sedaily.com/technology/2026/11/04/kist-builds-humanoid-robot-with-90-percent-local-parts">Seoul Economic Daily：KIST KAPEX（2026-11-04）</a></li>
+<li><a href="https://www.progressiverobot.com/2026/11/03/humanoid-ai-rise-robot-walking-grabbing/">RISE 报道（2026-11-03）</a></li>
+<li><a href="https://lifeboat.com/blog/2026/11/humanoid-ai-connects-walking-and-object-handling-without-demonstrations-of-complete-task-sequences">Lifeboat：RISE 转述（2026-11-02）</a></li>
+<li><a href="https://arxiv.org/abs/2610.36789">Li et al., Torch-Hand, arXiv:2610.36789（2026-10-27）</a></li>
+</ul>
+</main>
+<script>
+(function(){
+  var sb=document.querySelectorAll('#scn button');
+  sb.forEach(function(b){b.addEventListener('click',function(){
+    sb.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    document.getElementById('scnbar').style.width=b.dataset.v+'%';
+    document.getElementById('scnout').innerHTML='用 <b>'+b.dataset.n+'</b> 套虚拟房间训练 → 在 100 个没见过的虚拟房间里成功率 <b>'+b.dataset.v+'%</b>';
+  })});
+  var cb=document.querySelectorAll('#chain button');
+  cb.forEach(function(b){b.addEventListener('click',function(){
+    cb.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    var k=+b.dataset.k,p=Math.round(Math.pow(0.91,k)*100);
+    document.getElementById('chbar').style.width=p+'%';
+    document.getElementById('chout').innerHTML='连续 '+k+' 步全部成功的概率 ≈ <b>'+p+'%</b>';
+  })});
+})();
+</script>
+</body>
+</html>
