@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W4-4｜带宽、力矩带宽与碰撞安全</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .chip{fill:#202226} .ontxt{fill:#f2efe8}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .chip{fill:#0d0e10} }
+.status{font-weight:700} .okc{color:var(--accent2)} .badc{color:#dc2626}
+.box ul{padding-left:20px;margin:6px 0} .box li{margin:6px 0}
+.ctrl button{min-width:9em}
+
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:0 4px;word-break:break-all}
+main ul{padding-left:22px} main li{margin:6px 0}
+#f1seg button,#f3seg button,#f4seg button{font-size:14px;padding:6px 12px}
+[hidden]{display:none!important}
+#f3svg{cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+.ctrl label{min-width:4.2em}.ctrl input[type=range]{min-width:110px}.ctrl output{min-width:4.6em}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 4 单元「关节控制」· 第 4 课</div>
+<h1>带宽、力矩带宽与碰撞安全</h1>
+<p class="sub">机器人从“撞上”到“松手”之间那几十毫秒里，到底发生了什么 · 约 18 分钟</p>
+
+<div class="lead">
+<p>2007 年前后，德国汽车俱乐部 ADAC 的碰撞测试中心来了一位不太寻常的“客户”。平时这里撞的是汽车，假人坐在驾驶座上；这一次，假人站在一台机械臂面前。带队的是德国宇航中心（DLR）机器人所的年轻研究员 Sami Haddadin，他和同事 Alin Albu-Schäffer、Gerd Hirzinger 想回答一个当时没人认真量过的问题：机器人要是迎面撞上人的脑袋，到底有多危险？</p>
+<p>被拿来撞假人的，是 DLR 自己研制的第三代轻型机械臂 LWR III。按 DLR 官网的介绍，它自重 14 公斤，最大负载也是 14 公斤，“完全力矩控制”——每个关节都能感觉到自己受了多大的力。机械臂以大约 2 m/s 的速度撞向 Hybrid III 假人的头部和胸部，传感器记下了汽车行业通用的各项伤害指数。</p>
+<p>结果一半是好消息：这些指数全都落在欧洲新车评价规程 EuroNCAP “极低伤害”绿区的最底部四分之一。另一半让人吃惊：论文里写了一句很重的话——<b>对于快速、刚性的碰撞，没有任何碰撞检测机制快到能减小那一下冲击。</b>可这台机器人明明“完全力矩控制”、每个关节都有感觉啊？如果检测来不及，那检测到底是用来干什么的？今天就沿着一次碰撞的时间线，把上节课埋下的那个词——<b>带宽</b>——讲透。</p>
+</div>
+
+<figure class="photo">
+<img src="https://www.dlr.de/en/rm/images/roboter_und_systeme/lbr/lbr3/rs11799_lwr-iii_studio-image_20251021_106_v2.jpg/@@images/image-1000-88ad00cd82cc7d7615dcd2907ed9ab07.jpeg" loading="lazy" referrerpolicy="no-referrer" alt="DLR 第三代轻型机械臂 LWR III 的棚拍照" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>细长的连杆、把电机和减速器塞进关节里的圆柱外壳——“轻”是它的第一道安全防线。DLR 的轻型臂技术后来转让给了 KUKA，走进了工业界。<br>图：DLR / <a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">DLR Institute of Robotics and Mechatronics</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h2><span class="n">01</span>“带宽”这个词，到底在量什么？</h2>
+<p>先做个实验。打开手机节拍器，跟着拍手。60 拍每分钟，轻松；120 拍，也行；调到 300 拍，你会发现手开始“偷工减料”——拍得越来越轻，节奏也慢半拍。不是你不想拍响，是手掌这块肉来不及加速、减速。</p>
+<p>关节也一样。给它下一个来回摆动的指令：去 +1、回 −1、再去 +1……摆得慢，它亦步亦趋；摆得越快，它的实际动作就<b>越小、越晚</b>。工程师用一个约定俗成的门槛给这件事定量：当实际幅值掉到指令幅值的约 70.7% 时，那个频率就叫这个关节的<b>带宽</b>（bandwidth）。</p>
+<p class="say">一句人话：带宽就是“它还能跟上多快的来回”。</p>
+<div class="formula">|G(f<sub>b</sub>)| = 1/√2 ≈ 0.707 &nbsp;（即 −3 dB）<small>G 是“实际 ÷ 指令”的幅值比；70.7% 这个数来自能量减半（幅值的平方 ≈ 0.5）</small></div>
+
+<figure>
+<svg id="f1svg" viewBox="0 0 640 270" role="img" aria-label="指令正弦波与关节实际输出的对比，可调频率">
+<defs><linearGradient id="f1bg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--soft2)"/><stop offset="1" stop-color="var(--bg2)"/></linearGradient></defs>
+<rect x="40" y="16" width="580" height="200" rx="10" fill="url(#f1bg)" stroke="var(--line)"/>
+<g stroke="var(--line)" stroke-width="1"><line x1="40" y1="116" x2="620" y2="116"/><line x1="40" y1="56" x2="620" y2="56" stroke-dasharray="3 5"/><line x1="40" y1="176" x2="620" y2="176" stroke-dasharray="3 5"/></g>
+<text x="34" y="60" font-size="16" text-anchor="end" fill="var(--ink2)">+1</text><text x="34" y="120" font-size="16" text-anchor="end" fill="var(--ink2)">0</text><text x="34" y="180" font-size="16" text-anchor="end" fill="var(--ink2)">−1</text>
+<path id="f1cmd" fill="none" stroke="var(--ink2)" stroke-width="2.2" stroke-dasharray="7 6"/>
+<path id="f1out" fill="none" stroke="var(--accent)" stroke-width="3.4" stroke-linecap="round"/>
+<line id="f1lagA" stroke="var(--accent2)" stroke-width="2"/><line id="f1lagB" stroke="var(--accent2)" stroke-width="2"/>
+<text id="f1lagT" font-size="16" fill="var(--accent2)" text-anchor="middle"></text>
+<text x="40" y="240" font-size="16" fill="var(--ink2)">0 ms</text><text id="f1tend" x="620" y="240" font-size="16" text-anchor="end" fill="var(--ink2)"></text>
+<g font-size="16"><line x1="60" y1="258" x2="88" y2="258" stroke="var(--ink2)" stroke-width="2.2" stroke-dasharray="7 6"/><text x="94" y="262" fill="var(--ink2)">指令</text>
+<line x1="150" y1="258" x2="178" y2="258" stroke="var(--accent)" stroke-width="3.4"/><text x="184" y="262" fill="var(--ink2)">关节实际</text>
+<line x1="270" y1="258" x2="298" y2="258" stroke="var(--accent2)" stroke-width="2"/><text x="304" y="262" fill="var(--ink2)">时间上落后多少</text></g>
+</svg>
+<div class="seg" id="f1seg"><button class="on" data-fb="100">甲：带宽 100 Hz 的关节</button><button data-fb="15">乙：带宽 15 Hz 的关节</button></div>
+<div class="ctrl"><label for="f1f">指令频率</label><input id="f1f" type="range" min="0" max="100" value="35"><output id="f1fo"></output></div>
+<div class="ctrl"><button id="f1play">▶ 播放</button></div>
+<div class="readout"><div>幅值比<b id="f1amp"></b></div><div>相位滞后<b id="f1ph"></b></div><div>时间滞后<b id="f1ms"></b></div><div>判定<b id="f1v"></b></div></div>
+<figcaption><b>看图要看什么：</b>把频率滑到带宽附近，橙色线的高度正好缩到虚线的七成左右，并且明显落后。再切到“乙”，同一个频率下它几乎原地不动。两个关节都是教学假设（一阶低通模型），不是某款产品的实测。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比一：骑电动车跟着导航拐弯</div>
+<p>城区里每隔几百米拐一个弯，你跟得很从容；要是导航让你每两秒左右各拐一次，车把来回晃，车身却根本甩不过去，轨迹被“抹平”成一条微微扭动的直线。车越重，越早被抹平。关节的带宽，就是它“还能甩过去”的最快节奏。</p>
+<p class="off">哪里不准：人骑车的落后主要来自反应时间；关节的落后主要来自惯量、电机电感和各种滤波器，跟“反应”无关，而且可以精确计算。</p></div>
+
+<h2><span class="n">02</span>为什么一个关节会有好几个“带宽”？</h2>
+<p>上节课讲过三环：电流环套在最里面，外面是速度环，再外面是位置环。每一环都有自己的带宽，而且<b>越往里越快</b>——外环下命令，内环必须先跟上，否则外环说什么都白说。</p>
+<p>力矩带宽（torque bandwidth）问的是：我命令关节输出一个来回变化的力矩，它在输出端真正“使出来”的力，能跟上多快？注意，是输出端。电流环再快，力还要穿过减速器、轴承、壳体、腿，每一处的弹性都会让它打折扣。</p>
+<p>MIT Cheetah 团队 2017 年的执行器论文把这个打折扣的过程量得很清楚：从驱动器到电机绕组电流，带宽约 400 Hz；从驱动器到“脚底下的力”，就只剩 103.7 Hz，作者把这段差距归因于结构上的柔性。他们还按模型算了一笔：如果在这条传动链里串一根刚度 70 N·m/rad 的弹簧，带宽会掉到 13.5 Hz 左右。上节课提到的 NASA Valkyrie 正是串了弹簧的路线，论文报告它肘关节的力矩带宽最高约 70 Hz——对弹簧路线来说已经相当高。</p>
+
+<figure>
+<svg viewBox="0 0 400 540" role="img" aria-label="对数频率刻度尺上标出的带宽与控制频率">
+<defs><linearGradient id="f2band" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="var(--soft)"/><stop offset="1" stop-color="var(--soft2)"/></linearGradient></defs>
+<text x="100" y="22" font-size="16" font-weight="700" text-anchor="middle" fill="var(--accent)">● 带宽</text>
+<text x="100" y="42" font-size="13" text-anchor="middle" fill="var(--ink2)">输出跟得上多快的来回</text>
+<text x="310" y="22" font-size="16" font-weight="700" text-anchor="middle" fill="var(--blue)">□ 控制频率</text>
+<text x="310" y="42" font-size="13" text-anchor="middle" fill="var(--ink2)">控制器多久算一次</text>
+<rect x="170" y="60" width="60" height="460" rx="14" fill="url(#f2band)" stroke="var(--line)"/>
+<g id="f2ticks"></g><g id="f2pins"></g>
+</svg>
+<figcaption><b>看图要看什么：</b>左边是“跟得上多快”，右边是“多久算一次”，两者共用一把对数尺（每格差 10 倍），但意思完全不同。右边的数字通常比左边高出 10 倍以上——控制器算得勤，是带宽高的前提，不是带宽本身。数据来源见文末。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比二：家里的吊扇</div>
+<p>你把吊扇开关从 1 档拧到 5 档，手上只花了半秒——这是“下指令的频率”；扇叶却要好几秒才转起来——这是“系统的响应”。就算你每秒拧开关十次，扇叶也只会在中间某个转速附近晃。规格书上的“控制频率 1 kHz”说的是你拧开关有多勤，不是扇叶转得有多跟手。</p>
+<p class="off">哪里不准：吊扇没有反馈，拧了就听天由命；关节有闭环，能用增益把响应“催”快，但催到头还是被惯量和结构刚度卡住。</p></div>
+
+<h2><span class="n">03</span>一次碰撞的 100 毫秒：哪一段来得及救？</h2>
+<p>回到开头那个谜题。我们用慢镜头拆一次“机器人手臂把一根手指压在桌面上”的碰撞——这正是上节课翻车现场里那台下棋机器人的情形。时间从接触那一刻算起：</p>
+<ul>
+<li><b>0 到约 10 毫秒：冲击。</b>手臂撞上手指，手指像一根很硬的弹簧被压缩，接触力冲上第一个峰值。这一下有多大，主要取决于三样东西：撞击速度、手臂的等效质量、被撞东西有多软。</li>
+<li><b>几毫秒到几十毫秒：检测。</b>控制器要意识到“出事了”。它要么读关节力矩传感器，要么拿“按模型应该用多大电流”和“实际用了多大电流”作比较——后者叫动量观测器（momentum observer），2006 年 De Luca 等人就在 DLR 的轻型臂上做过。无论哪种，测到的力都要先过一道滤波，<b>测力的带宽越低，信号越“迟钝”，越晚越过报警线。</b></li>
+<li><b>检测之后：反应。</b>停下、退回，或者瞬间变软。</li>
+<li><b>如果没有反应：夹持。</b>位置环只看到“我还没到目标”，于是一个劲地加电流，手指被越压越紧，直到电机顶到力矩上限。这一段，才是检测真正能救命的地方。</li>
+</ul>
+
+<figure>
+<svg id="f3svg" viewBox="0 0 640 380" role="img" aria-label="碰撞时接触力随时间变化的模拟，以及手臂压手指的示意">
+<defs>
+<linearGradient id="f3arm" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient>
+<linearGradient id="f3table" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--wood)"/><stop offset="1" stop-color="#7a5532"/></linearGradient>
+<linearGradient id="f3skin" x1="0" x2="1"><stop offset="0" stop-color="#e8b796"/><stop offset="1" stop-color="#d49a76"/></linearGradient>
+</defs>
+<!-- scene -->
+<rect x="0" y="0" width="640" height="118" rx="12" fill="var(--bg)"/>
+<rect x="150" y="92" width="340" height="18" rx="3" fill="url(#f3table)"/>
+<g id="f3finger"><rect id="f3fing" x="270" y="72" width="110" height="20" rx="10" fill="url(#f3skin)"/><ellipse cx="372" cy="80" rx="5" ry="4" fill="#f4d9c8" opacity=".8"/></g>
+<g id="f3armg">
+<rect id="f3pad" x="290" y="54" width="70" height="8" rx="4" fill="var(--accent2)" opacity="0"/>
+<rect x="296" y="20" width="58" height="36" rx="8" fill="url(#f3arm)" stroke="var(--ink2)" stroke-width="1"/>
+<rect x="315" y="-10" width="20" height="34" fill="url(#f3arm)" stroke="var(--ink2)" stroke-width="1"/>
+<circle cx="325" cy="38" r="7" fill="var(--bg2)" stroke="var(--ink2)"/>
+</g>
+<text id="f3state" x="20" y="28" font-size="18" font-weight="700" fill="var(--accent)"></text>
+<text id="f3tnow" x="20" y="50" font-size="16" fill="var(--ink2)"></text>
+<text id="f3fnow" x="620" y="28" font-size="18" font-weight="700" text-anchor="end" fill="var(--ink)"></text>
+<!-- chart -->
+<g transform="translate(0,130)">
+<rect x="56" y="8" width="564" height="200" rx="8" fill="var(--bg2)" stroke="var(--line)"/>
+<g id="f3grid" font-size="15" fill="var(--ink2)"></g>
+<rect id="f3over" x="56" y="8" width="0" height="0" fill="#dc2626" opacity=".08"/>
+<line id="f3lim" x1="56" x2="620" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text id="f3limT" x="616" font-size="15" text-anchor="end" fill="#dc2626">手/手指 140 N</text>
+<line id="f3thr" x1="56" x2="620" stroke="var(--blue)" stroke-width="1.2" stroke-dasharray="2 4"/>
+<text id="f3thrT" x="616" font-size="15" text-anchor="end" fill="var(--blue)">报警线 40 N</text>
+<path id="f3est" fill="none" stroke="var(--blue)" stroke-width="1.8" opacity=".75"/>
+<path id="f3fc" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>
+<line id="f3det" y1="8" y2="208" stroke="var(--accent2)" stroke-width="2"/>
+<text id="f3detT" y="24" font-size="16" fill="var(--accent2)"></text>
+<line id="f3cur" y1="8" y2="208" stroke="var(--ink)" stroke-width="1" opacity=".5"/>
+<text x="338" y="236" font-size="16" text-anchor="middle" fill="var(--ink2)">接触后的时间（毫秒）</text>
+<text x="14" y="110" font-size="16" fill="var(--ink2)" transform="rotate(-90 14 110)" text-anchor="middle">接触力（N）</text>
+</g>
+</svg>
+<div class="seg" id="f3seg"><button class="on" data-k="75000">直接压手指</button><button data-k="15000">手臂包一层软垫</button><button id="f3off">关掉碰撞检测</button></div>
+<div class="ctrl"><label for="f3v">撞击速度</label><input id="f3v" type="range" min="10" max="100" value="30"><output id="f3vo"></output></div>
+<div class="ctrl"><label for="f3m">等效质量</label><input id="f3m" type="range" min="1" max="20" value="4"><output id="f3mo"></output></div>
+<div class="ctrl"><label for="f3b">测力带宽</label><input id="f3b" type="range" min="0" max="100" value="55"><output id="f3bo"></output></div>
+<div class="ctrl"><button id="f3play">▶ 慢放这次碰撞</button></div>
+<div class="readout"><div>冲击峰值<b id="r3peak"></b></div><div>检测到的时刻<b id="r3det"></b></div><div>超过 140 N 的时长<b id="r3over"></b></div><div>100 ms 时的夹持力<b id="r3end"></b></div></div>
+<figcaption><b>看图要看什么：</b>先把测力带宽从低拖到高——检测竖线左移，但橙色曲线的第一个尖峰几乎不变：冲击在控制器反应之前就结束了。再点“关掉碰撞检测”，曲线不再落回零，而是一路爬到电机的力上限——这就是夹持。最后点“软垫”，尖峰明显变矮。手指刚度 75 N/mm 取自 ISO/TS 15066 的表值；软垫刚度、报警线、电机力上限 400 N、3 ms 反应延迟都是教学假设。</figcaption>
+</figure>
+
+<p>拖几下滑块，你会得到和 Haddadin 论文一致的结论：<b>第一下冲击，检测基本救不了；之后的夹持，检测能救全部。</b>在他们的实验里，同样以 2 m/s 撞击并夹住上颌骨（假人面部模型），轻巧的 LWR III 产生约 1.2 kN 的力，足以骨折；500 公斤级的 KUKA 工业机器人 KR500 则是约 23.6 kN。论文认为，LWR III 把速度降到 1 m/s 左右，这项测试里的力约 0.6 kN，不再骨折。</p>
+
+<div class="analogy"><div class="t">类比三：电梯门夹到胳膊</div>
+<p>电梯门关到一半碰到你的胳膊，会弹回去。那一下碰撞你照样感觉得到——门已经撞上了；它能做的，是不再继续往里夹。机器人的碰撞检测干的是同一件事：管不了“撞上那一下”，但管得了“撞上之后”。</p>
+<p class="off">哪里不准：很多电梯门靠光幕在接触之前就发现你，属于“非接触检测”；关节力矩检测必须先碰到才知道。而且电梯门很轻、很慢，本身就把冲击做小了——这恰好是下一节的主题。</p></div>
+
+<div class="box fail"><div class="t">翻车现场：第一个死于机器人的人</div>
+<p>1979 年 1 月 25 日，美国密歇根州弗拉特罗克（Flat Rock）的福特铸造厂。一套重约 1 吨、在货架间搬运零件的机器人系统运行变慢，工人 Robert Williams 爬进货架去手动取件，机械臂撞到他的头部，他当场死亡。吉尼斯世界纪录把他列为“第一位死于机器人的人”。</p>
+<p>那一代工业机器人又重又快，也完全不知道路上多了一个人。行业此后几十年的答案很朴素：把机器人关进围栏，人进去就断电。今天的协作机器人想拆掉围栏，靠的就是这节课讲的几样东西——轻、慢、软、灵。</p></div>
+
+<h2><span class="n">04</span>撞得多疼，其实在撞之前就决定了</h2>
+<p>既然第一下冲击救不了，那就只能让它本来就不大。把手指当成弹簧、把机器人当成一块撞上来的质量，能量守恒告诉我们：峰值力大约等于 <i>v</i>·√(<i>m</i>·<i>k</i>)。速度翻倍，力翻倍；质量翻 4 倍，力才翻倍。所以减速比、反射惯量（第 2 单元第 1 课）在这里又露面了——电机转子的惯量会按减速比的平方“放大”到输出端，成为等效质量的一部分。</p>
+<p>Cheetah 论文给过一组对比：用 5.8:1 单级行星减速，转子在输出端的反射惯量约 0.0102 kg·m²；同一模型换成 160:1 的高减速比（作者用 HUBO 机器人作对照），反射惯量就是约 0.0852 kg·m²，八倍多。撞上东西时，后者“身后”压着的那块看不见的质量要大得多。</p>
+<p>协作机器人的技术规范 ISO/TS 15066 把这件事写成了速度上限。规范给每个身体部位列了允许的力、等效刚度和等效质量；把它们代进上面的能量关系，就能反推出“这台机器人最快能以多大的速度碰这个部位”：</p>
+<p class="say">一句人话：被撞的部位越硬、两边越重，允许的速度就越低。</p>
+<div class="formula"><i>v</i><sub>max</sub> = <i>F</i><sub>max</sub> / √(<i>μ</i>·<i>k</i>)，&nbsp; <i>μ</i> = (1/<i>m</i><sub>人</sub> + 1/<i>m</i><sub>机</sub>)<sup>−1</sup><small>μ 叫“约化质量”：两个物体相撞时，真正参与“硬碰硬”的那部分质量</small></div>
+
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="按 ISO/TS 15066 表值计算的允许碰撞速度仪表">
+<defs><linearGradient id="f4arc" x1="0" x2="1"><stop offset="0" stop-color="var(--accent2)"/><stop offset=".55" stop-color="var(--glow)"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>
+<path d="M120 210 A200 200 0 0 1 520 210" fill="none" stroke="var(--line)" stroke-width="26" stroke-linecap="round"/>
+<path id="f4fill" d="M120 210 A200 200 0 0 1 520 210" fill="none" stroke="url(#f4arc)" stroke-width="26" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
+<g id="f4ticks" font-size="16" fill="var(--ink2)" text-anchor="middle"></g>
+<line id="f4walk" stroke="var(--ink2)" stroke-width="2" stroke-dasharray="3 3"/><text id="f4walkT" font-size="15" fill="var(--ink2)" text-anchor="middle">步行约 1.3</text>
+<line id="f4needle" x1="320" y1="210" x2="320" y2="40" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+<circle cx="320" cy="210" r="12" fill="var(--ink)"/>
+<text id="f4val" x="320" y="262" font-size="44" font-weight="700" text-anchor="middle" fill="var(--ink)"></text>
+<text x="320" y="150" font-size="16" text-anchor="middle" fill="var(--ink2)">允许的最大相对速度（m/s）</text>
+<text id="f4note" x="320" y="290" font-size="16" text-anchor="middle" fill="var(--ink2)"></text>
+</svg>
+<div class="seg" id="f4seg"><button class="on" data-r="0">手和手指</button><button data-r="1">前臂与手腕</button><button data-r="2">胸口</button></div>
+<div class="ctrl"><label for="f4m">机器人质量</label><input id="f4m" type="range" min="1" max="40" value="5"><output id="f4mo"></output></div>
+<figcaption><b>看图要看什么：</b>切到“胸口”，指针一下掉到半米每秒以下——胸口软，但身体重 40 公斤，μ 变大。再拖质量滑块：手的等效质量只有 0.6 kg，机器人再重，μ 也涨不了多少；胸口则对机器人质量很敏感。表值（手 140 N / 75 N/mm / 0.6 kg；前臂 160 N / 40 N/mm / 2 kg；胸 140 N / 25 N/mm / 40 kg）引自一篇基于 ISO/TS 15066 的论文表格，仅作教学演算，实际评估要以标准原文和整机风险评估为准。头部碰撞按标准是不允许的，这里不算。</figcaption>
+</figure>
+
+<p>拿默认值算一遍：机器人等效质量 5 kg 撞手，μ = 1/(1/0.6 + 1/5) ≈ 0.54 kg，√(0.54 × 75000) ≈ 200，140 ÷ 200 ≈ <b>0.70 m/s</b>。同样的机器人撞胸口：μ ≈ 4.4 kg，√(4.4 × 25000) ≈ 333，140 ÷ 333 ≈ <b>0.42 m/s</b>；如果等效质量是 20 kg，就只剩约 0.24 m/s——比人慢慢走路还慢得多。这就是为什么协作机器人一靠近人就“自动减速”，不是胆小，是算出来的。</p>
+
+<div class="analogy"><div class="t">类比四：超市里推购物车</div>
+<p>推空车不小心碰到前面人的脚后跟，对方回头笑笑；推着一车矿泉水碰上去，对方可能要坐下揉半天。哪怕你碰到的一瞬间就松了手——相当于“检测并反应了”——那一下的疼也已经发生了。想少疼，只有两个办法：车轻一点，推慢一点。</p>
+<p class="off">哪里不准：购物车的质量是固定的；机器人的“等效质量”随姿态变化，伸直手臂和收拢手臂差别很大，还要加上减速比平方放大的电机惯量。</p></div>
+
+<div class="box cold"><div class="t">冷知识：拿自己的胳膊做实验的研究员</div>
+<p>2010 年，Haddadin 团队又做了一组更吓人的实验：给 LWR III 装上手术刀、厨刀、剪刀、牛排刀和螺丝刀，去扎硅胶块和猪腿，比较开不开碰撞检测的区别。IEEE Spectrum 的报道说，大多数接触都造成了深切口，开了碰撞检测之后切口变浅，少数情况下完全没扎进去。报道里还有一个细节：实验中有一次用的是志愿者的裸臂，后来更正说明，那条胳膊的主人正是论文第一作者 Haddadin 本人。</p></div>
+
+<h2><span class="n">05</span>四道防线：轻、软、灵、限</h2>
+<p>把前面的时间线串起来，一个能和人共处的关节，安全是一层一层叠出来的：</p>
+
+<figure>
+<svg viewBox="0 0 400 540" role="img" aria-label="碰撞安全的四道防线按时间排列">
+<defs><marker id="f5ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent2)"/></marker>
+<linearGradient id="f5st" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--can)"/></linearGradient></defs>
+<g transform="translate(6,10)"><rect width="190" height="250" rx="16" fill="var(--bg)" stroke="var(--line)"/>
+<text x="95" y="32" font-size="21" font-weight="700" text-anchor="middle" fill="var(--accent)">① 轻、慢</text>
+<text x="95" y="54" font-size="13" text-anchor="middle" fill="var(--ink2)">撞之前</text>
+<g transform="translate(20,0)"><rect x="30" y="80" width="90" height="14" rx="7" fill="url(#f5st)"/><circle cx="30" cy="87" r="16" fill="url(#f5st)" stroke="var(--ink2)"/><circle cx="30" cy="87" r="6" fill="var(--bg2)"/><path d="M60 112 h70" stroke="var(--accent2)" stroke-width="3" marker-end="url(#f5ar)"/></g>
+<text x="95" y="150" font-size="16" text-anchor="middle" fill="var(--ink)"><tspan x="95" dy="0">小减速比</tspan><tspan x="95" dy="22">低反射惯量</tspan><tspan x="95" dy="22">靠近人就减速</tspan></text>
+<rect x="20" y="214" width="150" height="24" rx="12" fill="var(--soft2)"/><text x="95" y="231" font-size="14" font-weight="600" text-anchor="middle" fill="var(--accent2)">决定冲击峰值</text></g><g transform="translate(204,10)"><rect width="190" height="250" rx="16" fill="var(--bg)" stroke="var(--line)"/>
+<text x="95" y="32" font-size="21" font-weight="700" text-anchor="middle" fill="var(--accent)">② 软</text>
+<text x="95" y="54" font-size="13" text-anchor="middle" fill="var(--ink2)">撞之前</text>
+<g transform="translate(20,0)"><rect x="28" y="72" width="104" height="32" rx="16" fill="var(--accent2)" opacity=".25"/><rect x="36" y="80" width="88" height="16" rx="8" fill="url(#f5st)"/><path d="M38 118 l9 -7 l9 14 l9 -14 l9 14 l9 -14 l9 14 l9 -14 l9 7" fill="none" stroke="var(--copper)" stroke-width="3" stroke-linejoin="round"/></g>
+<text x="95" y="150" font-size="16" text-anchor="middle" fill="var(--ink)"><tspan x="95" dy="0">软包覆</tspan><tspan x="95" dy="22">串联弹簧</tspan><tspan x="95" dy="22">降低接触刚度</tspan></text>
+<rect x="20" y="214" width="150" height="24" rx="12" fill="var(--soft2)"/><text x="95" y="231" font-size="14" font-weight="600" text-anchor="middle" fill="var(--accent2)">削矮冲击尖峰</text></g><g transform="translate(6,280)"><rect width="190" height="250" rx="16" fill="var(--bg)" stroke="var(--line)"/>
+<text x="95" y="32" font-size="21" font-weight="700" text-anchor="middle" fill="var(--accent)">③ 灵</text>
+<text x="95" y="54" font-size="13" text-anchor="middle" fill="var(--ink2)">几到几十毫秒</text>
+<g transform="translate(20,0)"><circle cx="75" cy="98" r="20" fill="none" stroke="var(--blue)" stroke-width="2.5"/><circle cx="75" cy="98" r="8" fill="var(--blue)"/><path d="M42 98 a33 33 0 0 1 66 0" fill="none" stroke="var(--blue)" stroke-width="1.6" opacity=".5"/><path d="M32 98 a43 43 0 0 1 86 0" fill="none" stroke="var(--blue)" stroke-width="1.3" opacity=".3"/></g>
+<text x="95" y="150" font-size="16" text-anchor="middle" fill="var(--ink)"><tspan x="95" dy="0">力矩传感器</tspan><tspan x="95" dy="22">动量观测器</tspan><tspan x="95" dy="22">测力带宽要高</tspan></text>
+<rect x="20" y="214" width="150" height="24" rx="12" fill="var(--soft2)"/><text x="95" y="231" font-size="14" font-weight="600" text-anchor="middle" fill="var(--accent2)">尽早发现</text></g><g transform="translate(204,280)"><rect width="190" height="250" rx="16" fill="var(--bg)" stroke="var(--line)"/>
+<text x="95" y="32" font-size="21" font-weight="700" text-anchor="middle" fill="var(--accent)">④ 限</text>
+<text x="95" y="54" font-size="13" text-anchor="middle" fill="var(--ink2)">检测之后</text>
+<g transform="translate(20,0)"><path d="M45 112 a30 30 0 0 1 60 0" fill="none" stroke="var(--line)" stroke-width="10"/><path d="M45 112 a30 30 0 0 1 48 -22" fill="none" stroke="#dc2626" stroke-width="10"/><line x1="75" y1="112" x2="96" y2="92" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g>
+<text x="95" y="150" font-size="16" text-anchor="middle" fill="var(--ink)"><tspan x="95" dy="0">力矩/电流上限</tspan><tspan x="95" dy="22">停止、回退、变阻尼</tspan><tspan x="95" dy="22">急停</tspan></text>
+<rect x="20" y="214" width="150" height="24" rx="12" fill="var(--soft2)"/><text x="95" y="231" font-size="14" font-weight="600" text-anchor="middle" fill="var(--accent2)">杜绝夹持</text></g>
+<path d="M196 135 h6" stroke="var(--ink2)" stroke-width="2"/><path d="M200 262 v16" stroke="var(--ink2)" stroke-width="2"/>
+</svg>
+<figcaption><b>看图要看什么：</b>四个面板按时间先后排列（先上排，再下排）。前两道在“撞之前”就定下了冲击有多大，后两道决定撞上之后会不会越压越紧。带宽同时影响第③道（多早发现）和第④道（多快把力撤掉）。</figcaption>
+</figure>
+
+<figure class="photo">
+<img src="https://www.nasa.gov/wp-content/uploads/2023/03/iss036e029144.jpg" loading="lazy" referrerpolicy="no-referrer" alt="国际空间站命运号实验舱里，宇航员 Chris Cassidy 穿戴遥操作设备，身旁是人形机器人 Robonaut 2" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/image-article/astronaut-chris-cassidy-robonaut-2/">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>机器人和宇航员挤在同一个狭小舱段里，中间没有任何围栏。NASA 和通用汽车联合研制 Robonaut 2，目标就是“能和人并肩干活的机器人助手”，2011 年随发现号航天飞机上天。<br>图：NASA / <a href="https://www.nasa.gov/image-article/astronaut-chris-cassidy-robonaut-2/">NASA Image Article</a>，公有领域（NASA 图片）</figcaption>
+</figure>
+
+<h2><span class="n">06</span>工作里会在哪遇到？</h2>
+<div class="box work">
+<ul>
+<li><b>规格书上的“控制频率 / 更新率”≠ 带宽。</b>比如 THEMIS 2.5 宣传册写主控“processing tasks at 1kHz”（《THEMIS2.5Brochure.pdf》），这是主控每秒算多少次，不是关节跟得上多快的来回。客户把两者混用时，礼貌地分开说。</li>
+<li><b>客户问“BEAR 的力矩带宽是多少”。</b>我在本项目的《BEAR-SDK-Manual-1.3.0-EN.pdf》中没有查到力矩带宽的数值，因此这类问题一律记为 <b>[待技术确认]</b>，不要用论文里 QDD 的数字去套。追问时把条件问清楚：哪一种带宽（电流、力矩、位置）？多大的幅值？输出端是锁死还是自由？</li>
+<li><b>手册里和“限”相关的、可以直接引用的功能</b>（来源同上，SDK Manual 1.3.0）：<code>limit_i_max</code> 在所有模式下限制 Iq 与 Id，相当于力矩上限；<code>watchdog_timeout</code> 通讯超时后进入内部阻尼模式，<b>仅在模式 0（力矩模式）下有效</b>；向 <code>torque_enable</code> 写 3 触发 E-Stop，进入内部安全阻尼模式；越过位置限位也会进入阻尼模式并报错。这些是驱动器层面的保护功能；整机能否满足协作安全要求，要看整机层面的风险评估，不能从单个执行器参数直接推出。</li>
+</ul>
+<p class="en">“Could you clarify which bandwidth you are referring to — current-loop, torque, or position bandwidth — and the test conditions (amplitude, output fixed or free)? Note that the 1 kHz figure is the control update rate, not the closed-loop bandwidth. We will confirm the torque bandwidth figure with our engineering team.”</p>
+</div>
+
+<h2><span class="n">07</span>三道自测题</h2>
+<p class="q">1. 展会上客户指着规格书问：“你们控制频率 1 kHz，那带宽就是 1 kHz 吧？”你怎么回？</p>
+<details><summary>看答案</summary><p>不是。1 kHz 是控制器每秒计算、下发指令的次数；带宽是输出还能跟上多快的来回变化，被惯量、电感、结构柔性和滤波限制，通常比控制频率低一个数量级甚至更多。控制频率高是带宽高的前提，不等于带宽本身。</p></details>
+<p class="q">2. 一封邮件里写着：“我们给关节加了更灵敏的碰撞检测，所以可以把速度从 0.5 m/s 提到 1 m/s。”这个推理哪里有问题？</p>
+<details><summary>看答案</summary><p>碰撞检测主要防的是撞上之后的夹持；第一下冲击的峰值大约正比于速度，在控制器反应之前就已经发生。速度翻倍，冲击峰值也大约翻倍，检测再灵敏也压不下来。要提速，得同时减小等效质量或加软包覆，并重新做评估。</p></details>
+<p class="q">3. 按 ISO/TS 15066 的手部表值（140 N、75 N/mm、0.6 kg），一台等效质量约 0.6 kg 的小臂末端，允许以多大速度碰手？</p>
+<details><summary>看答案</summary><p>μ = 1/(1/0.6 + 1/0.6) = 0.3 kg；√(0.3 × 75000) = √22500 = 150；v = 140 / 150 ≈ 0.93 m/s。这是教学演算，说明两边越轻，允许越快；实际项目以标准原文和整机评估为准。</p></details>
+
+<h2>中英术语对照</h2>
+<table class="terms">
+<tr><td>带宽</td><td>Bandwidth —— 输出还能跟上多快的来回</td></tr>
+<tr><td>−3 dB 点</td><td>−3 dB point —— 幅值掉到约 70.7% 的位置</td></tr>
+<tr><td>相位滞后</td><td>Phase lag —— 输出比指令晚了多少</td></tr>
+<tr><td>力矩带宽</td><td>Torque bandwidth —— 输出端力矩能跟上的频率</td></tr>
+<tr><td>控制频率</td><td>Control rate / update rate —— 控制器多久算一次</td></tr>
+<tr><td>碰撞检测</td><td>Collision detection</td></tr>
+<tr><td>动量观测器</td><td>Momentum observer —— 不用力传感器估计外力</td></tr>
+<tr><td>夹持</td><td>Clamping —— 人被夹在机器人和物体之间</td></tr>
+<tr><td>瞬态接触</td><td>Transient contact —— 一撞即离的碰撞</td></tr>
+<tr><td>功率与力限制</td><td>Power and force limiting (PFL)</td></tr>
+<tr><td>等效质量 / 约化质量</td><td>Effective mass / Reduced mass</td></tr>
+<tr><td>协作机器人</td><td>Collaborative robot (cobot)</td></tr>
+</table>
+
+<div class="tease">第 4 单元讲完了：PID、三环、阻抗控制、带宽与安全。明天是单元复盘和小测——有一道题会问：一个“阻抗很软”的关节，为什么反而可能需要更高的带宽？想想看。复盘之后，我们进入第 5 单元「热与选型」：为什么一个关节能短时间使出 3 倍的力，却只能持续使出 1 倍？</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://www.roboticsproceedings.org/rss03/p28.html">Haddadin, Albu-Schäffer, Hirzinger (2007). Safety Evaluation of Physical Human-Robot Interaction via Crash-Testing. RSS III</a></li>
+<li><a href="https://elib.dlr.de/53004/1/HaddadinSafePhyscalHumanRobotbook_isrr2007.pdf">Haddadin et al., ISRR 2007 论文（ADAC 碰撞测试、夹持实验数据）</a></li>
+<li><a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">DLR: LWR III（自重、负载、控制频率与照片）</a></li>
+<li><a href="https://fab.cba.mit.edu/classes/865.18/motion/papers/mit-cheetah-actuator.pdf">Wensing et al. (2017). Proprioceptive Actuator Design in the MIT Cheetah. IEEE T-RO</a></li>
+<li><a href="https://sites.utexas.edu/hcrl/wp-content/uploads/sites/3888/2016/01/jfr-valkyrie-actuator-control-final.pdf">Paine et al., Actuator Control for the NASA-JSC Valkyrie Humanoid Robot</a></li>
+<li><a href="https://iris.uniroma1.it/bitstream/11573/1116211/2/Gaz_Preprint-Mechatronics_2018.pdf">Gaz, Magrini, De Luca (2018). 基于动量残差的碰撞检测（引述 De Luca et al. 2006）</a></li>
+<li><a href="https://arxiv.org/pdf/2311.13814">Safe Physical HRI through Variable Impedance Control based on ISO/TS 15066（身体部位表值与速度公式）</a></li>
+<li><a href="https://www.nist.gov/document/head-toe-biomechanical-thresholds-protect-robot-operators-against-injuries">NIST: Head-to-toe biomechanical thresholds（ISO/TS 15066 背景）</a></li>
+<li><a href="https://www.guinnessworldrecords.com/world-records/first-human-to-be-killed-by-a-robot">Guinness World Records: First human to be killed by a robot</a></li>
+<li><a href="https://spectrum.ieee.org/050610-robots-with-knives-a-study-of-soft-tissue-injury-in-robotics">IEEE Spectrum (2010): Robots With Knives</a></li>
+<li><a href="https://www.nasa.gov/robonaut2/">NASA: Robonaut 2</a>；<a href="https://www.nasa.gov/image-article/astronaut-chris-cassidy-robonaut-2/">照片页</a></li>
+<li>Westwood Robotics，《BEAR-SDK-Manual-1.3.0-EN.pdf》；《THEMIS2.5Brochure.pdf》（本项目资料）</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(i){return document.getElementById(i);}
+/* ---------- F1 bandwidth ---------- */
+var fb=100,phase0=0,playing1=false,last1=0;
+function f1freq(){var t=+$('f1f').value/100;return Math.pow(10,0+t*Math.log10(200));}
+function f1draw(){
+ var f=f1freq(),r=f/fb,amp=1/Math.sqrt(1+r*r),ph=Math.atan(r),T=1000/f,span=2*T;
+ var cmd='',out='';
+ for(var i=0;i<=200;i++){var x=40+580*i/200,tt=span*i/200,w=2*Math.PI*tt/T+phase0;
+  cmd+=(i?'L':'M')+x.toFixed(1)+' '+(116-60*Math.sin(w)).toFixed(1);
+  out+=(i?'L':'M')+x.toFixed(1)+' '+(116-60*amp*Math.sin(w-ph)).toFixed(1);}
+ $('f1cmd').setAttribute('d',cmd);$('f1out').setAttribute('d',out);
+ // lag marker at first command peak
+ var tp=((Math.PI/2-phase0)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)/(2*Math.PI)*T;
+ var xa=40+580*tp/span,lagms=ph/(2*Math.PI)*T,xb=xa+580*lagms/span;
+ [['f1lagA',xa],['f1lagB',xb]].forEach(function(a){var e=$(a[0]);e.setAttribute('x1',a[1]);e.setAttribute('x2',a[1]);e.setAttribute('y1',40);e.setAttribute('y2',200);});
+ var tl=$('f1lagT');tl.setAttribute('x',(xa+xb)/2);tl.setAttribute('y',34);tl.textContent=lagms>=0.05?'落后 '+lagms.toFixed(lagms<1?2:1)+' ms':'';
+ $('f1tend').textContent=span.toFixed(span<10?1:0)+' ms';
+ $('f1fo').textContent=f.toFixed(f<10?1:0)+' Hz';
+ $('f1amp').textContent=Math.round(amp*100)+'%';
+ $('f1ph').textContent=(ph*180/Math.PI).toFixed(0)+'°';
+ $('f1ms').textContent=lagms.toFixed(lagms<1?2:1)+' ms';
+ var v=$('f1v');v.textContent=amp>0.9?'跟得上':(amp>=0.69?'到带宽了':(amp>0.3?'明显掉队':'几乎不动'));
+ v.className=amp>=0.69?'okc':'badc';
+}
+function f1loop(ts){if(!playing1)return;if(last1){phase0-=(ts-last1)/1000*2*Math.PI*0.5;}last1=ts;f1draw();requestAnimationFrame(f1loop);}
+$('f1f').addEventListener('input',f1draw);
+Array.prototype.forEach.call(document.querySelectorAll('#f1seg button'),function(b){b.addEventListener('click',function(){fb=+b.dataset.fb;document.querySelectorAll('#f1seg button').forEach(function(x){x.classList.toggle('on',x===b);});f1draw();});});
+$('f1play').addEventListener('click',function(){if(RM){phase0-=Math.PI/4;f1draw();return;}playing1=!playing1;this.textContent=playing1?'❚❚ 暂停':'▶ 播放';last1=0;if(playing1)requestAnimationFrame(f1loop);});
+f1draw();
+
+/* ---------- F2 ladder ---------- */
+(function(){var Y=function(f){return 510-440*(Math.log10(f)-1)/4;};var s='';
+ [[10,'10 Hz'],[100,'100 Hz'],[1000,'1 kHz'],[10000,'10 kHz'],[100000,'100 kHz']].forEach(function(d){var y=Y(d[0]);s+='<line x1="170" x2="230" y1="'+y+'" y2="'+y+'" stroke="var(--ink2)" stroke-width="1" opacity=".5"/><text x="200" y="'+(y-5)+'" font-size="12" text-anchor="middle" fill="var(--ink2)">'+d[1]+'</text>';});
+ $('f2ticks').innerHTML=s;
+ var L=[[13.5,'串弹簧（模型）','Cheetah 论文 · 13.5 Hz',470],[70,'Valkyrie 肘','力矩带宽 · 70 Hz',420],[103.7,'Cheetah 足端力','实测 · 103.7 Hz',368],[400,'Cheetah 绕组电流','实测 · 400 Hz',300]];
+ var R=[[1000,'THEMIS 主控','LWR III 笛卡尔 · 1 kHz',250],[3000,'LWR III 关节','3 kHz',196],[40000,'LWR III 电流','40 kHz',92]];
+ var h='';L.forEach(function(d){var y=Y(d[0]);h+='<path d="M170 '+y+' L160 '+y+' L150 '+(d[3]-6)+'" fill="none" stroke="var(--accent)" stroke-width="1.4"/><circle cx="170" cy="'+y+'" r="6.5" fill="var(--accent)" stroke="var(--bg2)" stroke-width="2"/><text x="146" y="'+d[3]+'" font-size="15" font-weight="600" text-anchor="end" fill="var(--ink)">'+d[1]+'</text><text x="146" y="'+(d[3]+18)+'" font-size="12.5" text-anchor="end" fill="var(--ink2)">'+d[2]+'</text>';});
+ R.forEach(function(d){var y=Y(d[0]);h+='<path d="M230 '+y+' L240 '+y+' L250 '+(d[3]-6)+'" fill="none" stroke="var(--blue)" stroke-width="1.4" stroke-dasharray="3 3"/><rect x="223" y="'+(y-7)+'" width="14" height="14" fill="var(--bg2)" stroke="var(--blue)" stroke-width="2.2"/><text x="254" y="'+d[3]+'" font-size="15" font-weight="600" fill="var(--ink)">'+d[1]+'</text><text x="254" y="'+(d[3]+18)+'" font-size="12.5" fill="var(--ink2)">'+d[2]+'</text>';});
+ $('f2pins').innerHTML=h;})();
+
+/* ---------- F3 collision ---------- */
+var K=75000,DET=true,res=null,cur=120,playing3=false,t0=0;
+var CX=function(t){return 56+564*t/120;},CY=function(F){return 208-200*Math.min(F,600)/600;};
+function bwv(){return Math.pow(10,Math.log10(5)+(+$('f3b').value/100)*(Math.log10(300)-Math.log10(5)));}
+function sim(){var m=+$('f3m').value,v=+$('f3v').value/100,fbw=bwv();
+ var dt=2e-5,T=0.12,Kp=40000,Kd=400,Fmax=400,th=40,delay=0.003,c=150;
+ var x=0,xd=v,Fh=0,tDet=null,tReact=null,F=[],E=[],X=[],peak=0,over=0,n=0;
+ for(var i=0;i*dt<=T+1e-9;i++){var t=i*dt,Fc=x>0?K*x:0;Fh+=2*Math.PI*fbw*(Fc-Fh)*dt;
+  if(DET&&tDet===null&&Fh>th){tDet=t;tReact=t+delay;}
+  var Fm=(tReact!==null&&t>=tReact)?-c*xd:Math.max(-Fmax,Math.min(Fmax,Kp*(v*t-x)+Kd*(v-xd)));
+  xd+=(Fm-Fc)/m*dt;x+=xd*dt;if(t<0.03)peak=Math.max(peak,Fc);if(Fc>140)over+=dt;
+  if(i%50===0){F.push(Fc);E.push(Fh);X.push(x);}}
+ return {F:F,E:E,X:X,peak:peak,tDet:tDet,over:over,end:F[F.length-1],v:v,m:m,fb:fbw};}
+function f3draw(){
+ var r=res,d='',e='',N=r.F.length;
+ for(var i=0;i<N;i++){var t=i*1;d+=(i?'L':'M')+CX(t).toFixed(1)+' '+CY(r.F[i]).toFixed(1);e+=(i?'L':'M')+CX(t).toFixed(1)+' '+CY(r.E[i]).toFixed(1);}
+ $('f3fc').setAttribute('d',d);$('f3est').setAttribute('d',e);
+ var yl=CY(140);$('f3lim').setAttribute('y1',yl);$('f3lim').setAttribute('y2',yl);$('f3limT').setAttribute('y',yl-5);
+ var yt=CY(40);$('f3thr').setAttribute('y1',yt);$('f3thr').setAttribute('y2',yt);$('f3thrT').setAttribute('y',yt-5);
+ var o=$('f3over');o.setAttribute('y',8);o.setAttribute('height',yl-8);o.setAttribute('width',564);
+ var dl=$('f3det'),dtx=$('f3detT');
+ if(r.tDet!==null){var xd=CX(r.tDet*1000);dl.setAttribute('x1',xd);dl.setAttribute('x2',xd);dl.style.display='';dtx.setAttribute('x',xd+5);dtx.textContent='检测到 '+(r.tDet*1000).toFixed(1)+' ms';dtx.style.display='';}
+ else{dl.style.display='none';dtx.style.display='none';}
+ $('f3vo').textContent=r.v.toFixed(2)+' m/s';$('f3mo').textContent=r.m+' kg';$('f3bo').textContent=r.fb.toFixed(r.fb<20?1:0)+' Hz';
+ $('r3peak').textContent=r.peak.toFixed(0)+' N';
+ $('r3det').textContent=r.tDet===null?'未开启':(r.tDet*1000).toFixed(1)+' ms';
+ $('r3over').textContent=(r.over*1000).toFixed(1)+' ms';
+ $('r3end').textContent=r.end.toFixed(0)+' N';
+ f3scene();}
+function f3scene(){var r=res,i=Math.min(r.F.length-1,Math.round(cur)),Fc=r.F[i],x=r.X[i];
+ var comp=Math.max(0,Math.min(12,x*1000*1.2));
+ $('f3armg').setAttribute('transform','translate(0,'+(16+comp-(x<0?Math.min(14,-x*1000*1.2):0)).toFixed(1)+')');
+ var f=$('f3fing');f.setAttribute('y',(72+comp*0.9).toFixed(1));f.setAttribute('height',(20-comp*0.9).toFixed(1));
+ $('f3pad').setAttribute('opacity',K<75000?1:0);
+ var c=$('f3cur');c.setAttribute('x1',CX(i));c.setAttribute('x2',CX(i));
+ var st=$('f3state'),tD=r.tDet===null?Infinity:r.tDet*1000;
+ st.textContent=Fc<1&&i>5?'已松开':(i<=tD?(i<12?'冲击中':'夹持中，还没发现'):(i<=tD+3?'已检测，准备反应':'正在撤力'));
+ st.setAttribute('fill',Fc>140?'#dc2626':'var(--accent)');
+ $('f3tnow').textContent='t = '+i+' ms';$('f3fnow').textContent='接触力 '+Fc.toFixed(0)+' N';}
+(function(){var g=$('f3grid'),s='';[0,20,40,60,80,100,120].forEach(function(t){s+='<line x1="'+CX(t)+'" x2="'+CX(t)+'" y1="8" y2="208" stroke="var(--line)" stroke-width=".8"/><text x="'+CX(t)+'" y="222" text-anchor="middle">'+t+'</text>';});
+ [0,200,400,600].forEach(function(F){s+='<text x="50" y="'+(CY(F)+4)+'" text-anchor="end">'+F+'</text>';});g.innerHTML=s;})();
+function f3run(){res=sim();f3draw();}
+['f3v','f3m','f3b'].forEach(function(id){$(id).addEventListener('input',f3run);});
+Array.prototype.forEach.call(document.querySelectorAll('#f3seg button[data-k]'),function(b){b.addEventListener('click',function(){K=+b.dataset.k;document.querySelectorAll('#f3seg button[data-k]').forEach(function(x){x.classList.toggle('on',x===b);});f3run();});});
+$('f3off').addEventListener('click',function(){DET=!DET;this.classList.toggle('on',!DET);this.textContent=DET?'关掉碰撞检测':'重新打开碰撞检测';f3run();});
+function f3loop(ts){if(!playing3)return;if(!t0)t0=ts;cur=Math.min(120,(ts-t0)/4000*120);f3scene();if(cur>=120){playing3=false;$('f3play').textContent='▶ 慢放这次碰撞';return;}requestAnimationFrame(f3loop);}
+$('f3play').addEventListener('click',function(){if(RM){cur=cur>=120?8:120;f3scene();return;}if(playing3){playing3=false;this.textContent='▶ 慢放这次碰撞';return;}playing3=true;t0=0;cur=0;this.textContent='❚❚ 暂停';requestAnimationFrame(f3loop);});
+$('f3svg').addEventListener('click',function(ev){var r=this.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width*640;if(x>56&&x<620){playing3=false;$('f3play').textContent='▶ 慢放这次碰撞';cur=Math.round((x-56)/564*120);f3scene();}});
+f3run();
+
+/* ---------- F4 gauge ---------- */
+var REG=[[140,75000,0.6,'手和手指：140 N · 75 N/mm · 0.6 kg'],[160,40000,2,'前臂与手腕：160 N · 40 N/mm · 2 kg'],[140,25000,40,'胸口：140 N · 25 N/mm · 40 kg']],reg=0,VMAX=2;
+function ang(v){return Math.PI*(1-Math.min(v,VMAX)/VMAX);}
+function pt(v,R){var a=ang(v);return [320+R*Math.cos(a),210-R*Math.sin(a)];}
+(function(){var s='';[0,0.5,1,1.5,2].forEach(function(v){var p=pt(v,234);s+='<text font-size="16" x="'+p[0].toFixed(0)+'" y="'+(p[1]+4).toFixed(0)+'">'+v+'</text>';});$('f4ticks').innerHTML=s;
+ var a=pt(1.3,186),b=pt(1.3,228);var w=$('f4walk');w.setAttribute('x1',a[0]);w.setAttribute('y1',a[1]);w.setAttribute('x2',b[0]);w.setAttribute('y2',b[1]);var t=pt(1.3,170);$('f4walkT').setAttribute('x',t[0]);$('f4walkT').setAttribute('y',t[1]);})();
+function f4draw(){var R=REG[reg],mr=+$('f4m').value,mu=1/(1/R[2]+1/mr),v=R[0]/Math.sqrt(mu*R[1]);
+ var p=pt(v,170);$('f4needle').setAttribute('x2',p[0].toFixed(1));$('f4needle').setAttribute('y2',p[1].toFixed(1));
+ $('f4fill').setAttribute('stroke-dasharray',(Math.min(v,VMAX)/VMAX*100).toFixed(1)+' 100');
+ $('f4val').textContent=v.toFixed(2);$('f4mo').textContent=mr+' kg';
+ $('f4note').textContent=R[3]+' → μ = '+mu.toFixed(2)+' kg';}
+$('f4m').addEventListener('input',f4draw);
+Array.prototype.forEach.call(document.querySelectorAll('#f4seg button'),function(b){b.addEventListener('click',function(){reg=+b.dataset.r;document.querySelectorAll('#f4seg button').forEach(function(x){x.classList.toggle('on',x===b);});f4draw();});});
+f4draw();
+})();
+</script>
+</body>
+</html>
