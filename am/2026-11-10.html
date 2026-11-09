@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W4 复盘｜关节控制</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --steel:#a7adb7; --steel2:#6b7280; --copper:#c47a35; --spring:#7c3aed;
+  --warn:#fdf0d5; --warnline:#b45309; --ok:#15803d; --bad:#b91c1c; --oks:#e3f4e8; --bads:#fbe4e4;
+  --L1:#c2410c; --L2:#1d4ed8; --L3:#0f766e; --L4:#a16207;
+  --L1s:#fbe6d8; --L2s:#e1e8fb; --L3s:#dcefec; --L4s:#f6ecd2;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --serif:"Songti SC","STSong",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --steel:#6b7280; --steel2:#9ca3af; --copper:#d08a45; --spring:#a78bfa;
+    --warn:#2b2416; --warnline:#f59e0b; --ok:#4ade80; --bad:#f87171; --oks:#14301f; --bads:#3a1a1a;
+    --L1:#fb923c; --L2:#7aa2ff; --L3:#2dd4bf; --L4:#facc15;
+    --L1s:#33241a; --L2s:#1c2438; --L3s:#152c2a; --L4s:#2e2a16;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:160px;height:34px;accent-color:var(--accent)}
+.ctrl output{min-width:4.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent)}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:42px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.formula{font-family:"Times New Roman",var(--serif);font-size:21px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2)}
+.analogy .no{display:block;font-size:15px;color:var(--ink2);margin-top:6px}
+.box{border:1px solid var(--warnline);background:var(--warn);border-radius:14px;padding:12px 16px;margin:22px 0}
+.box .t{font-weight:700;color:var(--warnline);font-size:15px;letter-spacing:.06em}
+.box.cold{border-color:var(--accent2);background:var(--soft2)}
+.box.cold .t{color:var(--accent2)}
+.mix{border-radius:14px;border:1px solid var(--line);background:var(--bg2);padding:10px 14px;margin:14px 0}
+.mix .q{font-weight:700}
+.mix .tag{display:inline-block;font-size:12px;background:var(--bads);color:var(--bad);border-radius:6px;padding:0 6px;margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0 4px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat .k{font-size:13px;color:var(--ink2)}
+.stat .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .bar{height:6px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}
+.stat .bar i{display:block;height:100%;background:var(--accent)}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:15.5px;line-height:1.7;min-height:7em}
+.panel h4{margin:0 0 4px;font-size:17px}
+.panel .f{font-family:"Times New Roman",var(--serif);font-size:18px;margin:4px 0;color:var(--accent2)}
+.panel .w,.panel .x{margin:4px 0}
+.panel .x{color:var(--bad)}
+.node{cursor:pointer}
+.node rect{transition:stroke-width .15s}
+.node.on rect{stroke-width:3.2}
+.quiz{counter-reset:q}
+.qq{border:1px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px 14px;margin:16px 0}
+.qq .stem{font-weight:600}
+.qq .stem::before{counter-increment:q;content:counter(q) ". ";color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.opts button{text-align:left;border-radius:10px;border-color:var(--line);background:var(--bg);color:var(--ink);min-height:44px;line-height:1.5}
+.opts button.right{background:var(--oks);border-color:var(--ok);color:var(--ink)}
+.opts button.wrong{background:var(--bads);border-color:var(--bad);color:var(--ink)}
+.exp{display:none;font-size:15.5px;margin-top:8px;padding:8px 12px;border-radius:10px;background:var(--soft2)}
+.exp b.r{color:var(--ok)} .exp b.w{color:var(--bad)}
+.score{position:sticky;bottom:10px;margin:20px auto 0;max-width:300px;text-align:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 16px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+details{border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:14px 0;background:var(--bg2)}
+details summary{cursor:pointer;font-weight:600;color:var(--accent2);min-height:30px}
+.mail{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.6;white-space:pre-wrap;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{color:var(--ink2);font-weight:600}
+.src{font-size:14px;color:var(--ink2);line-height:1.7}
+.src li{margin:4px 0}
+.next{background:var(--soft);border-radius:14px;padding:14px 16px;margin:28px 0}
+.next .t{font-weight:700;color:var(--accent)}
+svg text{font-family:var(--sans)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+h3{font-size:19px;margin:26px 0 6px;line-height:1.5}
+.box p,.next p{margin:6px 0}
+
+.mail{margin:10px 0}
+</style>
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">机器人早课 · 第 4 单元「关节控制」· 复盘日</div>
+<h1>早课 W4 复盘｜关节控制</h1>
+<p class="sub">一只被踹翻的机器狗、一张能点开的知识地图、一把从 25 微秒量到 1 秒的尺子，和十道场景题。约 15 分钟。</p>
+
+<p>2019 年 3 月，MIT 发布 Mini Cheetah 的新闻稿里，有一段很容易被略过的细节。研究员们为了测试它够不够“皮实”，会抬脚把它踹翻。被踹倒之后，它会<b>自动断电</b>。主要开发者 Ben Katz 的原话大意是：它以为出了什么可怕的事，干脆关掉，四条腿爱往哪甩往哪甩。</p>
+
+<p>躺平之后呢？重新启动，它会执行一段预先编好的动作：先缩成一团，或者像打功夫一样把“肘部”一甩，翻回四脚着地。这台只有 20 磅（约 9 公斤）的机器狗，出名的除了后空翻，还有这副“被踹了就躺平、躺完再翻身”的样子。</p>
+
+<p>这一周我们其实只拆了“被踹”这一下。它腿上每个关节里都住着一位 PID 舵手（周三）；舵手们排成内快外慢的套娃，Mini Cheetah 甚至干脆省掉了一层（周四）；它的关节不是死守角度，而是像一根软硬可调的弹簧（周五）；而“断电躺平”本身，就是昨天讲的碰撞安全里最朴素的一招，至于它来不来得及，要看带宽（周一）。今天不讲新东西，只把这四课接成一张图，再拿十道题检验一下。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，髋部和膝部是圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>12 个圆饼状的关节，每个只有梅森罐盖子那么大。这一周的四课全在饼里：里面的驱动板每 25 微秒算一次“离目标差多少、该给多大电流”，还要能被一脚踹偏而不硬顶回去。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">01</span>四节课，怎么接成一个圈？</h2>
+
+<p>下面这张图上，12 个方块是这一周最重要的 12 个概念，颜色代表它出自哪一课。中间的细线是它们之间的关系。点任意一个方块，相关的线会亮起来，下方展开四样东西：一句人话、关键数字、工作里在哪遇到、最容易错在哪。</p>
+
+<figure>
+<svg id="map" viewBox="0 0 360 400" role="img" aria-label="第 4 单元知识地图，可点击节点查看要点">
+  <circle cx="180" cy="192" r="46" fill="var(--bg)" stroke="var(--line)" stroke-dasharray="3 4"/>
+  <text x="180" y="188" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">关节控制</text>
+  <text x="180" y="205" text-anchor="middle" font-size="10" fill="var(--ink2)">误差 → 电流 → 力</text>
+  <g id="mapEdges"></g>
+  <g id="mapNodes"></g>
+  <g font-size="10.5" fill="var(--ink2)">
+    <rect x="8" y="378" width="10" height="10" rx="2" fill="var(--L1s)" stroke="var(--L1)"/><text x="22" y="387">①PID</text>
+    <rect x="80" y="378" width="10" height="10" rx="2" fill="var(--L2s)" stroke="var(--L2)"/><text x="94" y="387">②三环</text>
+    <rect x="156" y="378" width="10" height="10" rx="2" fill="var(--L3s)" stroke="var(--L3)"/><text x="170" y="387">③力矩/阻抗</text>
+    <rect x="252" y="378" width="10" height="10" rx="2" fill="var(--L4s)" stroke="var(--L4)"/><text x="266" y="387">④带宽/安全</text>
+  </g>
+</svg>
+<div class="panel" id="mapPanel"><h4>点一个方块试试</h4>建议从左上角的“P：弹簧”开始，看它和右下方的“阻抗”是怎么连上的——这是本单元最重要的一根线。</div>
+<figcaption><b>看图要看什么：</b>注意有几根线横穿圆心：P、D 两个字母跑到了第 3 课的“阻抗”里，I 跑到了第 4 课的“夹持”里。同一个零件，换个用途就换了一个名字，这正是本单元最容易让人糊涂的地方。</figcaption>
+</figure>
+
+<p>如果只能带走一句话，那就是：<b>关节控制，就是不停地问“离目标差多少”，再决定给电机多大电流；四节课的区别，只在于“目标”是什么、问得多勤、以及差了之后有多想顶回去。</b>周三的目标是一个角度；周四把角度拆成速度、电流三层目标；周五的目标干脆变成了“一种手感”；周一则问：这一切能多快发生，快到什么程度才救得了人。</p>
+
+<h2><span class="n">02</span>被踹的那一下，每一层分别在干什么？</h2>
+
+<p>回到 Mini Cheetah。从脚被踹到它“决定躺平”，几层控制器其实各忙各的，节奏差了上千倍。下面这把尺子是对数刻度：每往右一大格，时间长 10 倍。点“播放”看一个光点从 10 微秒走到 1 秒，路过每个刻度时下方会说明那一层在干什么；不点播放，直接点刻度也行。</p>
+
+<figure>
+<svg id="ruler" viewBox="0 0 360 230" role="img" aria-label="从 10 微秒到 1 秒的对数时间尺，标出各控制层的周期">
+  <defs>
+    <linearGradient id="rg" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="var(--L1)" stop-opacity=".9"/>
+      <stop offset=".5" stop-color="var(--L3)" stop-opacity=".9"/>
+      <stop offset="1" stop-color="var(--L2)" stop-opacity=".9"/>
+    </linearGradient>
+  </defs>
+  <rect x="20" y="108" width="320" height="10" rx="5" fill="url(#rg)" opacity=".35"/>
+  <g id="rTicks" font-size="10" fill="var(--ink2)"></g>
+  <g id="rMarks"></g>
+  <circle id="rDot" cx="20" cy="113" r="7" fill="var(--accent)" stroke="var(--bg2)" stroke-width="2"/>
+</svg>
+<div class="seg"><button id="rPlay">▶ 播放</button><button id="rReset">复位</button></div>
+<div class="panel" id="rPanel"><h4>一把跨了五个数量级的尺子</h4>最左边的刻度和最右边的刻度，差了四万倍。点任意一个圆点看说明。</div>
+<figcaption><b>看图要看什么：</b>左边一簇是“关节自己”的事，几十微秒到几毫秒；中间是冲击和力带宽，十毫秒上下；右边是“大脑”和人，几十到几百毫秒。冲击落在大脑能反应的时间之前，这就是为什么第一下撞击只能靠“轻和软”，而不能靠“想”。各数据来源见文末；冲击时长为教学示意。</figcaption>
+</figure>
+
+<p>这把尺子把三件事放到了一起看。第一，<b>里快外慢</b>不是口号：Kim 等人的论文里，Mini Cheetah 的关节 PD 跑在 40 kHz，全身控制器 500 Hz，模型预测控制 30 Hz，层层慢一个量级以上。第二，<b>控制频率和带宽是两把尺子</b>：40 kHz 是“算得多勤”，而 MIT Cheetah 执行器论文测到的输出力带宽是 103.7 Hz，换成一个来回大约 9.6 毫秒，差了好几百倍。第三，<b>冲击比大脑快</b>：撞上的第一下，在全身控制器还没来得及算第二轮之前就已经结束了。</p>
+
+<div class="analogy"><span class="t">类比：骑电动车过减速带</span>车轮撞上减速带的那一下，是轮胎和避震器替你扛的，你的手还没来得及反应；之后车头一歪，才轮到你的手去扶；至于“这条路以后换一条走”，是你的大脑过几天才做的决定。关节里也是三种速度：机械本身的软硬、关节反馈的快速修正、上层控制器的慢决策。<span class="no">哪里不准：你的避震器是纯机械的，而 Mini Cheetah 关节的“软”有一半是电流环算出来的。它的软能多快生效，又回到了带宽。</span></div>
+
+<h2><span class="n">03</span>三个最容易混的地方</h2>
+
+<p>这一周有三处，回邮件时最容易张冠李戴。每一处都配一个画面，帮你记住两者的分界线。</p>
+
+<h3>混淆一：阻抗控制，不就是 PD 吗？</h3>
+
+<p>公式确实长得一样：τ = K(θ<sub>d</sub> − θ) + D(θ̇<sub>d</sub> − θ̇) + 前馈。区别在“心态”，具体落在三处：位置控制希望 K 越大越好，还要加 I 把误差彻底消灭；阻抗控制把 K、D 当成<b>故意挑的手感</b>，通常不加 I；位置模式的输出要先进速度环，阻抗的输出直接变成电流指令。BEAR 的 SDK 手册对 Direct Force Mode 的建议正好印证了这一点：从 D = 0.1P 起调，并且强烈不建议加 I，因为它很可能引起振荡（《BEAR-SDK-Manual-1.3.0-EN.pdf》第 2.4 节）。</p>
+
+<figure>
+<svg viewBox="0 0 360 200" role="img" aria-label="左右对比：位置 PID 关节被推时积分越积越多，阻抗关节被推时弹簧按比例回顶">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--steel)"/><stop offset="1" stop-color="var(--steel2)"/></linearGradient>
+    <marker id="pushA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--blue)"/></marker>
+  </defs>
+  <!-- left -->
+  <text x="90" y="18" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--L2)">位置 PID：越推越狠</text>
+  <rect x="20" y="150" width="140" height="10" rx="3" fill="var(--line)"/>
+  <circle cx="60" cy="140" r="16" fill="url(#metal)" stroke="var(--ink2)"/>
+  <circle cx="60" cy="140" r="5" fill="var(--bg2)"/>
+  <rect x="58" y="70" width="80" height="12" rx="6" fill="url(#metal)" transform="rotate(-30 60 140) translate(0 64)"/>
+  <line x1="60" y1="140" x2="128" y2="101" stroke="var(--steel2)" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="128" cy="101" r="8" fill="var(--L2)"/>
+  <line x1="158" y1="70" x2="136" y2="94" stroke="var(--blue)" stroke-width="3" marker-end="url(#pushA)"/>
+  <text x="150" y="62" font-size="10.5" fill="var(--blue)">手</text>
+  <g font-size="10" fill="var(--ink2)">
+    <text x="20" y="182">I 项记账：</text>
+  </g>
+  <g fill="var(--L2)">
+    <rect x="72" y="174" width="10" height="10" rx="1" opacity=".35"/>
+    <rect x="86" y="170" width="10" height="14" rx="1" opacity=".5"/>
+    <rect x="100" y="164" width="10" height="20" rx="1" opacity=".65"/>
+    <rect x="114" y="158" width="10" height="26" rx="1" opacity=".8"/>
+    <rect x="128" y="150" width="10" height="34" rx="1"/>
+  </g>
+  <text x="90" y="198" text-anchor="middle" font-size="10" fill="var(--ink2)">推得越久，力越大，直到撞上限流</text>
+  <!-- divider -->
+  <line x1="180" y1="28" x2="180" y2="190" stroke="var(--line)" stroke-dasharray="4 4"/>
+  <!-- right -->
+  <text x="270" y="18" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--L3)">阻抗：推多少，顶多少</text>
+  <rect x="200" y="150" width="140" height="10" rx="3" fill="var(--line)"/>
+  <circle cx="240" cy="140" r="16" fill="url(#metal)" stroke="var(--ink2)"/>
+  <circle cx="240" cy="140" r="5" fill="var(--bg2)"/>
+  <line x1="240" y1="140" x2="318" y2="128" stroke="var(--steel2)" stroke-width="11" stroke-linecap="round" opacity=".25" stroke-dasharray="3 3"/>
+  <line x1="240" y1="140" x2="308" y2="101" stroke="var(--steel2)" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="308" cy="101" r="8" fill="var(--L3)"/>
+  <path d="M318,128 l-3,-5 l7,-3 l-7,-3 l7,-3 l-7,-3 l7,-3 l-4,-3" fill="none" stroke="var(--spring)" stroke-width="2.2" stroke-linejoin="round"/>
+  <line x1="340" y1="72" x2="316" y2="94" stroke="var(--blue)" stroke-width="3" marker-end="url(#pushA)"/>
+  <text x="328" y="64" font-size="10.5" fill="var(--blue)">手</text>
+  <text x="200" y="182" font-size="10" fill="var(--ink2)">回顶力 = K × 偏离角，不随时间涨</text>
+  <text x="270" y="198" text-anchor="middle" font-size="10" fill="var(--ink2)">虚线是目标位置，紫色是“看不见的弹簧”</text>
+</svg>
+<figcaption><b>看图要看什么：</b>左边下方的柱子在长：只要误差还在，I 项就一直记账加码；右边没有柱子，回顶力只跟偏离多少有关。两边公式里的 P、D 一样，差的是那根柱子，以及心里想的是“必须到”还是“差不多就行”。</figcaption>
+</figure>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/200006/d20090831111107424.jpg" loading="lazy" referrerpolicy="no-referrer" alt="Spaulding 康复医院里，治疗师在旁协助一位中风病人使用 MIT-Manus 机器人做上肢训练" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2000/manus">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>周五故事里的 MIT-Manus。病人的手臂搁在托架上，机器人只是一根朴素的连杆。如果它的关节用的是左图那种“越推越狠”的位置 PID，病人就等于在跟千斤顶掰手腕。<br>图：Laura Wulf / <a href="https://news.mit.edu/2000/manus">MIT News</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<h3>混淆二：控制频率 1 kHz，带宽就是 1 kHz？</h3>
+
+<p>不是。控制频率是“多久算一次”，带宽是“输出还能跟上多快的来回”，后者被惯量、电感、结构柔性和滤波器卡着，通常比前者低一个数量级甚至更多。上面那把尺子上，40 kHz 和 103.7 Hz 就是活生生的例子。THEMIS 2.5 宣传册写的是主控“processing tasks at 1kHz”（《THEMIS2.5Brochure.pdf》），这是计算频率；客户把它当带宽来问时，要礼貌地把两把尺子分开。</p>
+
+<div class="analogy"><span class="t">类比：洗衣机的旋钮</span>你一秒钟能把甩干旋钮拧来拧去十次，滚筒却要好几秒才能转起来、停下去。你拧得多勤，是控制频率；滚筒跟得上多快，是带宽。<span class="no">哪里不准：洗衣机多半没有闭环；关节有闭环，能用增益把响应催快一些，但催到头，还是被惯量和结构刚度卡住。</span></div>
+
+<h3>混淆三：碰撞检测越灵敏，就能跑得越快？</h3>
+
+<p>碰撞分两段：头十毫秒左右的<b>冲击</b>，和之后可能越压越紧的<b>夹持</b>。冲击峰值大约是 v·√(m·k)，跟速度成正比，在控制器反应之前就已经发生；检测能救的，是后面的夹持。Haddadin 团队 2007 年在汽车碰撞测试中心拿 DLR 轻型臂撞假人，得出的就是这个结论：对快速的刚性碰撞，没有哪种检测快到能减小那一下冲击。所以想提速，得同时动“质量”和“软硬”，不能只靠调灵敏度。</p>
+
+<figure class="photo">
+<img src="https://www.dlr.de/en/rm/images/roboter_und_systeme/lbr/lbr3/rs11799_lwr-iii_studio-image_20251021_106_v2.jpg/@@images/image-1000-88ad00cd82cc7d7615dcd2907ed9ab07.jpeg" loading="lazy" referrerpolicy="no-referrer" alt="DLR 第三代轻型机械臂 LWR III 的棚拍照" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>周一故事里被拿去撞假人的 LWR III，自重 14 公斤，每个关节都能感知力矩。它的安全首先来自“轻”：细长连杆、电机和减速器都塞进关节外壳里。检测是第二道防线，不是第一道。<br>图：DLR / <a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">DLR Institute of Robotics and Mechatronics</a>，CC BY-NC-ND 3.0</figcaption>
+</figure>
+
+<div class="box"><div class="t">安全提醒：回邮件时这几条不能省</div>
+<p>都出自《BEAR-SDK-Manual-1.3.0-EN.pdf》第 2.2–2.4 节和寄存器表：Direct Force Mode 下，输出速度<b>不受</b> limit_velocity_max 限制（WARNING），即使 goal_position 超出位置限位，BEAR 仍会执行；limit_i_max 在所有模式下限制电流，相当于力矩上限；watchdog 通讯超时保护只在模式 0（力矩模式）下有效。调参顺序永远是先电流环、再速度环、最后位置环。这些是执行器层面的功能，整机能否满足协作安全要求，要靠整机风险评估。</p></div>
+
+<h2><span class="n">04</span>上周留的那道题：为什么越软的关节，越需要高带宽？</h2>
+
+<p>听起来反直觉：软，不就是“不怎么管”吗？问题在于，关节天生是有“手感”的。转子有惯量，经过减速比还会被平方放大到输出端（第 2 单元第 1 课）；减速器和轴承还有摩擦。这是它的“物理阻抗”。你想让关节摸起来比这还轻、还软，控制器就得在人推的同时，<b>主动用电机把这些质量和摩擦“让开”</b>，相当于实时追着人手的力跑。人手变得越快，这个力环就得跟得越快；跟不上，人感到的仍是那块沉甸甸的转子，或者回路的延迟让它开始抖。</p>
+
+<p>反过来也有极限。Colgate 和 Brown 在 1994 年研究力反馈设备时，给“一台设备能稳定呈现的阻抗范围”起了个名字叫 Z-width，并指出采样频率和设备本身的物理阻尼都会影响这个范围。翻译成我们的话：想又软又稳、又能在需要时变硬，就得回路快、延迟小。这也是准直驱路线的一个隐藏好处：反射惯量小，物理上就已经比较“软”，控制器要“让开”的东西少，带宽压力就小。</p>
+
+<div class="analogy"><span class="t">类比：推一辆装满水的购物车</span>想让别人觉得这辆车“很轻”，你得在他推的同时在后面帮着推，而且他快你也得快，他停你也得马上停。你反应慢半拍，他就会觉得车一会儿沉一会儿轻，甚至被车反推一下。<span class="no">哪里不准：你帮推靠眼睛看，关节靠力的测量或估计；而关节最快能“帮推”多快，正是它的力矩带宽。</span></div>
+
+<h2><span class="n">05</span>十道场景题</h2>
+
+<p>点一个选项，马上显示对错和解析。计算题的数字凡是没注明来源的，都是教学假设。</p>
+
+<div class="quiz" id="quiz">
+
+<div class="qq" data-a="2"><div class="stem">一条只用 P 控制的关节，Kp = 3 N·m/rad（借 Mini Cheetah 论文里的数字），要扛住一个 1.5 N·m 的重力力矩。它稳住时，比目标低了大约多少？</div>
+<div class="opts"><button>A. 0.5°</button><button>B. 约 5°</button><button>C. 约 29°</button><button>D. 一点不低，P 会自动补上</button></div>
+<div class="exp">误差 = 1.5 ÷ 3 = 0.5 rad ≈ 28.6°。只有 P 的关节像一根弹簧，要顶住持续的力，必须先“被拉长”一点。真机不会塌这么多，因为上层会把重力力矩作为前馈直接给关节。</div></div>
+
+<div class="qq" data-a="1"><div class="stem">客户邮件：“In position mode the joint overshoots, then slowly creeps back to the target over a few seconds.” 最该先怀疑哪一项？</div>
+<div class="opts"><button>A. 编码器分辨率太低</button><button>B. I 项偏大，或发生了积分饱和</button><button>C. 母线电压太高</button><button>D. 通信波特率太低</button></div>
+<div class="exp">“冲过头、再慢慢爬回来”是 I 项的典型签名：它在误差持续期间一直记账，等到了目标，账还没还完，于是冲过去，再慢慢还回来。先问对方各环的增益，尤其是位置环的 I。</div></div>
+
+<div class="qq" data-a="3"><div class="stem">客户说：“我们把 D 调大以后，关节停着的时候也发出高频的嗡嗡声。”最可能的原因是？</div>
+<div class="opts"><button>A. 减速器背隙变大</button><button>B. D 太大导致欠阻尼</button><button>C. 电机退磁</button><button>D. D 对速度（角度的变化率）敏感，会把测量噪声放大成电流抖动</button></div>
+<div class="exp">D 乘的是速度误差，而速度往往由角度差分得到，编码器读数里一点点噪声，一差分就变大，再乘一个大 D，就成了来回抖的电流。这也是为什么 BEAR SDK 手册建议电流环和速度环的 D 增益保持为 0。</div></div>
+
+<div class="qq" data-a="0"><div class="stem">一位客户花了一整天调位置环增益，关节还是“出不了力、追不上目标”。按 BEAR SDK 手册第 2.4 节的思路，你第一句该问什么？</div>
+<div class="opts"><button>A. 电流环和速度环的增益是否先调对了？</button><button>B. 能不能把位置环 P 再加大十倍？</button><button>C. 是不是该换一个更大的电机？</button><button>D. 控制频率是不是太低？</button></div>
+<div class="exp">手册原意：位置模式下，位置环喂速度环，速度环喂 iq 电流环；如果电流或速度环增益不对，关节可能出不了足够力矩、追不上目标位置，无论位置增益怎么调。地基歪了，楼上怎么装修都没用，所以从里往外调。</div></div>
+
+<div class="qq" data-a="2"><div class="stem">关于 BEAR 的 Direct Force Mode（模式 3），下面哪句是手册写明的？</div>
+<div class="opts"><button>A. 它的输出速度受 limit_velocity_max 限制，可以放心</button><button>B. 建议加一点 I 来消除稳态误差</button><button>C. 输出速度不受 limit_velocity_max 限制，速度保护要由上层控制器负责</button><button>D. 它只用到位置环，不经过电流环</button></div>
+<div class="exp">这是手册的 WARNING。另外手册建议从 D = 0.1P 起调、强烈不建议加 I；所有模式最后都进入 iq 电流环。回客户邮件时，这条警告不能为了简洁省掉。</div></div>
+
+<div class="qq" data-a="1"><div class="stem">一个关节工作在阻抗模式，刚度 K = 20 N·m/rad，没有前馈。有人把它推离目标 0.15 rad 并扶住不动。这时电机输出多大力矩？</div>
+<div class="opts"><button>A. 0.75 N·m</button><button>B. 3 N·m</button><button>C. 越来越大，直到限流</button><button>D. 0，因为它已经静止，D 项为零</button></div>
+<div class="exp">20 × 0.15 = 3 N·m。静止时 D 项确实为零，但 K 项还在；而且它不会随时间加码，这正是阻抗和带 I 的位置控制的区别。</div></div>
+
+<div class="qq" data-a="3"><div class="stem">某关节可以近似成一阶系统，带宽 20 Hz。给它一个 20 Hz、幅值 ±10° 的正弦位置指令，实际摆幅大约是多少？</div>
+<div class="opts"><button>A. ±10°，带宽内都能跟上</button><button>B. ±5°</button><button>C. ±2°</button><button>D. 约 ±7°</button></div>
+<div class="exp">带宽的定义就是幅值掉到约 70.7%（−3 dB）的那个频率，10° × 0.707 ≈ 7.1°，而且相位还会落后（一阶系统在带宽处落后 45°）。所以“带宽 20 Hz”并不意味着 20 Hz 的动作完美跟上，它恰恰是开始打折扣的地方。</div></div>
+
+<div class="qq" data-a="0"><div class="stem">展会上客户指着规格书：“你们主控 1 kHz，那关节带宽就是 1 kHz 吧？”最好的回答是？</div>
+<div class="opts"><button>A. 1 kHz 是控制更新频率，不是闭环带宽；带宽数值我们向工程团队确认后答复您</button><button>B. 对，频率和带宽是同一个东西</button><button>C. 带宽一般是控制频率的两倍</button><button>D. 根据论文，同类关节大约 100 Hz，我们的应该差不多</button></div>
+<div class="exp">控制频率高是带宽高的前提，不是带宽本身。BEAR 的力矩带宽在现有手册里查不到数值，应记为 [待技术确认]；D 选项用论文数字去套自家产品，是这单元反复强调不能做的事。英文可以说：“The 1 kHz figure is the control update rate, not the closed-loop bandwidth.”</div></div>
+
+<div class="qq" data-a="2"><div class="stem">一台协作臂想把撞击时的峰值力减半。按 F ≈ v·√(m·k)，下面哪种做法最直接有效？</div>
+<div class="opts"><button>A. 把碰撞检测灵敏度提高一倍</button><button>B. 把等效质量减半</button><button>C. 把撞击速度减半</button><button>D. 把控制频率提高一倍</button></div>
+<div class="exp">力和速度成正比，速度减半，力减半。质量在根号里，减半只能让力降到约 71%。检测和控制频率管的是撞上之后的夹持，第一下冲击已经来不及。</div></div>
+
+<div class="qq" data-a="1"><div class="stem">上周留的题：为什么一个“阻抗调得很软”的关节，反而可能需要更高的力矩带宽？</div>
+<div class="opts"><button>A. 因为软的关节电流更大，发热更多</button><button>B. 因为要在人推的同时，主动把关节自身的转子惯量和摩擦“让开”，力环得跟得上人手的变化</button><button>C. 因为软关节的控制频率天生更低</button><button>D. 其实不需要，软和带宽无关</button></div>
+<div class="exp">关节天生有“物理阻抗”：反射惯量和摩擦。想让它摸起来比物理更软，控制器得实时追着外力去抵消它们，回路慢了，人感到的还是沉，或者开始抖。Colgate 和 Brown 用 Z-width 描述一台设备能稳定呈现的阻抗范围，它受采样频率和物理阻尼影响。低反射惯量的准直驱，在这里先天省力。</div></div>
+
+</div>
+<div class="score" id="score">已答 0 / 10 · 答对 0</div>
+
+<h2><span class="n">06</span>工作里，这一单元最常被问到的四句话</h2>
+
+<table>
+<tr><th>客户这么写</th><th>它在问什么</th></tr>
+<tr><td>“It settles a few degrees below the goal under load.”</td><td>稳态误差：只有 P 在扛负载（第 1 课）</td></tr>
+<tr><td>“Position mode feels sluggish no matter the gains.”</td><td>内环没调好，先电流、再速度、后位置（第 2 课）</td></tr>
+<tr><td>“Do you support impedance / compliance control?”</td><td>对应 BEAR 的 Direct Force Mode，附上速度不受限的警告（第 3 课）</td></tr>
+<tr><td>“What is the torque bandwidth?”</td><td>先问哪种带宽、什么测试条件；数值 [待技术确认]（第 4 课）</td></tr>
+</table>
+
+<p>一段通用的追问模板，四类问题都能改着用：</p>
+<div class="mail">Could you share which operating mode you are using, the current-, velocity- and position-loop gains, and a plot of goal vs. present position (or iq) during the motion? That will help us tell whether this is a tuning issue, a limit setting, or a load issue.</div>
+
+<h2><span class="n">07</span>中英术语速查</h2>
+<table>
+<tr><td>反馈 / 闭环</td><td>Feedback / Closed loop</td></tr>
+<tr><td>稳态误差</td><td>Steady-state error</td></tr>
+<tr><td>积分饱和</td><td>Integral windup</td></tr>
+<tr><td>串级控制</td><td>Cascade control</td></tr>
+<tr><td>前馈</td><td>Feedforward</td></tr>
+<tr><td>力矩控制</td><td>Torque control</td></tr>
+<tr><td>阻抗控制 / 柔顺</td><td>Impedance control / Compliance</td></tr>
+<tr><td>带宽（−3 dB）</td><td>Bandwidth</td></tr>
+<tr><td>控制更新频率</td><td>Control update rate</td></tr>
+<tr><td>冲击 / 夹持</td><td>Transient contact / Clamping</td></tr>
+</table>
+
+<div class="next"><div class="t">下一单元预告：热与选型</div>
+<p>这一周我们一直在说“给多大电流，就出多大力”。可规格书上，同一颗电机写着两个力矩：一个峰值、一个额定，常常差好几倍。电机明明能使出那么大的劲，为什么只能“偶尔”使？是什么在偷偷给它计时？答案不在控制器里，而在一个很朴素的东西上：热。明天开始第 5 单元，我们从“为什么连续力矩远小于峰值力矩”讲起。</p></div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News (2019): Mini cheetah is the first four-legged robot to do a backflip（被踹后断电、翻身、重量与照片）</a></li>
+<li><a href="https://arxiv.org/abs/1909.06586">Kim et al. (2019): Highly Dynamic Quadruped Locomotion via Whole-Body Impulse Control and Model Predictive Control（关节 PD 40 kHz、WBIC 500 Hz、MPC 30 Hz、kp = 3 N·m/rad）</a></li>
+<li><a href="https://fab.cba.mit.edu/classes/865.18/motion/papers/mit-cheetah-actuator.pdf">Wensing et al. (2017): Proprioceptive Actuator Design in the MIT Cheetah（输出力带宽 103.7 Hz）</a></li>
+<li><a href="https://news.mit.edu/2000/manus">MIT News (2000): MIT-Manus（照片）</a></li>
+<li><a href="https://www.dlr.de/en/rm/research/robotic-systems/arms/lwr-iii">DLR: LWR III（规格与照片）</a></li>
+<li><a href="https://www.roboticsproceedings.org/rss03/p28.html">Haddadin, Albu-Schäffer, Hirzinger (2007): Safety Evaluation of Physical Human-Robot Interaction via Crash-Testing</a></li>
+<li><a href="https://arxiv.org/pdf/2311.13814">基于 ISO/TS 15066 的变阻抗控制论文（身体部位表值与速度公式）</a></li>
+<li><a href="https://www.robotics.northwestern.edu/research/publications/factors-affecting-the-z-width-of-a-haptic-display.html">Colgate &amp; Brown (1994): Factors Affecting the Z-Width of a Haptic Display</a></li>
+<li>Westwood Robotics，《BEAR-SDK-Manual-1.3.0-EN.pdf》第 2.3–2.4 节与表 2（模式、CAUTION/WARNING、PID 调校顺序与建议；项目内部资料）</li>
+<li>Westwood Robotics，《THEMIS2.5Brochure.pdf》（主控 1 kHz 处理频率；项目内部资料）</li>
+<li>本单元前四课：<a href="2026-11-04.html">W4-1</a> · <a href="2026-11-05.html">W4-2</a> · <a href="2026-11-06.html">W4-3</a> · <a href="2026-11-09.html">W4-4</a></li>
+</ul>
+</main>
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- knowledge map ---------- */
+var N=[
+ {id:'P',L:1,t:['P：弹簧','差多少使多大劲'],w:'离目标越远，力越大。只有 P 的关节就是一根看不见的扭簧，Kp 的单位 N·m/rad 正是刚度的单位。',n:'Mini Cheetah 论文：Kp = 3 N·m/rad。扛 1.6 N·m 要留约 0.54 rad（约 31°）的误差。',j:'“settles a few degrees below the goal under load”——稳态误差。',x:'以为把 Kp 调大十倍就万事大吉：弹簧越硬越容易晃，加上延迟还会越晃越大。'},
+ {id:'D',L:1,t:['D：减震器','看冲得多快'],w:'按速度往回刹，专治冲过头、晃不停。',n:'Mini Cheetah：Kd = 0.3 N·m·s/rad。',j:'“the joint buzzes / jitters”——D 太大会把噪声放大。',x:'以为 D 越大越稳。D 对噪声敏感，BEAR 手册建议电流环、速度环的 D 保持为 0。'},
+ {id:'I',L:1,t:['I：记账','误差久了就加码'],w:'只要误差还在，就一直累加，直到把稳态误差消灭。',n:'工业回路里大多数是 PI，用不上 D（第 1 课冷知识）。',j:'“overshoots, then creeps back”——积分饱和的签名。',x:'在需要“软”的场合加 I：被人推住时它会越顶越狠，这正是碰撞夹持的帮凶。'},
+ {id:'C',L:2,t:['三层套娃','位置→速度→电流'],w:'外环的输出不是电压，而是内环的目标。每层只管一个量，层与层之间还能各自限速、限流。',n:'BEAR 位置模式：位置环喂速度环，速度环喂 iq 电流环（SDK 手册 2.3–2.4）。',j:'寄存器表里成组的 p_gain_iq / p_gain_velocity / p_gain_position。',x:'以为一个 PID 从位置直接算电压更简单：三种快慢不同的惯性，一组增益照顾不过来。'},
+ {id:'F',L:2,t:['里快外慢','调参从里往外'],w:'内环必须比外环快得多，否则外环看到的永远是过时的结果，越修越乱。',n:'Mini Cheetah：关节 40 kHz、全身控制 500 Hz、MPC 30 Hz。',j:'客户只调位置环调了一天——先问电流、速度环。',x:'内环没调对就调外环。YF-22 和鹰狮的 PIO 都是“内环跟不上，外环越修越错”。'},
+ {id:'M',L:2,t:['模式 = 接管层','命令塞进哪一层'],w:'四种模式的区别，就是你把命令塞进套娃的哪一层；电流环永远在最里面工作。',n:'BEAR mode 0–3：力矩、速度、位置、直接力控。',j:'“Which mode for a legged robot?”——属于应用建议，看对方架构。',x:'以为不同模式是不同的电机能力。能力相同，只是谁替你做决定。'},
+ {id:'T',L:3,t:['力矩模式','只说出多大力'],w:'拆掉位置、速度环，只留电流环：给多大电流，就出多大力，位置由世界决定。',n:'T ≈ Kt · iq；BEAR 模式 0 写 goal_iq（单位 A）。',j:'“Can we command torque directly?”——模式 0；watchdog 只在此模式有效。',x:'以为力矩模式会自己“回家”。它连重力都扛不住，聪明全靠上位机。'},
+ {id:'Z',L:3,t:['阻抗 K·D','决定有多软'],w:'不命令位置，而是命令“力和运动的关系”：偏多少拉多少，动多快刹多少，再加一份已知的力。',n:'BEAR 模式 3：从 D = 0.1P 起调，不建议加 I；速度不受 limit_velocity_max 限制。',j:'“Do you support impedance control?”——Direct Force Mode，附上警告。',x:'把“软”当成“力不够”。软是参数，最大力由电机和 limit_i_max 决定。'},
+ {id:'S',L:3,t:['力：测还是估','传感器 vs 电流'],w:'关节知道自己出了多少力，要么靠力矩传感器（或量弹簧变形），要么用电流乘 Kt 去估。',n:'Valkyrie 的串联弹性关节量弹簧；准直驱关节多用电流估计。',j:'“Is torque measured or estimated from current?”',x:'把估计值当实测值：摩擦和减速器损耗会让电流估计与真实输出有差。'},
+ {id:'B',L:4,t:['带宽 −3 dB','跟得上多快的来回'],w:'实际幅值掉到指令的约 70.7% 时的频率。力矩带宽量的是输出端的力。',n:'MIT Cheetah 执行器：电流约 400 Hz，输出力 103.7 Hz。',j:'“What is the torque bandwidth?”——先问哪种带宽、什么条件；数值 [待技术确认]。',x:'用论文里 QDD 的数字去套自家产品。'},
+ {id:'R',L:4,t:['频率≠带宽','算得勤≠跟得快'],w:'控制频率是多久算一次，带宽是输出能跟多快。前者是后者的前提，不是后者本身。',n:'THEMIS 2.5 主控 1 kHz（宣传册），这是计算频率。',j:'展会上的“1 kHz 就是带宽吧？”',x:'把两个数字当成一个。差一个数量级以上很正常。'},
+ {id:'K',L:4,t:['冲击 vs 夹持','检测救哪一段'],w:'撞上的头十毫秒左右是冲击，峰值约 v·√(m·k)，来不及救；之后的夹持，检测能救全部。',n:'ISO/TS 15066 手部表值 140 N、75 N/mm；等效 5 kg 撞手约限 0.70 m/s（教学演算）。',j:'“更灵敏的检测，能不能让我们提速？”——不能只靠检测。',x:'以为单个执行器参数就能证明整机安全。整机要做风险评估。'}
+];
+var E=[['P','Z','同一根弹簧'],['D','Z','同一个阻尼'],['I','K','越推越狠'],['C','F','铁律'],['F','B','内环带宽更高'],['M','T','只留电流环'],['T','Z','加上 K、D'],['S','K','多早发现'],['B','R','两把尺子'],['C','M','从哪层接管']];
+var gE=document.getElementById('mapEdges'),gN=document.getElementById('mapNodes'),panel=document.getElementById('mapPanel');
+var cx=180,cy=192,RX=124,RY=150,W=88,H=40,pos={};
+N.forEach(function(n,i){var a=(-90+15+i*30)*Math.PI/180;pos[n.id]={x:cx+RX*Math.cos(a),y:cy+RY*Math.sin(a)};});
+var lines={};
+E.forEach(function(e){var a=pos[e[0]],b=pos[e[1]];var l=el('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'var(--ink2)','stroke-width':1,opacity:.28},gE);lines[e[0]+e[1]]=l;});
+var nodes={};
+N.forEach(function(n){var p=pos[n.id];var g=el('g',{'class':'node',tabindex:0,role:'button'},gN);
+ el('rect',{x:p.x-W/2,y:p.y-H/2,width:W,height:H,rx:9,fill:'var(--L'+n.L+'s)',stroke:'var(--L'+n.L+')','stroke-width':1.4},g);
+ var t1=el('text',{x:p.x,y:p.y-3,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:'var(--ink)'},g);t1.textContent=n.t[0];
+ var t2=el('text',{x:p.x,y:p.y+12,'text-anchor':'middle','font-size':9.5,fill:'var(--ink2)'},g);t2.textContent=n.t[1];
+ g.addEventListener('click',function(){pick(n.id)});
+ g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();pick(n.id)}});
+ nodes[n.id]=g;});
+function pick(id){var n=N.filter(function(x){return x.id===id})[0];
+ for(var k in nodes)nodes[k].setAttribute('class','node'+(k===id?' on':''));
+ var rel=[];
+ E.forEach(function(e){var l=lines[e[0]+e[1]],on=(e[0]===id||e[1]===id);l.setAttribute('opacity',on?.95:.18);l.setAttribute('stroke-width',on?2.4:1);l.setAttribute('stroke',on?'var(--accent)':'var(--ink2)');
+  if(on){var o=e[0]===id?e[1]:e[0];var on2=N.filter(function(x){return x.id===o})[0];rel.push(on2.t[0]+'（'+e[2]+'）');}});
+ panel.innerHTML='<h4 style="color:var(--L'+n.L+')">'+n.t[0]+'</h4><div class="w"><b>一句话：</b>'+n.w+'</div><div class="f">'+n.n+'</div><div class="w"><b>工作里：</b>'+n.j+'</div><div class="x"><b>易错：</b>'+n.x+'</div><div class="w" style="color:var(--ink2);font-size:14px">连到：'+rel.join('、')+'</div>';}
+
+/* ---------- time ruler ---------- */
+var X0=20,X1=340,lmin=-5,lmax=0;
+function xl(t){return X0+(Math.log10(t)-lmin)/(lmax-lmin)*(X1-X0);}
+var gT=document.getElementById('rTicks'),gM=document.getElementById('rMarks');
+[[1e-5,'10 μs'],[1e-4,'100 μs'],[1e-3,'1 ms'],[1e-2,'10 ms'],[1e-1,'100 ms'],[1,'1 s']].forEach(function(d){var x=xl(d[0]);
+ el('line',{x1:x,y1:102,x2:x,y2:124,stroke:'var(--ink2)','stroke-width':1},gT);var t=el('text',{x:x,y:224,'text-anchor':'middle'},gT);t.textContent=d[1];
+ el('line',{x1:x,y1:124,x2:x,y2:212,stroke:'var(--line)','stroke-dasharray':'2 3'},gT);});
+var M=[
+ {t:25e-6,c:'L1',l:'关节 PD',u:1,h:'25 μs｜关节里的 PD（40 kHz）',d:'Mini Cheetah 每个关节的驱动板每 25 微秒算一次：位置误差乘 Kp、速度误差乘 Kd、加上前馈力矩，直接得出要的电流。被踹的第一时间，“软弹簧”就是在这里生效的。（Kim 等，2019）'},
+ {t:1e-3,c:'L2',l:'THEMIS 主控',u:0,h:'1 ms｜主控处理频率 1 kHz',d:'THEMIS 2.5 宣传册写主控“processing tasks at 1kHz”。这是“多久算一次”，不是关节带宽。（《THEMIS2.5Brochure.pdf》）'},
+ {t:2e-3,c:'L2',l:'全身控制',u:1,h:'2 ms｜全身控制器（500 Hz）',d:'Mini Cheetah 的全身冲量控制（WBIC）每 2 毫秒给 12 个关节分配一次目标位置、速度和前馈力矩。比关节慢 80 倍。（Kim 等，2019）'},
+ {t:9.6e-3,c:'L4',l:'力带宽周期',u:0,h:'约 9.6 ms｜输出力带宽 103.7 Hz',d:'MIT Cheetah 执行器论文测得：从驱动器到输出端的力，带宽 103.7 Hz，换算成一个来回约 9.6 毫秒。电流环本身约 400 Hz，差距来自结构柔性。（Wensing 等，2017）'},
+ {t:1e-2,c:'L4',l:'冲击',u:1,h:'0–约 10 ms｜撞击的第一下',d:'接触力冲上第一个峰值，大小主要由速度、等效质量和被撞物的软硬决定。它比全身控制器多算几轮的时间还短，所以只能靠“轻和软”在事前压小。（教学示意，参照第 4 课）'},
+ {t:33e-3,c:'L3',l:'MPC',u:0,h:'33 ms｜模型预测控制（30 Hz）',d:'Mini Cheetah 的 MPC 每秒规划 30 次“脚下该使多大劲”。被踹之后，它要到这一层才真正“意识到”整个身体的姿态被打乱了。（Kim 等，2019）'},
+ {t:0.2,c:'L1',l:'人的反应',u:1,h:'约 0.2 s｜人的反应时间量级',d:'从看到到动手，人通常要零点几秒。等研究员看清机器狗倒地，关节里的 PD 早已跑了几千轮。'}
+];
+var mk=[];
+M.forEach(function(m,i){var x=xl(m.t),y=m.u?70:150;var g=el('g',{'class':'node',tabindex:0,role:'button'},gM);
+ el('line',{x1:x,y1:113,x2:x,y2:m.u?82:138,stroke:'var('+'--'+m.c+')','stroke-width':1.4},g);
+ var c=el('circle',{cx:x,cy:113,r:5,fill:'var(--'+m.c+')',stroke:'var(--bg2)','stroke-width':1.5},g);
+ var bw=m.l.length*11+12, bx=Math.max(4,Math.min(356-bw,x-bw/2)), by=m.u?[40,0,62,0,40,0,62][i]:[0,140,0,168,0,140,0][i];
+ var r=el('rect',{x:bx,y:by,width:bw,height:20,rx:6,fill:'var(--'+m.c+'s)',stroke:'var(--'+m.c+')'},g);
+ var t=el('text',{x:bx+bw/2,y:by+14,'text-anchor':'middle','font-size':11,fill:'var(--ink)'},g);t.textContent=m.l;
+ if(m.u) g.querySelector('line').setAttribute('y1',113),g.querySelector('line').setAttribute('y2',by+20);
+ else g.querySelector('line').setAttribute('y2',by);
+ g.addEventListener('click',function(){show(i)});
+ g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();show(i)}});
+ mk.push({g:g,r:r,c:c});});
+var rp=document.getElementById('rPanel'),dot=document.getElementById('rDot');
+function show(i){var m=M[i];mk.forEach(function(k,j){k.r.setAttribute('stroke-width',j===i?2.6:1);k.c.setAttribute('r',j===i?7:5);});
+ rp.innerHTML='<h4 style="color:var(--'+m.c+')">'+m.h+'</h4>'+m.d;dot.setAttribute('cx',xl(m.t));}
+var raf=null,t0=0,last=-1,DUR=9000;
+function step(ts){if(!t0)t0=ts;var f=Math.min(1,(ts-t0)/DUR);var lg=lmin+f*(lmax-lmin);var tt=Math.pow(10,lg);dot.setAttribute('cx',xl(tt));
+ var k=-1;M.forEach(function(m,i){if(m.t<=tt)k=i;});if(k!==last&&k>=0){last=k;show(k);dot.setAttribute('cx',xl(tt));}
+ if(f<1)raf=requestAnimationFrame(step);else{raf=null;document.getElementById('rPlay').textContent='▶ 播放';}}
+document.getElementById('rPlay').addEventListener('click',function(){
+ if(raf){cancelAnimationFrame(raf);raf=null;this.textContent='▶ 播放';return;}
+ if(reduce){var i=(last+1)%M.length;last=i;show(i);return;}
+ t0=0;last=-1;this.textContent='❚❚ 暂停';raf=requestAnimationFrame(step);});
+document.getElementById('rReset').addEventListener('click',function(){if(raf){cancelAnimationFrame(raf);raf=null;}document.getElementById('rPlay').textContent='▶ 播放';last=-1;dot.setAttribute('cx',X0);
+ mk.forEach(function(k){k.r.setAttribute('stroke-width',1);k.c.setAttribute('r',5);});rp.innerHTML='<h4>一把跨了五个数量级的尺子</h4>最左边的刻度和最右边的刻度，差了四万倍。点任意一个圆点看说明。';});
+
+/* ---------- quiz ---------- */
+var qs=document.querySelectorAll('.qq'),done=0,ok=0,sc=document.getElementById('score');
+Array.prototype.forEach.call(qs,function(q){var a=+q.getAttribute('data-a');var bs=q.querySelectorAll('.opts button');var ex=q.querySelector('.exp');
+ Array.prototype.forEach.call(bs,function(b,i){b.addEventListener('click',function(){if(q.getAttribute('data-done'))return;q.setAttribute('data-done','1');done++;
+  bs[a].className='right';if(i===a){ok++;ex.innerHTML='<b class="r">答对了。</b>'+ex.innerHTML;}else{b.className='wrong';ex.innerHTML='<b class="w">正确答案是 '+'ABCD'[a]+'。</b>'+ex.innerHTML;}
+  ex.style.display='block';sc.textContent='已答 '+done+' / '+qs.length+' · 答对 '+ok+(done===qs.length?(ok>=8?' · 这一单元稳了':' · 回地图再看看易错点'):'');});});});
+})();
+</script>
+</body>
+</html>
