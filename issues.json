@@ -291,5 +291,12 @@
     "url": "am/2026-11-10.html",
     "summary": "从被踹翻的Mini Cheetah串起PID、三环、阻抗与带宽，附10道场景题",
     "lesson": "W4-复盘"
+  },
+  {
+    "kind": "pm",
+    "date": "2026-11-10",
+    "title": "晚报 11/10｜英伟达GR00T 2看人学手艺",
+    "url": "pm/2026-11-10.html",
+    "summary": "英伟达GR00T 2用人类视频教机器人；Atlas换轮子压测电机"
   }
 ]

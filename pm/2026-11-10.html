@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>晚报 11/10｜英伟达GR00T 2看人学手艺</title>
+<style>
+:root{--bg:#faf8f4;--fg:#1f1d1a;--muted:#6b665e;--card:#fff;--line:#e6e1d8;--accent:#c4501c;--accent2:#2b6c8f;--soft:#f3ede3;--ok:#3b7d4a;--metal:#9aa3ab;--metal2:#5d666e;--rub:#2f2f33}
+@media (prefers-color-scheme: dark){:root{--bg:#161514;--fg:#ece8e1;--muted:#a59f95;--card:#1f1e1c;--line:#34312d;--accent:#f08a52;--accent2:#7cb8d8;--soft:#262421;--ok:#7cc48c;--metal:#7d868e;--metal2:#b4bcc3;--rub:#0c0c0e}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:17px;line-height:1.78;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:14px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:6px 0}
+header h1{font-size:26px;line-height:1.35;margin:10px 0 4px}
+.date{color:var(--muted);font-size:14px}
+.three{background:var(--soft);border-left:4px solid var(--accent);padding:12px 14px;border-radius:8px;margin:18px 0}
+.three ol{margin:6px 0 0;padding-left:20px}
+h2{font-size:21px;line-height:1.4;margin:36px 0 8px}
+h2 .no{color:var(--accent);margin-right:6px}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:0 8px;margin-right:4px}
+.why{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0}
+.why b{color:var(--accent)}
+figure{margin:16px 0}
+figure img{width:100%;height:auto;border-radius:10px;display:block;background:var(--soft)}
+figcaption{font-size:13.5px;color:var(--muted);line-height:1.6;margin-top:6px}
+.imgfail{display:none;font-size:14px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+svg{width:100%;height:auto;display:block}
+.fig{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin:14px 0}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:6px 4px}
+.btns button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--soft);color:var(--fg);border-radius:20px;padding:4px 12px}
+.btns button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bar{display:flex;align-items:center;gap:8px;margin:8px 4px;font-size:14px}
+.bar .lab{width:92px;flex:none;color:var(--muted)}
+.bar .track{flex:1;background:var(--soft);border-radius:6px;height:18px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent2);border-radius:6px;transition:width .5s}
+.bar .val{width:84px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.out{font-size:14px;margin:6px 4px;color:var(--muted);line-height:1.6}
+.src-line{font-size:13.5px;color:var(--muted)}
+.src-line a,.src a{word-break:break-all}
+.term{background:var(--soft);border-radius:10px;padding:10px 14px;margin:10px 0}
+.src{font-size:13.5px;color:var(--muted);padding-left:20px}
+.lbl{font-size:12px;fill:var(--muted)}
+.lbl2{font-size:13px;fill:var(--fg)}
+.brief li{margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 返回目录</a>
+<header>
+<h1>晚报 11/10｜英伟达GR00T 2看人学手艺</h1>
+<div class="date">2026 年 11 月 10 日 · 周二 · 约 10 分钟</div>
+</header>
+
+<div class="three">
+<b>今日三句话</b>
+<ol>
+<li>英伟达在 CoRL 2026 发布机器人基础模型 GR00T 2：先看 40 万小时“人干活”的第一视角视频，再用几分钟真机数据就能学会新任务——“数据从哪来”这道难题，它押注的答案是人类视频。</li>
+<li>波士顿动力把 Atlas 的脚换成了轮子，原地起跳转 360 度；官方说这不是新产品，而是一场给电机和全身控制器的“极限体检”。</li>
+<li>蚂蚁灵波开源触觉模型 LingBot-Touch，想让不同厂家的触觉传感器“说同一种语言”；同一时间，优必选和中国电信旗下终端公司定下三年卖出 10 万台仿生/轮式人形的目标。</li>
+</ol>
+</div>
+
+<!-- 01 -->
+<h2><span class="no">01</span>英伟达 GR00T 2：先看人干活，再上手</h2>
+<div><span class="tag">具身模型</span><span class="tag">公司发布</span><span class="tag">11 月 9 日</span></div>
+<p>想象你教徒弟泡咖啡：最省事的是让他先在旁边看你做几百遍，再让他亲手试几次。英伟达 11 月 9 日在美国奥斯汀举行的机器人学习会议 CoRL 2026 上发布的 <b>GR00T 2</b>，走的就是这条路。</p>
+<p>它是一个“世界动作模型”（World Action Model，WAM）：同一个扩散 Transformer 同时预测“接下来画面会变成什么样”和“手该怎么动”，再由每种机器人各自的小“输出头”翻译成电机指令。按项目主页的数据，预训练用了约 <b>40.3 万小时</b>人类第一视角视频、约 1 万小时手持夹爪（UMI）示范、2.35 万小时真机遥操作（Teleoperation，人远程操纵机器人录数据）。其中 10 万小时人类视频已在 Hugging Face 公开。</p>
+<figure>
+<div class="pair">
+<div><img src="https://research.nvidia.com/labs/gear/gr00t-2/assets/img/xa_human_demo.jpg" loading="lazy" referrerpolicy="no-referrer" alt="一个人在漏斗里放置滤纸" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><a class="imgfail" href="https://research.nvidia.com/labs/gear/gr00t-2/">图片未能加载，点此查看原图</a></div>
+<div><img src="https://research.nvidia.com/labs/gear/gr00t-2/assets/img/xa_human_robot.jpg" loading="lazy" referrerpolicy="no-referrer" alt="双臂五指机器人 Dexter 在漏斗里放置滤纸" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><a class="imgfail" href="https://research.nvidia.com/labs/gear/gr00t-2/">图片未能加载，点此查看原图</a></div>
+</div>
+<figcaption>看图要看：左边是人示范“往漏斗里铺滤纸”，右边是双臂、每只手 22 个自由度的机器人 Dexter 做同一件事——按英伟达的说法，这项任务它只看过人类示范，成功率 65%。<br>图：NVIDIA / <a href="https://research.nvidia.com/labs/gear/gr00t-2/">GR00T 2 项目主页</a>，作者项目主页公开配图</figcaption>
+</figure>
+<p>几组关键数字（均为英伟达自报）：在目标机器人从没练过的 50 个任务上零样本成功率 40%；每个任务只给 5 条示范（不到 3 分钟真机数据）、在一张 RTX 5090 上微调 30 分钟后，成功率到 95%；轻量版 GR00T 2 Turbo 跑在宇树 G1 机载的 Jetson Thor 上，每次推理 124 毫秒。代码标注“12 月开放”，主页没写模型权重的许可方式。</p>
+
+<div class="fig">
+<div style="font-size:15px;margin:2px 4px 6px"><b>交互：GR00T 2 的“学费”从哪来</b>（点按钮切换刻度）</div>
+<div class="btns"><button id="lin" class="on">线性刻度</button><button id="log">对数刻度</button></div>
+<div id="bars"></div>
+<div class="out" id="note">线性刻度下，人类视频几乎占满——真机遥操作数据只有它的约 6%。</div>
+</div>
+
+<div class="why"><b>为什么值得关注：</b>行业里最贵的是真机数据，一小时遥操作要人、要机器、要场地。GR00T 2 的说法是“用便宜的人类视频换贵的真机数据”。但要注意：漏斗任务 65% 意味着三次里大约失败一次，离工厂要求的 99% 以上还远；另外媒体常转述的“任务完成度从 50% 提到 70%”，项目主页写明是<i>任务进度</i>而非成功率。对硬件公司来说，它把 Sharpa、Wuji、XHAND 等灵巧手和宇树 G1 都列为测试平台——“模型往哪种手、哪种本体上适配”正在变成选型时会被问到的问题。</div>
+<p class="src-line">来源：<a href="https://research.nvidia.com/labs/gear/gr00t-2/">NVIDIA GR00T 2 项目主页</a>；<a href="https://kantan.news/news/nvidia-announces-gr00t-2-model-precise-robotic-skills-via-human-videos">Kantan News（11/9）</a></p>
+
+<!-- 02 -->
+<h2><span class="no">02</span>Atlas 换上轮子：一场给电机的极限体检</h2>
+<div><span class="tag">执行器</span><span class="tag">研究演示</span><span class="tag">11 月 9 日</span></div>
+<p>波士顿动力 11 月 9 日放出一段约 2 分 50 秒的视频：电动版 Atlas 的双脚被换成轮子，它能侧向冲刺、单轮站立抬起另一条腿，还原地起跳转了一整圈——据韩国中央日报援引，这个 360 度旋转跳在实机上<b>第一次就成功</b>。据 IT 之家转述，工程师用定制转接件，把普通电动滑板车的轮子装在 Atlas 踝关节执行器上，没有大改硬件。</p>
+
+<div class="fig">
+<svg viewBox="0 0 640 330" role="img" aria-label="Atlas 腿部示意：髋、膝、踝执行器，踝下由脚掌换成轮子">
+<defs><linearGradient id="mt" x1="0" x2="1"><stop offset="0" stop-color="var(--metal)"/><stop offset="1" stop-color="var(--metal2)"/></linearGradient></defs>
+<text x="160" y="22" text-anchor="middle" class="lbl2">原来：踝关节 + 脚掌</text>
+<text x="480" y="22" text-anchor="middle" class="lbl2">现在：踝关节 + 轮子</text>
+<g>
+<rect x="135" y="40" width="50" height="34" rx="8" fill="url(#mt)"/><circle cx="160" cy="57" r="10" fill="var(--card)" stroke="var(--metal2)"/>
+<rect x="148" y="72" width="24" height="80" rx="9" fill="url(#mt)"/>
+<circle cx="160" cy="160" r="16" fill="url(#mt)"/><circle cx="160" cy="160" r="7" fill="var(--accent)"/>
+<rect x="150" y="172" width="20" height="80" rx="8" fill="url(#mt)"/>
+<circle cx="160" cy="258" r="13" fill="url(#mt)"/><circle cx="160" cy="258" r="6" fill="var(--accent)"/>
+<path d="M118 272 h86 q8 0 8 8 v6 h-102 v-6 q0 -8 8 -8z" fill="var(--rub)"/>
+<line x1="90" y1="292" x2="240" y2="292" stroke="var(--line)" stroke-width="3"/>
+<text x="186" y="164" class="lbl">膝执行器</text><text x="180" y="252" class="lbl">踝执行器</text>
+<text x="160" y="316" text-anchor="middle" class="lbl">落脚、站稳，靠摩擦力不滑</text>
+</g>
+<g>
+<rect x="455" y="40" width="50" height="34" rx="8" fill="url(#mt)"/><circle cx="480" cy="57" r="10" fill="var(--card)" stroke="var(--metal2)"/>
+<rect x="468" y="72" width="24" height="80" rx="9" fill="url(#mt)"/>
+<circle cx="480" cy="160" r="16" fill="url(#mt)"/><circle cx="480" cy="160" r="7" fill="var(--accent)"/>
+<rect x="470" y="172" width="20" height="80" rx="8" fill="url(#mt)"/>
+<circle cx="480" cy="258" r="13" fill="url(#mt)"/><circle cx="480" cy="258" r="6" fill="var(--accent)"/>
+<rect x="476" y="262" width="8" height="10" fill="var(--metal2)"/>
+<circle cx="480" cy="276" r="16" fill="var(--rub)"/><circle cx="480" cy="276" r="7" fill="var(--metal)"/>
+<line x1="410" y1="292" x2="560" y2="292" stroke="var(--line)" stroke-width="3"/>
+<path d="M520 276 a40 40 0 0 1 -6 -24" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M510 254 l4 -6 l3 7" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<text x="506" y="250" class="lbl">转接件</text>
+<text x="527" y="282" class="lbl">滑板车轮</text>
+<text x="480" y="316" text-anchor="middle" class="lbl">要在滚动中保持平衡，加减速全靠腿</text>
+</g>
+<line x1="320" y1="40" x2="320" y2="300" stroke="var(--line)" stroke-dasharray="4 4"/>
+</svg>
+<div class="out">示意图，非真实比例。转接方式按中文媒体转述绘制，官方未公开结构细节；轮子是否由踝执行器直接驱动，英文报道未明确。</div>
+</div>
+
+<p>用的仍是“仿真里强化学习（Reinforcement Learning，靠反复试错和奖励学会动作）+ 迁移到实机”（Sim-to-Real）。控制工程师 Andy Wu 说，他专门从人体动作捕捉库里挑“脚底打滑多”的片段来练，还意外发现策略自己学会了在侧冲时用轮子滚。</p>
+<div class="why"><b>对做执行器的人意味着什么：</b>波士顿动力明确说这是“纯研究平台、无商业化计划”，目的是看<i>学出来的全身控制器（Whole-Body Control）在真实电机上能有多忠实</i>。轮子把脚底的“静摩擦安全垫”拿掉了，加速、转向、刹车时每个关节都得在大扭矩、高转速下持续出力——这正是关节执行器的峰值扭矩、热容量和电流环带宽被同时拉满的工况。“换个末端去压测整机”是一个值得记住的测试思路。视频是剪辑后的官方宣传片，是否全程自主未见说明。</div>
+<p class="src-line">来源：<a href="https://www.koreajoongangdaily.com/business/atlas-is-on-a-roll-hyundais-humanoid-robot-trades-feet-for-wheels/12965255">Korea JoongAng Daily（11/10）</a>；<a href="https://www.koreatimes.co.kr/business/tech-science/20261110/boston-dynamics-atlas-robot-pulls-off-360-degree-spinning-jump-on-wheels-instead-of-feet">The Korea Times（11/10）</a>；<a href="https://k.sina.cn/article_7857201856_1d45362c001908ub7u.html">新浪机器人小时报（转引 IT之家）</a></p>
+
+<!-- 03 -->
+<h2><span class="no">03</span>蚂蚁灵波开源 LingBot-Touch：让触觉“说普通话”</h2>
+<div><span class="tag">灵巧手</span><span class="tag">开源</span><span class="tag">11 月 10 日</span></div>
+<p>灵巧手的触觉传感器现在是“方言区”：有的用压阻阵列（按下去电阻变），有的用磁性（小磁铁位移被霍尔元件读到），有的用视触觉（软胶皮下面藏摄像头拍变形）。数据格式各不相同，换一只手，模型就得重训。</p>
+<p>蚂蚁集团旗下的灵波科技（Robbyant）11 月 10 日开源 <b>LingBot-Touch</b>：为三类传感器各配一个“分词器”，把信号映射到统一几何接口，再送进同一个“触觉 Transformer”学共享表示。训练数据约 <b>4,983 小时</b>、46 万段、约 13.3 亿帧；最小版本只有 546 万参数，适合高频推理。真机评测在 Sharpa Wave 和 XHand 两只手上做了 26 个任务，每个 20 次。中文报道称接入后四款动作模型成功率提升约 14–26 个百分点；项目主页把具体数值放在图表里，以下以公司口径看待。</p>
+
+<div class="fig">
+<svg viewBox="0 0 640 260" role="img" aria-label="三种触觉传感器经各自分词器进入共享触觉 Transformer">
+<g>
+<rect x="20" y="20" width="120" height="58" rx="10" fill="var(--soft)" stroke="var(--line)"/>
+<g fill="var(--accent)">
+<rect x="34" y="32" width="10" height="10" rx="2"/><rect x="50" y="32" width="10" height="10" rx="2" opacity=".5"/><rect x="66" y="32" width="10" height="10" rx="2" opacity=".8"/><rect x="82" y="32" width="10" height="10" rx="2" opacity=".3"/>
+<rect x="34" y="48" width="10" height="10" rx="2" opacity=".4"/><rect x="50" y="48" width="10" height="10" rx="2"/><rect x="66" y="48" width="10" height="10" rx="2" opacity=".6"/><rect x="82" y="48" width="10" height="10" rx="2" opacity=".2"/></g>
+<text x="80" y="94" text-anchor="middle" class="lbl2">压阻阵列</text>
+<rect x="20" y="104" width="120" height="58" rx="10" fill="var(--soft)" stroke="var(--line)"/>
+<rect x="50" y="118" width="18" height="30" rx="3" fill="#c0392b"/><rect x="68" y="118" width="18" height="30" rx="3" fill="#2e6fbf"/>
+<path d="M95 124 q14 9 0 18" fill="none" stroke="var(--muted)"/><path d="M103 120 q20 13 0 26" fill="none" stroke="var(--muted)"/>
+<text x="80" y="178" text-anchor="middle" class="lbl2">磁性</text>
+<rect x="20" y="188" width="120" height="50" rx="10" fill="var(--soft)" stroke="var(--line)"/>
+<path d="M36 206 q44 -18 88 0 v14 h-88z" fill="#e8b98a" opacity=".85"/>
+<rect x="70" y="222" width="20" height="10" rx="2" fill="var(--metal2)"/><circle cx="80" cy="227" r="3" fill="var(--card)"/>
+<text x="80" y="254" text-anchor="middle" class="lbl2">视触觉（胶皮+相机）</text>
+</g>
+<g fill="none" stroke="var(--muted)" stroke-width="1.5">
+<path d="M142 50 C190 50 190 120 230 120"/><path d="M142 134 L230 132"/><path d="M142 212 C190 212 190 144 230 144"/></g>
+<rect x="232" y="100" width="110" height="62" rx="10" fill="var(--card)" stroke="var(--accent2)"/>
+<text x="287" y="126" text-anchor="middle" class="lbl2">各自分词器</text><text x="287" y="146" text-anchor="middle" class="lbl">→ 统一触觉 token</text>
+<path d="M344 131 h40" stroke="var(--muted)" stroke-width="1.5"/><path d="M378 126 l8 5 l-8 5" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+<rect x="388" y="92" width="120" height="78" rx="12" fill="var(--accent2)" opacity=".15" stroke="var(--accent2)"/>
+<text x="448" y="124" text-anchor="middle" class="lbl2">共享触觉</text><text x="448" y="144" text-anchor="middle" class="lbl2">Transformer</text>
+<path d="M510 131 h30" stroke="var(--muted)" stroke-width="1.5"/><path d="M534 126 l8 5 l-8 5" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+<text x="590" y="118" text-anchor="middle" class="lbl2">动作模型</text><text x="590" y="138" text-anchor="middle" class="lbl">（VLA 等）</text><text x="590" y="158" text-anchor="middle" class="lbl">换手不用重训</text>
+</svg>
+</div>
+<div class="why"><b>为什么值得关注：</b>触觉是灵巧手“最后一公里”，但缺统一标准，导致软件生态碎片化。如果“传感器无关”的触觉表示被大家采用，硬件厂商的压力会从“自建算法”转向“接口是否兼容、数据是否干净”。这和今天第一条里英伟达把多种灵巧手列为测试平台是同一个趋势：模型方在主动吸纳硬件多样性。数字目前均来自公司技术报告，尚无第三方复现。</div>
+<p class="src-line">来源：<a href="https://technology.robbyant.com/lingbot-touch">LingBot-Touch 项目主页</a>；<a href="https://technode.com/2026/11/10/ant-groups-robbyant-open-sources-tactile-ai-model-for-robot-hands/">TechNode（11/10）</a>；<a href="https://k.sina.cn/article_7857201856_1d45362c001908ub7u.html">新浪机器人小时报</a></p>
+
+<!-- 04 -->
+<h2><span class="no">04</span>优必选 × 中国电信终端：三年目标 10 万台人形</h2>
+<div><span class="tag">渠道</span><span class="tag">合作</span><span class="tag">11 月 9 日</span></div>
+<p>11 月 9 日，优必选（09880.HK）与中国电信旗下天翼电信终端签署全面战略合作，并揭牌联合创新实验室。双方给出的三年目标：家庭陪伴机器人终端超 <b>100 万台</b>，超仿生人形与轮式人形机器人终端超 <b>10 万台</b>。合作覆盖联合研发、商业模式、场景和生态，实验室要把机器人的语音、视觉、情感计算能力与运营商的云网、大模型、卫星、eSIM 等结合。</p>
+<div class="why"><b>怎么看：</b>这是“目标”而非订单，没有金额。真正的看点是渠道：运营商有遍布全国的营业厅和“套餐+终端”的分期销售经验——人形机器人可能像当年的智能手机一样，以“合约机”方式进家。若十万量级兑现，对关节、减速器等零部件意味着持续的消费级订单，但消费级对价格、噪声、安全的要求和工业级完全不同。</div>
+<p class="src-line">来源：<a href="https://www.sohu.com/a/1099302095_122014422">搜狐（转载澎湃新闻，11/9）</a></p>
+
+<!-- 05 -->
+<h2><span class="no">05</span>Web Summit 上的“隔空互怼”：智元点名特斯拉、Figure、宇树</h2>
+<div><span class="tag">行业格局</span><span class="tag">11 月 9–10 日</span></div>
+<p>里斯本 Web Summit 11 月 9 日开幕，四台中国机器人被登记为官方“演讲嘉宾”：智元的 A3、PrimeBOT Q1，银河通用的 G1、ET1。据《福布斯》报道，智元欧洲负责人 William Shi 在现场说：特斯拉 Optimus 只在视频里干活；Figure 有很多工厂视频但“从不跳舞”；宇树“只跳舞不干活”；而智元两样都行，有“超过 1,000 台”在中国工厂工作。</p>
+<p>《福布斯》作者顺手算了笔账：按此前数据，智元到 2026 年中累计出货约 1.37 万台，如果只有约 1,000 台在工厂，那大部分仍用在科研、教育、零售和娱乐。现场机器人回答提问也有明显延迟。</p>
+<div class="why"><b>怎么看：</b>“谁在真干活”已成为人形机器人公司的核心叙事武器。对读者有用的是这套反问框架：听到“已部署 X 台”时，追问其中多少在付费生产岗位、连续运行多久、成功率多少。</div>
+<p class="src-line">来源：<a href="https://www.forbes.com/sites/johnkoetsier/2026/11/10/robot-trash-talk-at-web-summit-as-agibot-disses-tesla-figure-unitree/">Forbes（11/10）</a></p>
+
+<h2>顺带一提</h2>
+<ul class="brief">
+<li><b>Optimus 时间表：</b>据央视财经 11/10 报道，马斯克称 Optimus 约 2027 年底开始对外交付、可能以出租形式，单台初始成本约 3 万美元、之后降到约 2 万美元，至少一年后才全面量产。（“出租”昨天已讲过，今天补上了时间和成本口径。）<a href="https://k.sina.cn/article_7857201856_1d45362c001908ub7u.html">来源</a></li>
+<li><b>电机上游：</b>据证券时报 11/9 报道，北京 AI 材料公司清析智研完成近亿元天使轮，投资方含智元机器人、高瓴创投、中芯聚源，资金用于稀土永磁和半导体材料研发——人形本体厂开始往电机磁材这一层布局。<a href="https://k.sina.com.cn/article_7857201856_1d45362c001908uc96.html">来源</a></li>
+</ul>
+
+<h2>今日术语</h2>
+<div class="term"><b>世界动作模型（World Action Model, WAM）</b><br>普通的机器人策略只回答“下一步手怎么动”；世界动作模型还要同时“脑补”接下来画面会怎么变。好处是它能从没有动作标签的人类视频里学物理常识（杯子倒了水会洒），因为“预测画面”这一半不需要知道人的关节角度。代价是计算量大，所以英伟达另做了 Turbo 版放到机器人身上跑。</div>
+<div class="term"><b>仿真到实机（Sim-to-Real）</b><br>先在电脑模拟器里让机器人摔上百万次学会动作，再搬到真机器人上。难点是“现实差距”：模拟里的电机永远听话，真电机有摩擦、发热、延迟、扭矩饱和。Atlas 换轮子的实验，测的正是这道差距在极端动作下有多大——执行器模型越准，这道差距越小。</div>
+
+<h2>来源</h2>
+<ol class="src">
+<li><a href="https://research.nvidia.com/labs/gear/gr00t-2/">NVIDIA GEAR — GR00T 2 项目主页</a></li>
+<li><a href="https://kantan.news/news/nvidia-announces-gr00t-2-model-precise-robotic-skills-via-human-videos">Kantan News — Nvidia Announces GR00T 2（2026-11-09）</a></li>
+<li><a href="https://www.koreajoongangdaily.com/business/atlas-is-on-a-roll-hyundais-humanoid-robot-trades-feet-for-wheels/12965255">Korea JoongAng Daily — Atlas is on a roll（2026-11-10）</a></li>
+<li><a href="https://www.koreatimes.co.kr/business/tech-science/20261110/boston-dynamics-atlas-robot-pulls-off-360-degree-spinning-jump-on-wheels-instead-of-feet">The Korea Times — Atlas 360-degree spinning jump on wheels（2026-11-10）</a></li>
+<li><a href="https://technology.robbyant.com/lingbot-touch">Robbyant — LingBot-Touch 项目主页</a></li>
+<li><a href="https://technode.com/2026/11/10/ant-groups-robbyant-open-sources-tactile-ai-model-for-robot-hands/">TechNode — Robbyant open-sources tactile AI model（2026-11-10）</a></li>
+<li><a href="https://www.sohu.com/a/1099302095_122014422">搜狐/澎湃 — 天翼电信终端与优必选达成全面战略合作（2026-11-09）</a></li>
+<li><a href="https://www.forbes.com/sites/johnkoetsier/2026/11/10/robot-trash-talk-at-web-summit-as-agibot-disses-tesla-figure-unitree/">Forbes — Robot Trash Talk At Web Summit（2026-11-10）</a></li>
+<li><a href="https://k.sina.cn/article_7857201856_1d45362c001908ub7u.html">新浪机器人热点小时报 11/10 13 时</a></li>
+<li><a href="https://k.sina.com.cn/article_7857201856_1d45362c001908uc96.html">新浪机器人热点小时报 11/10 18 时</a></li>
+</ol>
+</main>
+<script>
+(function(){
+var d=[["人类第一视角视频",402730],["真机遥操作",23500],["手持夹爪 UMI",10184]];
+var box=document.getElementById('bars');
+d.forEach(function(r){box.insertAdjacentHTML('beforeend','<div class="bar"><span class="lab">'+r[0]+'</span><span class="track"><span class="fill" style="display:block;width:0"></span></span><span class="val">'+r[1].toLocaleString()+' h</span></div>');});
+var fills=box.querySelectorAll('.fill');
+function draw(mode){
+ var max=d[0][1];
+ d.forEach(function(r,i){var w=mode==='log'?Math.log10(r[1])/Math.log10(max)*100:r[1]/max*100;fills[i].style.width=Math.max(w,1)+'%';});
+ document.getElementById('note').textContent=mode==='log'?'对数刻度下三者看起来“差不多”——但别被骗了：每一格代表 10 倍，人类视频比 UMI 示范多约 40 倍。':'线性刻度下，人类视频几乎占满——真机遥操作数据只有它的约 6%。';
+ document.getElementById('lin').className=mode==='lin'?'on':'';document.getElementById('log').className=mode==='log'?'on':'';
+}
+document.getElementById('lin').onclick=function(){draw('lin')};
+document.getElementById('log').onclick=function(){draw('log')};
+setTimeout(function(){draw('lin')},100);
+})();
+</script>
+</body>
+</html>
