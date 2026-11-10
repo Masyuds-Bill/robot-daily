@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>早课 W5-1｜热模型：为什么连续力矩远小于峰值力矩</title>
+<style>
+:root{
+  --bg:#f7f4ee; --bg2:#fffdf8; --ink:#1f1d1a; --ink2:#5a554d; --line:#e2dcd0;
+  --accent:#c2410c; --accent2:#0f766e; --blue:#1d4ed8; --soft:#fbeee3; --soft2:#e6f2f0;
+  --can:#8a8f98; --steel:#a7adb7; --copper:#c47a35; --copper2:#8a4e1c; --magN:#c2410c; --magS:#1d4ed8;
+  --wood:#b98a5a; --water:#3b82c4; --warn:#fdf0d5; --warnline:#b45309; --glow:#facc15;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#16171a; --bg2:#1e2024; --ink:#ece8e1; --ink2:#a9a39a; --line:#33363c;
+    --accent:#fb923c; --accent2:#2dd4bf; --blue:#7aa2ff; --soft:#2a2019; --soft2:#17292a;
+    --can:#5b616b; --steel:#6b7280; --copper:#d08a45; --copper2:#e3a668; --magN:#ea7a45; --magS:#6d8cf0;
+    --wood:#8a6a48; --water:#5aa0dd; --warn:#2b2416; --warnline:#f59e0b; --glow:#fde047;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;overflow-x:hidden}
+main{max-width:720px;margin:0 auto;padding:4px 16px 60px}
+a{color:var(--accent2)}
+.back{display:inline-block;font-size:15px;text-decoration:none;padding:12px 16px 0;color:var(--ink2)}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--accent);margin-top:14px;font-weight:600}
+h1{font-family:var(--serif);font-size:30px;line-height:1.3;margin:6px 0 6px}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 22px}
+h2{font-family:var(--serif);font-size:23px;line-height:1.4;margin:42px 0 10px;padding-top:12px;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:6px}
+p{margin:12px 0}
+.lead p:first-child::first-letter{font-family:var(--serif);font-size:2.6em;float:left;line-height:1;margin:6px 8px 0 0;color:var(--accent)}
+figure{margin:22px 0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 12px 10px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px}
+figcaption b{color:var(--accent)}
+.ctrl{display:flex;align-items:center;gap:10px;margin:8px 2px;font-size:15px;flex-wrap:wrap}
+.ctrl label{min-width:5em;color:var(--ink2)}
+.ctrl input[type=range]{flex:1;min-width:150px;height:32px;accent-color:var(--accent)}
+.ctrl output{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+button{font:inherit;font-size:15px;padding:8px 16px;border-radius:999px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);cursor:pointer;min-height:40px}
+.seg{display:flex;gap:8px;flex-wrap:wrap;margin:6px 2px}
+.seg button.on{background:var(--accent);color:#fff}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:8px 0 2px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--ink2)}
+.readout b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.formula{font-family:"Times New Roman",var(--serif);font-size:24px;text-align:center;margin:16px 0;padding:12px;background:var(--soft2);border-radius:12px}
+.formula small{display:block;font-family:var(--sans);font-size:14px;color:var(--ink2);margin-top:4px}
+.say{font-size:15px;color:var(--accent2);margin-bottom:-6px}
+.analogy{border-left:4px solid var(--accent2);background:var(--soft2);padding:10px 14px;border-radius:0 12px 12px 0;margin:18px 0}
+.analogy .t{font-weight:700;color:var(--accent2);font-size:15px}
+.analogy .off{font-size:15px;color:var(--ink2)}
+.box{border-radius:14px;padding:14px 16px;margin:22px 0;border:1px solid}
+.box .t{font-weight:700;font-size:16px;margin-bottom:4px}
+.cold{background:var(--soft);border-color:var(--accent)}
+.cold .t{color:var(--accent)}
+.fail{background:var(--warn);border-color:var(--warnline)}
+.fail .t{color:var(--warnline)}
+.work{background:var(--bg2);border-color:var(--line)}
+.en{font-family:Georgia,"Times New Roman",serif;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;font-size:15px;line-height:1.6}
+details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600;color:var(--accent2)}
+.q{margin:18px 0 6px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:10px 0}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:top;text-align:left}
+th{color:var(--ink2);font-weight:600;font-size:14px}
+.terms td:first-child{white-space:nowrap;font-weight:600}
+.num td{font-variant-numeric:tabular-nums}
+.src{font-size:13px;color:var(--ink2);word-break:break-all}
+.src li{margin:4px 0}
+.tease{font-family:var(--serif);font-size:19px;background:var(--soft);border-radius:14px;padding:16px;margin-top:26px}
+.photo{padding:0;overflow:hidden}
+.photo img{display:block;width:100%;height:auto;background:var(--line)}
+.photo figcaption{padding:4px 14px 12px}
+.imgfail{display:none;padding:14px;font-size:15px}
+svg text{font-family:var(--sans)}
+.photo figcaption a{color:var(--accent2)}
+.pcb{fill:#1d5a43} .chip{fill:#202226} .ontxt{fill:#f2efe8}
+@media (prefers-color-scheme: dark){ .pcb{fill:#163d2f} .chip{fill:#0d0e10} }
+.status{font-weight:700} .okc{color:var(--accent2)} .badc{color:#dc2626}
+.box ul{padding-left:20px;margin:6px 0} .box li{margin:6px 0}
+.ctrl button{min-width:9em}
+
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:0 4px;word-break:break-all}
+main ul{padding-left:22px} main li{margin:6px 0}
+#f1seg button,#f3seg button,#f4seg button{font-size:14px;padding:6px 12px}
+[hidden]{display:none!important}
+#f3svg{cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+.ctrl label{min-width:4.2em}.ctrl input[type=range]{min-width:110px}.ctrl output{min-width:4.6em}
+</style>
+
+</head>
+<body>
+<a class="back" href="../index.html">← 返回目录</a>
+<main>
+<div class="kicker">早课 · W5 热与选型 · 第 1 课</div>
+<h1>热模型：为什么连续力矩远小于峰值力矩</h1>
+<p class="sub">同一个关节，冲刺一秒和跑完半马，是两种完全不同的“有劲”。今天跟着一场机器人半程马拉松，把这件事讲透。</p>
+
+<div class="lead">
+<p>2025 年 4 月 19 日早上 7 点半，北京亦庄。一群人形机器人站上了 21.0975 公里的半程马拉松起跑线。冠军“天工 Ultra”用了 2 小时 40 分 42 秒跑完——平均下来每小时不到 8 公里，比很多大爷晨跑还慢。赛后接受采访时，工程师说的难题里有一句很朴素的话：<b>关节长时间运动，容易发热。</b></p>
+<p>一年后，2026 年 4 月 19 日，同一条赛道。荣耀的“闪电”机器人用 50 分 26 秒冲线，前三名都是它。报道里有个细节特别有意思：不少机器人的背上多了几根管子——那是水冷系统。赛队们给大力矩的核心关节上液冷，小关节用风冷，有的队干脆把水冷设备挂在机身外面，免得增加体重。</p>
+<p>算一下：50 分 26 秒跑完半马，平均时速约 25.1 公里——差不多正好是国标给电动自行车定的最高设计车速 25 km/h。一台两条腿的机器，要以电动车的速度、连续跑 50 分钟。问题来了：<b>这些关节电机的峰值力矩明明够大，为什么还要背着水管上场？</b>规格书上那个漂亮的峰值力矩，到底能用多久？</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 680 300" role="img" aria-label="2025 与 2026 年人形机器人半马冠军速度对比示意">
+<defs>
+<linearGradient id="trk" x1="0" x2="1"><stop offset="0" stop-color="#c2410c" stop-opacity=".18"/><stop offset="1" stop-color="#c2410c" stop-opacity=".35"/></linearGradient>
+<linearGradient id="body" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8e5df"/><stop offset="1" stop-color="#a7adb7"/></linearGradient>
+</defs>
+<rect x="0" y="0" width="680" height="300" rx="12" fill="var(--bg2)"/>
+<!-- lanes -->
+<rect x="20" y="105" width="640" height="26" rx="6" fill="url(#trk)"/>
+<rect x="20" y="245" width="640" height="26" rx="6" fill="url(#trk)"/>
+<g stroke="var(--bg2)" stroke-width="2" stroke-dasharray="14 12"><line x1="20" y1="118" x2="660" y2="118"/><line x1="20" y1="258" x2="660" y2="258"/></g>
+<!-- 2025 robot -->
+<g transform="translate(95,18)">
+<circle cx="22" cy="10" r="10" fill="url(#body)" stroke="#5a554d"/>
+<rect x="9" y="22" width="26" height="36" rx="8" fill="url(#body)" stroke="#5a554d"/>
+<path d="M14 56 L6 76 L12 92" stroke="#5a554d" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M30 56 L36 74 L30 92" stroke="#5a554d" stroke-width="7" fill="none" stroke-linecap="round"/>
+<circle cx="6" cy="76" r="4.5" fill="#c47a35"/><circle cx="36" cy="74" r="4.5" fill="#c47a35"/>
+<path d="M12 28 L2 46 M32 28 L42 44" stroke="#5a554d" stroke-width="5" stroke-linecap="round"/>
+</g>
+<text x="160" y="40" font-size="16" font-weight="700" fill="var(--ink)">2025 · 冠军 2:40:42</text>
+<text x="160" y="62" font-size="14" fill="var(--ink2)">平均约 7.9 km/h，赛后工程师：关节长时间运动易发热</text>
+<rect x="160" y="74" width="141" height="12" rx="6" fill="var(--steel)"/>
+<text x="308" y="85" font-size="13" fill="var(--ink2)">7.9</text>
+<!-- 2026 robot leaning with pipes -->
+<g transform="translate(95,160) skewX(-12)">
+<circle cx="26" cy="10" r="10" fill="url(#body)" stroke="#5a554d"/>
+<rect x="13" y="22" width="26" height="36" rx="8" fill="url(#body)" stroke="#5a554d"/>
+<path d="M18 56 L0 70 L-8 90" stroke="#5a554d" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M34 56 L46 76 L58 84" stroke="#5a554d" stroke-width="7" fill="none" stroke-linecap="round"/>
+<circle cx="0" cy="70" r="4.5" fill="#c47a35"/><circle cx="46" cy="76" r="4.5" fill="#c47a35"/>
+<path d="M14 26 C2 30 2 48 -2 62 Q-4 70 0 70" stroke="#3b82c4" stroke-width="3" fill="none"/>
+<path d="M16 32 C8 40 10 60 16 64" stroke="#3b82c4" stroke-width="3" fill="none"/>
+<path d="M36 28 L52 18 M16 30 L2 42" stroke="#5a554d" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g fill="none" stroke="#c2410c" stroke-width="2" opacity=".75">
+<path d="M70 210 q5 -8 0 -16 q-5 -8 0 -16"/><path d="M60 228 q5 -8 0 -16 q-5 -8 0 -16"/>
+</g>
+<text x="160" y="180" font-size="16" font-weight="700" fill="var(--ink)">2026 · 冠军 50:26</text>
+<text x="160" y="202" font-size="14" fill="var(--ink2)">平均约 25.1 km/h，背上多了水冷管</text>
+<rect x="160" y="214" width="448" height="12" rx="6" fill="var(--accent)"/>
+<text x="614" y="225" font-size="13" fill="var(--ink2)">25.1</text>
+<line x1="606" y1="140" x2="606" y2="236" stroke="var(--accent2)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="600" y="150" font-size="12" text-anchor="end" fill="var(--accent2)">电动自行车限速 25 km/h</text>
+<text x="300" y="292" font-size="12" fill="var(--ink2)" text-anchor="middle">蓝线 = 示意的水冷管；橙点 = 膝、踝关节；人物为示意，非真实外形</text>
+</svg>
+<figcaption><b>看图要看什么：</b>一年里速度涨了三倍多，背上多出来的不是电池线，而是水管。速度上去以后，“关节会不会热”从小毛病变成了能决定名次的大问题。速度由公布的成绩换算而来。</figcaption>
+</figure>
+
+<h2><span class="n">01</span>规格书上为什么偏偏写两个力矩？</h2>
+<p>翻开任何一份关节执行器的规格书，都会看到两栏：<b>峰值力矩</b>（peak torque）和<b>额定 / 连续力矩</b>（rated / continuous torque）。举个公开的真实例子：CubeMars 的 AK80-9 关节模组（就是很多四足机器人爱好者用的那种“饼状”电机），厂商写的是额定 9 N·m、峰值 18 N·m，对应电流额定 10.3 A、峰值 22.3 A。</p>
+<p>很多人第一反应：峰值是额定的两倍，那平时就当它能出 18 N·m 用呗。这就像看到一个人百米能跑 10 秒，就以为他能用这个速度跑马拉松。</p>
+
+<div class="analogy"><div class="t">类比 · 百米冲刺 vs 马拉松</div>
+<p>短跑运动员能在十秒里爆发出极高的功率，但没人能一直这么跑。<b>峰值</b>回答的是“短时间内最多能使多大劲”，<b>连续</b>回答的是“一直这么干下去、身体不出问题，能使多大劲”。两个数字在问不同的问题。</p>
+<p class="off">哪里不准：人跑不动主要是能量和肌肉疲劳的问题；电机几乎不会“累”，它跑不动的唯一原因是<b>热</b>——只要温度不超限，它可以一直出力。</p></div>
+
+<p>所以今天要回答的问题，其实可以换一种问法：<b>热从哪来、往哪去、多快会攒到危险线？</b>把这三件事讲清楚，“为什么连续力矩远小于峰值”就自然明白了。</p>
+
+<h2><span class="n">02</span>热从哪来？力矩翻一倍，热翻四倍</h2>
+<p>W1 讲过，电机的力矩和电流成正比：要两倍的力矩，就得灌两倍的电流。电流流过铜线绕组时会发热，这部分叫<b>铜损</b>（copper loss）。关键在于它的大小：</p>
+<p class="say">人话：发热和电流的平方成正比，不是和电流成正比。</p>
+<div class="formula">P<sub>铜</sub> = I² · R<small>I 是电流，R 是绕组电阻；电流翻倍，热量变成 4 倍</small></div>
+<p>拿 AK80-9 的公开数字粗算一下（教学估算：取三相 FOC 常用的 P ≈ 1.5·I²·R<sub>相</sub>，相电阻取厂商标的线间电阻 170 mΩ 的一半）：额定 10.3 A 时铜损约 13.5 W；峰值 22.3 A 时约 63 W。<b>力矩只翻了一倍，发热却涨了约 4.7 倍。</b>为什么比 4 倍还多？因为大电流时电机铁芯开始“饱和”，每安培换来的力矩变少，同样翻倍的力矩要多灌一点电流。</p>
+
+<figure>
+<svg id="fdSvg" viewBox="0 0 680 270" role="img" aria-label="力矩、电流与发热的平方关系，可拖动滑块"></svg>
+<div class="ctrl"><label for="fdT">输出力矩</label><input id="fdT" type="range" min="0" max="18" step="0.5" value="9"><output id="fdTo">9.0 N·m</output></div>
+<div class="readout"><div>估算电流<b id="fdI">10.3 A</b></div><div>估算铜损<b id="fdP">13.5 W</b></div><div>是额定时的<b id="fdR">1.0 倍</b></div></div>
+<figcaption><b>看图要看什么：</b>正方形的边长代表电流，面积代表发热。把滑块从 9 拖到 18，边长只长了一倍多，面积却胀成了将近五倍——这就是“平方”的厉害。数据点取自 AK80-9 公开规格，中间按线性插值，铜损为教学估算。</figcaption>
+</figure>
+
+<div class="box cold"><div class="t">冷知识 · 电机越热，越热</div>
+<p>铜的电阻会随温度上升，大约每升高 1 °C 增加 0.39%。绕组从 25 °C 热到 125 °C，电阻涨了约四成，同样的电流发热也多了约四成。雪上加霜的是，钕铁硼磁钢温度升高时磁性会变弱（可逆部分大约每度千分之一的量级），每安培换来的力矩变小，要维持同样的力矩又得加电流。热 → 电阻大、磁性弱 → 更多电流 → 更热，这是一个会自我加速的循环，也是驱动器必须实时盯着温度的原因。</p></div>
+
+<h2><span class="n">03</span>热往哪去？一只漏水的浴缸</h2>
+<p>热产生之后，要经过一条“逃生路线”才能离开电机：铜线绕组 → 定子铁芯 → 外壳 → 空气（或者冷却液）。每一段都有阻碍，叫<b>热阻</b>（thermal resistance，单位 K/W：每瓦热量会造成几度温差）。同时，每一块材料都能“存”一些热，叫<b>热容</b>（thermal capacitance，单位 J/K：升高 1 度要吸多少焦耳）。</p>
+
+<figure>
+<svg viewBox="0 0 680 330" role="img" aria-label="关节电机剖面的散热路径与等效热路">
+<defs>
+<radialGradient id="hotc" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#f97316"/><stop offset="1" stop-color="#c47a35"/></radialGradient>
+<linearGradient id="hous" x1="0" x2="1"><stop offset="0" stop-color="#9aa1ab"/><stop offset=".5" stop-color="#d7dbe0"/><stop offset="1" stop-color="#8a8f98"/></linearGradient>
+</defs>
+<!-- cutaway motor -->
+<g transform="translate(150,150)">
+<circle r="128" fill="url(#hous)" stroke="#5a554d" stroke-width="1.5"/>
+<g fill="#5a554d" opacity=".55">
+<rect x="-4" y="-140" width="8" height="14" rx="2"/><rect x="-4" y="126" width="8" height="14" rx="2"/>
+<rect x="-140" y="-4" width="14" height="8" rx="2"/><rect x="126" y="-4" width="14" height="8" rx="2"/>
+</g>
+<circle r="112" fill="#6b7280"/>
+<g id="teeth"></g>
+<circle r="62" fill="var(--bg2)" stroke="#5a554d"/>
+<g id="mags"></g>
+<circle r="40" fill="#a7adb7" stroke="#5a554d"/>
+<circle r="14" fill="#5a554d"/>
+</g>
+<!-- heat arrows -->
+<g fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity=".85">
+<path d="M150 66 L150 30"/>
+<path d="M232 150 L282 150"/>
+<path d="M286 140 q8 -10 0 -20 q-8 -10 0 -20 M300 140 q8 -10 0 -20 q-8 -10 0 -20"/>
+</g>
+<g font-size="13" fill="var(--ink)">
+<text x="300" y="168">热往外“逃”，最后进入空气</text>
+<line x1="186" y1="98" x2="330" y2="40" stroke="var(--ink2)"/><text x="334" y="44">铜绕组：热的源头（最烫）</text>
+<line x1="222" y1="118" x2="330" y2="70" stroke="var(--ink2)"/><text x="334" y="74">定子铁芯：热的第一段路</text>
+<line x1="262" y1="210" x2="330" y2="230" stroke="var(--ink2)"/><text x="334" y="234">外壳：块头大、热容大、升温慢</text>
+<line x1="150" y1="190" x2="330" y2="260" stroke="var(--ink2)"/><text x="334" y="264">转子磁钢：怕热，过热会退磁</text>
+</g>
+<!-- RC ladder -->
+<g transform="translate(330,282)" font-size="12" fill="var(--ink2)">
+<rect x="-6" y="-18" width="346" height="44" rx="8" fill="var(--soft2)"/>
+<g stroke="var(--ink)" stroke-width="1.5" fill="none">
+<circle cx="14" cy="4" r="9"/><line x1="23" y1="4" x2="60" y2="4"/>
+<path d="M60 4 l6 -6 l8 12 l8 -12 l8 12 l6 -6"/><line x1="96" y1="4" x2="160" y2="4"/>
+<path d="M160 4 l6 -6 l8 12 l8 -12 l8 12 l6 -6"/><line x1="196" y1="4" x2="226" y2="4"/>
+</g>
+<text x="10" y="8" fill="var(--ink)">P</text>
+<text x="40" y="-4">θ绕组</text><text x="70" y="22">R₁</text><text x="124" y="-4">θ外壳</text><text x="170" y="22">R₂</text>
+<text x="232" y="8" fill="var(--ink)">环境温度</text>
+</g>
+</svg>
+<figcaption><b>看图要看什么：</b>上半部分是关节电机的剖面示意：铜绕组被包在最里面，热要穿过铁芯、外壳才能散出去，所以永远是它最烫。右下那条“电路”是工程师画热模型的速记法：热量像电流，温度像电压，热阻像电阻。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比 · 一只底部漏水的浴缸</div>
+<p>水龙头开多大 = 发热功率；浴缸底下的排水口 = 散热，水位越高、往外漏得越快；水位 = 温度；浴缸多大 = 热容。龙头开小（连续力矩），水位涨到某个高度就停住，进出平衡；龙头开到最大（峰值力矩），水位一路往上冲，迟早漫出来——只是浴缸越大，漫出来之前能撑越久。</p>
+<p class="off">哪里不准：真实电机不是一只浴缸，而是一串“小盆接大缸”：绕组是个小盆，一开大龙头几十秒就满；外壳是个大缸，要几分钟到几十分钟才慢慢涨起来。</p></div>
+
+<p>把浴缸翻译成公式，只有两句：</p>
+<p class="say">人话：龙头一直开着，最后的温升 = 发热 × 热阻。</p>
+<div class="formula">ΔT<sub>稳态</sub> = P · R<sub>th</sub><small>比如 30 W × 2 K/W = 升温 60 °C</small></div>
+<p class="say">人话：热容越大、热阻越大，水位涨得越慢；涨到终点约 63% 所需的时间叫时间常数。</p>
+<div class="formula">τ = R<sub>th</sub> · C<sub>th</sub><small>τ：热时间常数（thermal time constant），单位秒</small></div>
+
+<h2><span class="n">04</span>峰值力矩到底能撑多久？自己拖一拖</h2>
+<p>下面这个模拟器用的是工程上最常见的“两节点”热模型：一个小而快的绕组，一个大而慢的外壳。参数是教学假设（不是任何真实产品）：设定 1 倍额定力矩时，绕组最终稳定在 80 °C；绕组允许的最高温度是 100 °C。这两个温度并非随手挑的——后面会讲到，它们恰好是 BEAR SDK 手册里两个温度保护寄存器的默认值。</p>
+
+<figure>
+<svg id="fcSvg" viewBox="0 0 680 330" role="img" aria-label="关节绕组温度随时间变化的模拟器"></svg>
+<div class="ctrl"><label for="fcM">指令力矩</label><input id="fcM" type="range" min="0.5" max="2.5" step="0.1" value="2"><output id="fcMo">2.0 × 额定</output></div>
+<div class="seg"><button id="fcPlay" type="button">▶ 播放</button><button id="fcDer" type="button">降额保护：关</button></div>
+<div class="readout"><div>到 100 °C 用时<b id="fcHit">—</b></div><div>20 分钟后绕组<b id="fcEnd">—</b></div><div>20 分钟后实际力矩<b id="fcAct">—</b></div></div>
+<figcaption><b>看图要看什么：</b>红线是绕组，虚线是外壳。先看 2 倍额定：红线在头一两分钟猛冲，外壳却慢吞吞——峰值力矩能用多久，取决于那个“小盆”多快装满。再打开“降额保护”：温度到 80 °C 之后驱动器开始收紧电流上限，下方的力矩曲线随之掉下来。这就是客户常说的“跑了几分钟，关节没劲了”。</figcaption>
+</figure>
+
+<p>拖一拖你会发现三件事：</p>
+<ul>
+<li><b>1 倍以下</b>：怎么跑都不会超温，这就是“连续力矩”的定义——在规定散热条件下，能无限期输出而绕组不超温的力矩。</li>
+<li><b>2 倍左右</b>：从冷态开始，大概一两分钟到达上限。所以规格书上的峰值力矩一般都带一个时间条件，比如“几秒”或“若干秒”，且通常默认从冷态开始。</li>
+<li><b>1.2～1.3 倍</b>：最阴险。前几分钟看着一切正常，外壳慢慢热透之后，十来分钟才爬过红线。测试时只跑三分钟的人，永远发现不了这个问题。</li>
+</ul>
+<p>把“稳态温升 = 发热 × 热阻”和“发热 ∝ 力矩²”合在一起，就得到连续力矩的来源：</p>
+<p class="say">人话：连续力矩由“允许升多少度”和“散热有多好”决定，而且是开平方的关系。</p>
+<div class="formula">T<sub>连续</sub> = K<sub>t</sub> · √( ΔT<sub>允许</sub> / (R · R<sub>th</sub>) )<small>K<sub>t</sub> 力矩常数，R 绕组电阻，R<sub>th</sub> 总热阻</small></div>
+<p>回到半马：给关节加液冷，本质是把 R<sub>th</sub> 砍下来。热阻减半，连续力矩只涨到约 1.41 倍（根号 2）；峰值力矩基本不变，因为它主要受驱动器电流、磁路饱和和结构强度限制，跟散热关系不大。<b>水管买到的是“耐力”，不是“爆发力”。</b></p>
+
+<div class="analogy"><div class="t">类比 · 夏天打游戏，手机降频</div>
+<p>手机打大型游戏，前几分钟满帧，后来机身烫了，帧率悄悄往下掉——系统在主动降低芯片功率，保护自己。关节驱动器的“降额”（derating）是同一个思路：温度一过警戒线，就逐步收紧电流上限，宁可没劲，也不烧绕组。</p>
+<p class="off">哪里不准：手机降频损失的是流畅度；机器人关节降额损失的是力矩，如果它正扛着身体的重量，“没劲”可能直接变成“摔倒”。所以上层控制器必须知道关节在降额。</p></div>
+
+<div class="box fail"><div class="t">翻车现场 · 一张太薄的导热垫</div>
+<p>NASA 的 X-57 Maxwell 是一架全电推进验证机。在它的经验教训报告里，记录了一次相当惨烈的失效：高升力电机控制器里一只分立 MOSFET（就是驱动器里负责开关大电流的功率管）发生了灾难性的过温损坏，内部结构直接从封装里崩了出来。原因并不高深——管子外壳和散热器之间的导热垫太薄，外壳上的小瑕疵把垫子磨穿了，热量出不去，结温一路飙升。</p>
+<p>教训有两条：热的逃生路线上，任何一段“堵了”都等于全线堵死；温度要尽量在离发热点最近的地方测。这也是为什么很多驱动器既测绕组温度，又测功率级温度。</p></div>
+
+<figure class="photo">
+<img src="https://www.nasa.gov/wp-content/uploads/2025/03/x-57-testing-1.jpg" loading="lazy" referrerpolicy="no-referrer" alt="NASA 研究人员在为 X-57 巡航电机控制器布置热测试" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://www.nasa.gov/image-detail/x-57-testing-3">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>NASA 研究人员正在为 X-57 的巡航电机控制器布置热测试。电驱动系统真正的“体检”，不是看它能不能转，而是看它在规定温度下能不能一直扛住。<br>图：NASA/Jef Janis / <a href="https://www.nasa.gov/image-detail/x-57-testing-3">NASA Image Detail</a>，NASA 图片（公有领域，按 NASA 媒体使用指南署名）</figcaption>
+</figure>
+
+<h2><span class="n">05</span>关节的力矩一直在变，热该怎么算？</h2>
+<p>真实的关节不会恒定输出某个力矩。跑步时膝关节在落地瞬间猛顶一下，腾空时几乎不出力。那判断会不会过热，看平均力矩行不行？不行——发热跟力矩的<b>平方</b>走，所以要先平方、再平均、再开方，得到<b>均方根力矩</b>（RMS torque）：</p>
+<p class="say">人话：把忽大忽小的力矩，换算成“发热效果相同的恒定力矩”。</p>
+<div class="formula">T<sub>RMS</sub> = √( 平均值[ T(t)² ] )<small>只要工作周期远短于热时间常数，比较 T<sub>RMS</sub> 和连续力矩即可</small></div>
+
+<figure>
+<svg id="feSvg" viewBox="0 0 680 290" role="img" aria-label="不同动作的关节力矩波形与均方根力矩"></svg>
+<div class="seg" id="feSeg"><button type="button" data-k="stand">站立</button><button type="button" data-k="walk" class="on">走路</button><button type="button" data-k="run">跑步</button><button type="button" data-k="jump">连续蹲跳</button></div>
+<div class="ctrl"><label for="feS">用力程度</label><input id="feS" type="range" min="0.6" max="1.4" step="0.05" value="1"><output id="feSo">1.00 ×</output></div>
+<div class="readout"><div>峰值 / 峰值上限<b id="fePk">—</b></div><div>RMS / 连续力矩<b id="feRm">—</b></div><div>结论<b id="feV">—</b></div></div>
+<figcaption><b>看图要看什么：</b>橙色是力矩波形，红色虚线是它的 RMS。跑步的尖峰很高、但很短，RMS 反而可能压在连续线以下；连续蹲跳尖峰没高多少，却“每一下都使劲”，RMS 就冲过了线。两个检查缺一不可：峰值不超峰值上限，RMS 不超连续力矩。波形为教学假设，非实测。</figcaption>
+</figure>
+
+<div class="analogy"><div class="t">类比 · 骑电动车爬长坡</div>
+<p>骑电动车过一个陡但短的桥，电机使劲几秒就过去了，啥事没有；换成一条几公里的长坡，就算坡没那么陡，电机和控制器也会越来越烫，有的车会自己限流、变慢。前者考的是峰值，后者考的是 RMS。</p>
+<p class="off">哪里不准：电动车有风一路吹着电机，机器人关节常常闷在外壳和装饰件里，散热条件差得多；而且电动车可以下来推，机器人不行。</p></div>
+
+<p>这也解释了为什么机器人最出名的视频往往是“炫技”动作。MIT 的 Mini Cheetah 在 2019 年因为后空翻出了名——后空翻是典型的峰值工况：极短时间里把关节推到很高的力矩，然后就结束了，热还没来得及攒起来。真正难的，是让同一台机器连续干活一整天。</p>
+
+<figure class="photo">
+<img src="https://news.mit.edu/sites/default/files/download/201903/MIT-Mini-Cheetah-01-PRESS.jpg" loading="lazy" referrerpolicy="no-referrer" alt="MIT Mini Cheetah 四足机器人站在地面上，腿根处有圆饼状的电机模块" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+<a class="imgfail" href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">图片未能加载，点此查看原图</a>
+<figcaption><b>看图要看什么：</b>腿根那些扁圆的“饼”就是执行器，外壳直接暴露在空气里，没有水冷。这种准直驱关节的峰值很能打，做后空翻没问题；但要连续高强度跑，散热就是第一道坎。<br>图：Bryce Vickmark / <a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News</a>，CC BY-NC-ND</figcaption>
+</figure>
+
+<h2><span class="n">06</span>工作里会在哪遇到？</h2>
+<div class="box work">
+<ul>
+<li><b>规格书</b>：看到 Peak torque 时，立刻找它的条件——持续多少秒、从冷态还是热态、环境温度多少、执行器是怎么安装散热的。Continuous / Rated torque 同样有条件：不同散热条件下（比如风冷与液冷）会是不同的数。</li>
+<li><b>BEAR 的温度保护</b>（来源：<i>BEAR-SDK-Manual-1.3.0-EN.pdf</i>，项目知识库文件）：配置寄存器 <code>temp_limit_low</code> 默认 80 °C、<code>temp_limit_high</code> 默认 100 °C。温度在两者之间时，电流上限（<code>limit_i_max</code>）线性下降，并报 Overheat 警告；超过上限时电流上限降为 0。判断依据取绕组温度和功率级温度两者中较高的那个，可通过 <code>winding_temperature</code>、<code>powerstage_temperature</code> 读取。手册还提醒：<code>limit_i_max</code> 只是寄存器值，不是硬件额定值。</li>
+<li><b>客户邮件常见问法</b>：
+<div class="en">“How long can the actuator hold peak torque?”<br>“What is the continuous torque at 25 °C ambient?”<br>“The joint loses torque after ~10 minutes of operation. Is this a defect?”</div>
+回答前先问清对方的工况：力矩随时间怎么变（duty cycle）、环境温度、安装方式和散热条件。没有这些，“能不能撑住”是答不出来的。具体型号的持续时间和连续力矩数值，以官方手册或工程团队确认为准。</li>
+</ul>
+</div>
+
+<h2><span class="n">07</span>三道自测题</h2>
+<p class="q">1. 展会上，客户指着规格书说：“峰值力矩是额定的两倍，那我一直用峰值，发热最多也就两倍吧？”你怎么纠正？</p>
+<details><summary>看答案</summary><p>发热和电流的平方成正比，力矩翻倍约等于电流翻倍，发热约 4 倍；大电流下铁芯饱和，实际往往还要更多（AK80-9 公开数据粗算约 4.7 倍）。而且峰值只能撑有限时间，一直用峰值必然触发过温保护。</p></details>
+
+<p class="q">2. 一封邮件写着：“Our knee joint needs 12 N·m for 0.5 s, then 3 N·m for 1.5 s, repeating. The rated torque is 9 N·m and peak is 18 N·m.” 从热的角度粗看行不行？</p>
+<details><summary>看答案</summary><p>T<sub>RMS</sub> = √((12²×0.5 + 3²×1.5)/2) = √(85.5/2) ≈ 6.5 N·m，低于 9 N·m；峰值 12 N·m 也低于 18 N·m。周期 2 秒，远短于热时间常数，所以粗看可行。但这只是教学估算：还要确认 9 N·m 对应的环境温度和散热条件是否与客户一致，对外回复以工程团队确认为准。</p></details>
+
+<p class="q">3. 客户反馈：BEAR 连续跑了十来分钟后力矩明显变小，状态里有 Overheat 警告。最可能是什么情况？能直接建议把 temp_limit_high 调高吗？</p>
+<details><summary>看答案</summary><p>很可能是绕组或功率级温度超过了 temp_limit_low（默认 80 °C），驱动器在按设计线性降低电流上限。应先读 winding_temperature 和 powerstage_temperature，了解工况和 RMS 负载，从降低负载、改善散热入手。不要随手建议调高温度上限——那是在拿绕组绝缘和功率器件的寿命冒险，涉及安全限制，须由工程团队判断。</p></details>
+
+<h2><span class="n">08</span>中英术语对照</h2>
+<table class="terms">
+<tr><td>峰值力矩</td><td>Peak torque</td></tr>
+<tr><td>连续 / 额定力矩</td><td>Continuous / Rated torque</td></tr>
+<tr><td>铜损</td><td>Copper loss（I²R loss）</td></tr>
+<tr><td>热阻</td><td>Thermal resistance（K/W）</td></tr>
+<tr><td>热容</td><td>Thermal capacitance（J/K）</td></tr>
+<tr><td>热时间常数</td><td>Thermal time constant</td></tr>
+<tr><td>均方根力矩</td><td>RMS torque</td></tr>
+<tr><td>工作周期 / 占空比</td><td>Duty cycle</td></tr>
+<tr><td>降额</td><td>Derating</td></tr>
+<tr><td>绕组温度</td><td>Winding temperature</td></tr>
+<tr><td>过温保护</td><td>Over-temperature protection</td></tr>
+<tr><td>绝缘等级</td><td>Insulation class</td></tr>
+</table>
+
+<div class="tease">下一课预告：半马赛场上那些背着水管的机器人，水到底带走了多少热？为什么同一个电机加了液冷，连续力矩能涨一截，重量和体积却要付出代价？明天讲<b>散热、液冷与力矩密度</b>。</div>
+
+<h2>来源</h2>
+<ul class="src">
+<li><a href="https://www.bjnews.com.cn/detail/1745038099129533.html">新京报：2025 北京亦庄人形机器人半程马拉松报道</a></li>
+<li><a href="https://m.gmw.cn/2026-04/21/content_38721259.htm">光明网：2026 北京亦庄人形机器人半程马拉松，水冷与关节发热</a></li>
+<li><a href="https://www.ithome.com/0/941/826.htm">IT之家：荣耀“闪电”机器人包揽前三，液冷系统</a></li>
+<li><a href="https://www.ithome.com/0/901/991.htm">IT之家：GB 17761-2024 电动自行车最高设计车速 25 km/h</a></li>
+<li><a href="https://wiki.openelab.io/cubemars/cubemars-ak80-9-actuator-bldc-motor-compact-high-torque-power">CubeMars AK80-9 规格（OpenELAB 资料页）</a></li>
+<li><a href="https://ntrs.nasa.gov/api/citations/20240003366/downloads/3-X-57_traction_system_failures.pdf">NASA NTRS：X-57 Traction System Failures</a></li>
+<li><a href="https://www.revolution.aero/news/2023/02/13/nasa-completes-thermal-motor-testing-of-its-x-57-maxwell">Revolution.aero：X-57 电机控制器完成热测试</a></li>
+<li><a href="https://news.mit.edu/2019/mit-mini-cheetah-first-four-legged-robot-to-backflip-0304">MIT News：Mini Cheetah 首个会后空翻的四足机器人</a></li>
+<li>BEAR-SDK-Manual-1.3.0-EN.pdf（Westwood Robotics，项目知识库文件）：温度寄存器与 Overheat 错误位</li>
+<li>铜电阻温度系数、热阻 / 热容模型、RMS 力矩：通用电机工程原理</li>
+</ul>
+</main>
+
+<script>
+(function(){
+var NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;if(parent)parent.appendChild(e);return e;}
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- cutaway decoration ---------- */
+var teeth=document.getElementById('teeth'),mags=document.getElementById('mags');
+for(var i=0;i<12;i++){var a=i*30;
+ var g=el('g',{transform:'rotate('+a+')'},teeth);
+ el('rect',{x:-7,y:-108,width:14,height:42,fill:'#9aa1ab'},g);
+ el('rect',{x:-13,y:-100,width:6,height:30,rx:2,fill:'url(#hotc)'},g);
+ el('rect',{x:7,y:-100,width:6,height:30,rx:2,fill:'url(#hotc)'},g);
+}
+for(var j=0;j<10;j++){var g2=el('g',{transform:'rotate('+(j*36)+')'},mags);
+ el('rect',{x:-9,y:-60,width:18,height:16,rx:2,fill:j%2?'var(--magS)':'var(--magN)'},g2);}
+
+/* ---------- Fig D: square law ---------- */
+(function(){
+ var svg=document.getElementById('fdSvg'),s=document.getElementById('fdT');
+ var pts=[[0,0],[9,10.3],[18,22.3]],R=0.085,P0=1.5*10.3*10.3*R;
+ function cur(T){if(T<=9)return T/9*10.3;return 10.3+(T-9)/9*12;}
+ function draw(){
+  var T=+s.value,I=cur(T),P=1.5*I*I*R;
+  svg.innerHTML='';
+  el('rect',{x:0,y:0,width:680,height:270,rx:12,fill:'var(--bg2)'},svg);
+  // torque bar
+  el('text',{x:24,y:34,'font-size':14,fill:'var(--ink2)'},svg,'力矩');
+  el('rect',{x:70,y:22,width:200,height:16,rx:8,fill:'var(--line)'},svg);
+  el('rect',{x:70,y:22,width:200*T/18,height:16,rx:8,fill:'var(--accent2)'},svg);
+  el('line',{x1:170,y1:16,x2:170,y2:44,stroke:'var(--ink2)','stroke-dasharray':'3 3'},svg);
+  el('text',{x:170,y:58,'font-size':12,'text-anchor':'middle',fill:'var(--ink2)'},svg,'额定 9');
+  el('text',{x:270,y:58,'font-size':12,'text-anchor':'end',fill:'var(--ink2)'},svg,'峰值 18');
+  // squares
+  var maxS=190,side=maxS*I/22.3,ref=maxS*10.3/22.3,x0=40,y0=250;
+  el('rect',{x:x0,y:y0-side,width:side,height:side,fill:'#f97316','fill-opacity':.28,stroke:'#dc2626','stroke-width':2},svg);
+  el('rect',{x:x0,y:y0-ref,width:ref,height:ref,fill:'none',stroke:'var(--ink2)','stroke-dasharray':'5 4'},svg);
+  el('text',{x:x0+ref+4,y:y0-ref+14,'font-size':12,fill:'var(--ink2)'},svg,'额定时的面积');
+  el('text',{x:x0+side/2,y:y0+16,'font-size':12,'text-anchor':'middle',fill:'var(--ink)'},svg,'边长 = 电流 '+I.toFixed(1)+' A');
+  // heat bar on right
+  var hx=420,hmax=63.4;
+  el('text',{x:hx,y:94,'font-size':14,fill:'var(--ink2)'},svg,'铜损（发热）估算');
+  el('rect',{x:hx,y:104,width:220,height:22,rx:6,fill:'var(--line)'},svg);
+  el('rect',{x:hx,y:104,width:Math.max(0,220*P/hmax),height:22,rx:6,fill:'#dc2626'},svg);
+  el('text',{x:hx,y:150,'font-size':26,'font-weight':700,fill:'var(--ink)'},svg,P.toFixed(1)+' W');
+  el('text',{x:hx,y:178,'font-size':13,fill:'var(--ink2)'},svg,'力矩 ×'+(T/9).toFixed(2)+' → 发热 ×'+(P/P0).toFixed(2));
+  el('text',{x:hx,y:222,'font-size':12,fill:'var(--ink2)'},svg,'P ≈ 1.5 · I² · R相，R相 ≈ 0.085 Ω（教学估算）');
+  document.getElementById('fdTo').textContent=T.toFixed(1)+' N·m';
+  document.getElementById('fdI').textContent=I.toFixed(1)+' A';
+  document.getElementById('fdP').textContent=P.toFixed(1)+' W';
+  document.getElementById('fdR').textContent=(P/P0).toFixed(1)+' 倍';
+ }
+ s.addEventListener('input',draw);draw();
+})();
+
+/* ---------- Fig C: thermal simulator ---------- */
+(function(){
+ var svg=document.getElementById('fcSvg'),sl=document.getElementById('fcM'),pb=document.getElementById('fcPlay'),db=document.getElementById('fcDer');
+ var R1=0.6,R2=1.6,C1=50,C2=200,Ta=25,a=0.00393,P0=55/2.2/(1+a*55),TMAX=1200,DT=0.25,PK=2.5;
+ var der=false,data=null,anim=null,shown=1;
+ var X0=56,X1=660,Y0=40,Y1=220,TY0=250,TY1=310;
+ function sim(m){var tw=Ta,th=Ta,out=[],hit=null,t=0,n=Math.round(TMAX/DT);
+  for(var k=0;k<=n;k++){t=k*DT;
+   var lim=PK; if(der){ if(tw>=100)lim=0; else if(tw>80)lim=PK*(1-(tw-80)/20); }
+   var act=Math.min(m,lim);
+   if(hit===null&&tw>=100)hit=t;
+   if(k%8===0)out.push([t,tw,th,act]);
+   var P=P0*act*act*(1+a*(tw-Ta));
+   var q12=(tw-th)/R1,q2a=(th-Ta)/R2;
+   tw+=DT*(P-q12)/C1; th+=DT*(q12-q2a)/C2;
+  }
+  return {pts:out,hit:hit};}
+ function X(t){return X0+(X1-X0)*t/TMAX}
+ function Y(T){T=Math.min(T,160);return Y1-(Y1-Y0)*(T-20)/140}
+ function TYf(v){return TY1-(TY1-TY0)*v/PK}
+ function frame(){
+  svg.innerHTML='';
+  el('rect',{x:0,y:0,width:680,height:330,rx:12,fill:'var(--bg2)'},svg);
+  // danger zones
+  el('rect',{x:X0,y:Y(160),width:X1-X0,height:Y(100)-Y(160),fill:'#dc2626','fill-opacity':.08},svg);
+  el('rect',{x:X0,y:Y(100),width:X1-X0,height:Y(80)-Y(100),fill:'#f59e0b','fill-opacity':.10},svg);
+  [20,40,60,80,100,120,140,160].forEach(function(T){
+   el('line',{x1:X0,y1:Y(T),x2:X1,y2:Y(T),stroke:'var(--line)'},svg);
+   el('text',{x:X0-6,y:Y(T)+4,'font-size':11,'text-anchor':'end',fill:'var(--ink2)'},svg,T);});
+  el('text',{x:X1-4,y:Y(100)-5,'font-size':12,'text-anchor':'end',fill:'#dc2626'},svg,'100 °C 上限');
+  el('text',{x:X1-4,y:Y(80)-5,'font-size':12,'text-anchor':'end',fill:'#b45309'},svg,'80 °C 开始降额');
+  el('text',{x:X0,y:24,'font-size':12,fill:'var(--ink2)'},svg,'温度 °C');
+  for(var mm=0;mm<=20;mm+=5){el('text',{x:X(mm*60),y:TY1+16,'font-size':11,'text-anchor':'middle',fill:'var(--ink2)'},svg,mm+' 分');}
+  // torque band
+  el('rect',{x:X0,y:TY0,width:X1-X0,height:TY1-TY0,fill:'var(--bg)',stroke:'var(--line)'},svg);
+  el('line',{x1:X0,y1:TYf(1),x2:X1,y2:TYf(1),stroke:'var(--accent2)','stroke-dasharray':'4 4'},svg);
+  el('text',{x:X0-6,y:TYf(1)+4,'font-size':11,'text-anchor':'end',fill:'var(--accent2)'},svg,'1×');
+  el('text',{x:X0+4,y:TY0+12,'font-size':11,fill:'var(--ink2)'},svg,'实际力矩');
+  var P=data.pts,n=Math.max(2,Math.round(P.length*shown));
+  var w='',h='',q='';
+  for(var i=0;i<n;i++){var p=P[i];w+=(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1);h+=(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[2]).toFixed(1);q+=(i?'L':'M')+X(p[0]).toFixed(1)+' '+TYf(p[3]).toFixed(1);}
+  el('path',{d:h,fill:'none',stroke:'var(--steel)','stroke-width':2.5,'stroke-dasharray':'6 4'},svg);
+  el('path',{d:w,fill:'none',stroke:'#dc2626','stroke-width':3,'stroke-linejoin':'round'},svg);
+  el('path',{d:q,fill:'none',stroke:'var(--accent)','stroke-width':2.5},svg);
+  var L=P[n-1];
+  el('circle',{cx:X(L[0]),cy:Y(L[1]),r:5,fill:'#dc2626'},svg);
+  el('text',{x:X0+8,y:Y0+14,'font-size':12,fill:'#dc2626'},svg,'— 绕组');
+  el('text',{x:X0+64,y:Y0+14,'font-size':12,fill:'var(--ink2)'},svg,'- - 外壳');
+ }
+ function readout(){
+  var P=data.pts,L=P[P.length-1];
+  document.getElementById('fcHit').textContent=data.hit===null?'不会到':(data.hit<120?Math.round(data.hit)+' 秒':(data.hit/60).toFixed(1)+' 分钟');
+  document.getElementById('fcEnd').textContent=Math.round(L[1])+' °C';
+  document.getElementById('fcAct').textContent=L[3].toFixed(2)+' ×';
+ }
+ function stop(){if(anim){cancelAnimationFrame(anim);anim=null;}pb.textContent='▶ 播放';}
+ function recalc(){data=sim(+sl.value);document.getElementById('fcMo').textContent=(+sl.value).toFixed(1)+' × 额定';readout();if(!anim){shown=1;frame();}}
+ pb.addEventListener('click',function(){
+  if(anim){stop();return;}
+  if(reduce){shown=1;frame();return;}
+  shown=0;var t0=null;pb.textContent='❚❚ 暂停';
+  function step(ts){if(t0===null)t0=ts;shown=Math.min(1,(ts-t0)/12000);frame();if(shown<1)anim=requestAnimationFrame(step);else stop();}
+  anim=requestAnimationFrame(step);
+ });
+ db.addEventListener('click',function(){der=!der;db.textContent='降额保护：'+(der?'开':'关');db.classList.toggle('on',der);recalc();if(anim){/* keep running */}});
+ sl.addEventListener('input',recalc);
+ recalc();
+})();
+
+/* ---------- Fig E: RMS ---------- */
+(function(){
+ var svg=document.getElementById('feSvg'),sl=document.getElementById('feS'),seg=document.getElementById('feSeg');
+ var kind='walk',PK=2.5;
+ var W={
+  stand:function(p){return 0.35;},
+  walk:function(p){return p<0.6?0.3+0.9*Math.sin(Math.PI*p/0.6):0.15;},
+  run:function(p){return p<0.35?2.2*Math.sin(Math.PI*p/0.35):0.1;},
+  jump:function(p){return p<0.45?2.4*Math.sin(Math.PI*p/0.45):0.1;}
+ };
+ var X0=50,X1=660,Y0=24,Y1=250;
+ function Y(v){return Y1-(Y1-Y0)*v/3}
+ function draw(){
+  var s=+sl.value,f=W[kind],N=400,sum=0,pk=0,d='',area='';
+  for(var i=0;i<=N;i++){var p=(i/N*2)%1;var v=f(p)*s;if(i<N){sum+=v*v;}pk=Math.max(pk,v);
+   var x=X0+(X1-X0)*i/N;d+=(i?'L':'M')+x.toFixed(1)+' '+Y(v).toFixed(1);}
+  var rms=Math.sqrt(sum/N);
+  svg.innerHTML='';
+  el('rect',{x:0,y:0,width:680,height:290,rx:12,fill:'var(--bg2)'},svg);
+  el('rect',{x:X0,y:Y(3),width:X1-X0,height:Y(PK)-Y(3),fill:'#dc2626','fill-opacity':.07},svg);
+  [0,1,2,3].forEach(function(v){el('line',{x1:X0,y1:Y(v),x2:X1,y2:Y(v),stroke:'var(--line)'},svg);el('text',{x:X0-6,y:Y(v)+4,'font-size':11,'text-anchor':'end',fill:'var(--ink2)'},svg,v+'×');});
+  el('line',{x1:X0,y1:Y(PK),x2:X1,y2:Y(PK),stroke:'#dc2626','stroke-width':1.5},svg);
+  el('text',{x:X1-4,y:Y(PK)-5,'font-size':12,'text-anchor':'end',fill:'#dc2626'},svg,'峰值上限 2.5×');
+  el('line',{x1:X0,y1:Y(1),x2:X1,y2:Y(1),stroke:'var(--accent2)','stroke-width':2},svg);
+  el('text',{x:X1-4,y:Y(1)-5,'font-size':12,'text-anchor':'end',fill:'var(--accent2)'},svg,'连续力矩 1×');
+  el('path',{d:d+'L'+X1+' '+Y(0)+'L'+X0+' '+Y(0)+'Z',fill:'var(--accent)','fill-opacity':.15},svg);
+  el('path',{d:d,fill:'none',stroke:'var(--accent)','stroke-width':3,'stroke-linejoin':'round'},svg);
+  el('line',{x1:X0,y1:Y(rms),x2:X1,y2:Y(rms),stroke:'#dc2626','stroke-width':2,'stroke-dasharray':'7 5'},svg);
+  el('text',{x:X0+6,y:Y(rms)-6,'font-size':12,fill:'#dc2626'},svg,'RMS '+rms.toFixed(2)+'×');
+  el('text',{x:(X0+X1)/2,y:Y1+24,'font-size':12,'text-anchor':'middle',fill:'var(--ink2)'},svg,'两个动作周期（纵轴：相对连续力矩的倍数）');
+  document.getElementById('feSo').textContent=s.toFixed(2)+' ×';
+  document.getElementById('fePk').textContent=(pk/PK*100).toFixed(0)+'%';
+  document.getElementById('feRm').textContent=(rms*100).toFixed(0)+'%';
+  var ok=pk<=PK&&rms<=1,v=document.getElementById('feV');
+  v.textContent=pk>PK?'峰值超限':(rms>1?'会过热':'热上可行');
+  v.className=ok?'okc':'badc';
+ }
+ seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;kind=b.getAttribute('data-k');
+  Array.prototype.forEach.call(seg.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});draw();});
+ sl.addEventListener('input',draw);draw();
+})();
+})();
+
+</script>
+</body>
+</html>
